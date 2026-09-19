@@ -1,0 +1,171 @@
+2026-09-19 14:42:21,945 DEBUG cd vms-system && uv venv env --seed --python python3
+2026-09-19 14:42:22,059 LOG Getting frappe
+2026-09-19 14:42:22,059 DEBUG cd vms-system/apps && git clone https://github.com/frappe/frappe.git  --depth 1 --origin upstream
+2026-09-19 14:42:47,855 LOG Installing frappe
+2026-09-19 14:42:47,860 DEBUG cd /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system && uv pip install --quiet -e /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/apps/frappe  --python /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/env/bin/python
+2026-09-19 14:43:38,686 DEBUG cd /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/apps/frappe && yarn install --check-files
+2026-09-19 14:44:33,749 DEBUG cd vms-system && bench build
+2026-09-19 14:44:33,863 INFO /home/admin/.local/bin/bench build
+2026-09-19 14:44:40,923 LOG setting up backups
+2026-09-19 14:44:40,942 LOG backups were set up
+2026-09-19 14:44:40,942 INFO Bench vms-system initialized
+2026-09-19 15:00:58,336 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:00:58,662 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:00:58,668 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:00:58,674 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:00:58,684 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:00:58,697 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:02:43,832 INFO /home/admin/.local/bin/bench get-app https://github.com/frappe/erpnext-14.git
+2026-09-19 15:02:43,839 LOG Getting erpnext-14
+2026-09-19 15:02:43,839 DEBUG cd ./apps && git clone https://github.com/frappe/erpnext-14.git  --depth 1 --origin upstream
+2026-09-19 15:02:48,472 LOG Installing erpnext
+2026-09-19 15:02:48,473 DEBUG cd /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system && uv pip install --quiet -e /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/apps/erpnext  --python /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/env/bin/python
+2026-09-19 15:02:55,678 DEBUG cd /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/apps/erpnext && yarn install --check-files
+2026-09-19 15:02:56,268 DEBUG bench build --app erpnext
+2026-09-19 15:02:56,355 INFO /home/admin/.local/bin/bench build --app erpnext
+2026-09-19 15:03:10,409 INFO /home/admin/.local/bin/bench list-apps
+2026-09-19 15:03:28,519 INFO /home/admin/.local/bin/bench set-config -g developer_mode 1
+2026-09-19 15:03:43,301 INFO /home/admin/.local/bin/bench new-site vms.localhost
+2026-09-19 15:05:49,360 INFO /home/admin/.local/bin/bench new-site vms.localhost
+2026-09-19 15:05:59,940 INFO /home/admin/.local/bin/bench new-site vms.localhost
+2026-09-19 15:06:08,868 INFO /home/admin/.local/bin/bench new-site vms.localhost --force
+2026-09-19 15:06:57,874 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:06:58,176 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:06:58,187 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:06:58,217 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:06:58,233 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:06:58,253 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:09:14,455 INFO /home/admin/.local/bin/bench --site vms.localhost install-app erpnext
+2026-09-19 15:10:08,193 INFO /home/admin/.local/bin/bench --site vms.localhost list-apps
+2026-09-19 15:10:13,804 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:10:14,075 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:10:14,089 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:10:14,094 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:10:14,119 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:10:14,128 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:14:04,812 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:14:05,074 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:14:05,074 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:14:05,077 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:14:05,119 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:14:05,140 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:21:30,175 INFO /home/admin/.local/bin/bench new-app vms_user
+2026-09-19 15:21:30,180 LOG creating new app vms_user
+2026-09-19 15:22:00,278 LOG Installing vms_user
+2026-09-19 15:22:00,279 DEBUG cd /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system && uv pip install --quiet -e /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/apps/vms_user  --python /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/env/bin/python
+2026-09-19 15:22:01,401 DEBUG bench build --app vms_user
+2026-09-19 15:22:01,501 INFO /home/admin/.local/bin/bench build --app vms_user
+2026-09-19 15:22:37,732 INFO /home/admin/.local/bin/bench --site vms.localhost install-app vms_user
+2026-09-19 15:22:43,848 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:22:44,118 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:22:44,119 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:22:44,149 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:22:44,166 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:22:44,170 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:24:03,996 INFO /home/admin/.local/bin/bench set-config -g developer_mode 1
+2026-09-19 15:24:09,678 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:24:09,925 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:24:09,925 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:24:09,925 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:24:09,978 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:24:09,990 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:32:46,973 INFO /home/admin/.local/bin/bench --site vms.localhost list-apps
+2026-09-19 15:32:53,395 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:32:53,665 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:32:53,681 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:32:53,685 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:32:53,708 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:32:53,713 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:36:26,335 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-19 15:36:27,018 INFO /home/admin/.local/bin/bench restart
+2026-09-19 15:36:44,288 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:36:44,642 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 15:36:44,670 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:36:44,691 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:36:44,705 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:36:44,707 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:37:45,105 INFO /home/admin/.local/bin/bench start
+2026-09-19 15:37:45,391 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 15:37:45,400 INFO /home/admin/.local/bin/bench worker
+2026-09-19 15:37:45,405 INFO /home/admin/.local/bin/bench watch
+2026-09-19 15:37:45,426 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 15:37:45,441 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:00:01,942 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-19 16:00:07,225 INFO /home/admin/.local/bin/bench restart
+2026-09-19 16:00:11,537 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:00:11,824 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:00:11,826 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:00:11,831 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:00:11,868 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:00:11,875 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:09:04,674 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-19 16:09:09,757 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:09:10,085 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:09:10,111 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:09:10,111 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:09:10,120 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:09:10,127 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:09:44,641 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:09:44,931 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:09:44,938 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:09:44,960 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:09:44,969 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:09:44,976 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:13:02,161 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:13:02,504 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:13:02,508 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:13:02,517 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:13:02,536 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:13:02,548 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:34:40,372 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-19 16:34:41,019 INFO /home/admin/.local/bin/bench build --app vms_registration
+2026-09-19 16:34:41,888 INFO /home/admin/.local/bin/bench restart
+2026-09-19 16:35:29,364 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-19 16:35:35,250 INFO /home/admin/.local/bin/bench build --app vms_registration
+2026-09-19 16:36:20,232 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:36:20,503 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:36:20,503 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:36:20,505 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:36:20,545 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:36:20,553 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:36:47,646 INFO /home/admin/.local/bin/bench build --app vms_user
+2026-09-19 16:36:52,466 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:36:52,820 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:36:52,821 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:36:52,830 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:36:52,851 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:36:52,859 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:45:22,355 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-19 16:45:31,625 INFO /home/admin/.local/bin/bench build --app vms_user
+2026-09-19 16:45:36,451 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:45:36,793 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:45:36,807 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:45:36,816 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:45:36,823 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:45:36,830 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:48:41,568 INFO /home/admin/.local/bin/bench --site vms.localhost console
+2026-09-19 16:49:24,343 INFO /home/admin/.local/bin/bench --site vms.localhost console
+2026-09-19 16:51:00,015 INFO /home/admin/.local/bin/bench --site vms.localhost console
+2026-09-19 16:55:03,577 INFO /home/admin/.local/bin/bench restart
+2026-09-19 16:55:10,321 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:55:10,591 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:55:10,595 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:55:10,596 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:55:10,636 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:55:10,645 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:57:09,130 INFO /home/admin/.local/bin/bench restart
+2026-09-19 16:57:13,121 INFO /home/admin/.local/bin/bench start
+2026-09-19 16:57:13,398 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 16:57:13,399 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 16:57:13,422 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 16:57:13,448 INFO /home/admin/.local/bin/bench watch
+2026-09-19 16:57:13,459 INFO /home/admin/.local/bin/bench worker
+2026-09-19 16:59:56,891 INFO /home/admin/.local/bin/bench --site vms.localhost console
+2026-09-19 17:02:59,339 INFO /home/admin/.local/bin/bench --site vms.localhost console
+2026-09-19 17:04:50,304 INFO /home/admin/.local/bin/bench restart
+2026-09-19 17:04:54,043 INFO /home/admin/.local/bin/bench start
+2026-09-19 17:04:54,358 INFO /home/admin/.local/bin/bench schedule
+2026-09-19 17:04:54,389 INFO /home/admin/.local/bin/bench socketio
+2026-09-19 17:04:54,396 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-19 17:04:54,407 INFO /home/admin/.local/bin/bench watch
+2026-09-19 17:04:54,420 INFO /home/admin/.local/bin/bench worker
