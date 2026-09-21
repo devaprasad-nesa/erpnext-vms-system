@@ -27,5 +27,15 @@
         "required": [],
         "idx": 3,
         "version": "0.0.1"
+    },
+    "vms_vehicle": {
+        "is_repo": true,
+        "resolution": {
+            "commit_hash": "40dc2b6f01ada56bde8f88916459a4ad69fd28b5",
+            "branch": "develop"
+        },
+        "required": [],
+        "idx": 4,
+        "version": "0.0.1"
     }
 }

@@ -2347,3 +2347,66 @@ index parent(parent))
 2026-09-19 16:55:41,077 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-19 17:05:17,418 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-19 17:16:14,655 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-19 17:26:20,288 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 09:30:45,350 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 09:37:38,359 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 09:46:21,965 WARNING database DDL Query made to DB:
+create table `tabvms customer profile` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-21 09:52:56,369 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms customer profile` ADD COLUMN `user_name` varchar(140) UNIQUE, ADD COLUMN `customer_name` varchar(140), ADD COLUMN `customer_phone` varchar(140), ADD COLUMN `customer_email` varchar(140), ADD COLUMN `address` text
+2026-09-21 09:52:56,370 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms customer profile` ADD UNIQUE INDEX IF NOT EXISTS user_name (`user_name`)
+2026-09-21 11:03:11,423 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 11:14:41,207 WARNING database DDL Query made to DB:
+create table `tabvms vehicle registration` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-21 11:18:48,675 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms vehicle registration` ADD COLUMN `owner_name` varchar(140), ADD COLUMN `vehicle_number` varchar(140), ADD COLUMN `vehicle_brand` varchar(140), ADD COLUMN `vehicle_model` varchar(140), ADD COLUMN `fuel_type` varchar(140), ADD COLUMN `vehicle_color` varchar(140), ADD COLUMN `chassis_number` varchar(140), ADD COLUMN `engine_number` varchar(140), ADD COLUMN `registration_date` date, ADD COLUMN `notes` varchar(140)
+2026-09-21 11:43:53,276 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 11:51:50,522 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 12:00:44,066 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 12:17:29,888 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 12:20:20,888 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 12:23:43,447 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 12:25:45,470 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 12:34:51,050 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 12:48:46,424 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms vehicle registration` ADD COLUMN `owner_user` varchar(140)
+2026-09-21 12:56:59,029 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 13:43:18,569 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 14:01:20,614 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 14:03:44,675 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 14:07:30,976 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 14:13:11,914 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-21 14:18:18,215 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'

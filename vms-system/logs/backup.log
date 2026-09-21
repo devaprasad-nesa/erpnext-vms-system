@@ -1,0 +1,6 @@
+set -o pipefail; /usr/bin/mariadb-dump --user=_27fc1204aaf734a3 --host=127.0.0.1 --port=3306 --password=********** --single-transaction --quick --lock-tables=false _27fc1204aaf734a3 | /usr/bin/gzip >> ./vms.localhost/private/backups/20260921_120002-vms_localhost-database.sql.gz
+
+Backup Summary for vms.localhost at 2026-09-21 12:00:03.025624
+Config  : /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/sites/vms.localhost/private/backups/20260921_120002-vms_localhost-site_config_backup.json 274.0B
+Database: /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/sites/vms.localhost/private/backups/20260921_120002-vms_localhost-database.sql.gz 869.9KiB
+Backup for Site vms.localhost has been successfully completed

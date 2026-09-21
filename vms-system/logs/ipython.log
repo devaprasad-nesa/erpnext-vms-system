@@ -28,3 +28,20 @@
 2026-09-19 17:04:46,606 INFO ipython print(inspect.signature(vms_user.api.register_customer))
 2026-09-19 17:04:46,606 INFO ipython print(inspect.signature(vms_user.api.register_customer))
 2026-09-19 17:04:46,606 INFO ipython === session end ===
+2026-09-21 12:10:24,821 INFO ipython === bench console session ===
+2026-09-21 12:10:24,829 INFO ipython import vms_vehicle.api
+2026-09-21 12:10:24,829 INFO ipython print(vms_vehicle.api.__file__)
+2026-09-21 12:10:24,829 INFO ipython print(hasattr(vms_vehicle.api,"get_my_vehicle"))
+2026-09-21 12:10:24,829 INFO ipython === session end ===
+2026-09-21 12:13:30,228 INFO ipython === bench console session ===
+2026-09-21 12:13:30,228 INFO ipython import importlib
+importlib.reload(vms_vehicle.api)
+2026-09-21 12:13:30,228 INFO ipython import importlib
+2026-09-21 12:13:30,228 INFO ipython importlib.reload(vms_vehicle.api)
+2026-09-21 12:13:30,229 INFO ipython import importlib
+2026-09-21 12:13:30,229 INFO ipython import vms_vehicle.api
+2026-09-21 12:13:30,229 INFO ipython importlib.reload(vms_vehicle.api)
+2026-09-21 12:13:30,229 INFO ipython print(hasattr(vms_vehicle.api, "get_my_vehicles"))
+2026-09-21 12:13:30,229 INFO ipython print(hasattr(vms_vehicle.api, "create_vehicle"))
+2026-09-21 12:13:30,229 INFO ipython print([name for name in dir(vms_vehicle.api) if "vehicle" in name])
+2026-09-21 12:13:30,229 INFO ipython === session end ===
