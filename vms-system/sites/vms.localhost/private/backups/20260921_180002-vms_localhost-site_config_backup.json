@@ -1,0 +1,13 @@
+{
+ "db_name": "_27fc1204aaf734a3",
+ "db_password": "SLYd3fU6QqRGZBR8",
+ "db_type": "mariadb",
+ "db_user": "_27fc1204aaf734a3",
+ "encryption_key": "dO1N2xfaF8ttz7DdjHuH0Ba17S-S1b4hV5zcTt169k4=",
+ "installed_apps": [
+  "frappe",
+  "erpnext",
+  "vms_user",
+  "vms_vehicle"
+ ]
+}
