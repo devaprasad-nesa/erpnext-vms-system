@@ -2552,3 +2552,7 @@ index creation(creation))
 ALTER TABLE `tabvms spare parts` ADD COLUMN `part_name` varchar(140), ADD COLUMN `quantity` varchar(140), ADD COLUMN `cost` decimal(21,9) NOT NULL DEFAULT 0.0
 2026-09-22 14:22:24,777 WARNING database DDL Query made to DB:
 ALTER TABLE `tabvms vehicle inspection` ADD COLUMN `inspection_date` date
+2026-09-22 14:34:15,517 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms vehicle inspection` ADD COLUMN `technician` varchar(140)
+2026-09-22 14:55:03,093 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 15:12:38,089 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
