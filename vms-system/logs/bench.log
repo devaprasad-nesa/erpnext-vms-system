@@ -456,3 +456,183 @@
 2026-09-21 18:09:58,049 INFO /home/admin/.local/bin/bench socketio
 2026-09-21 18:09:58,065 INFO /home/admin/.local/bin/bench schedule
 2026-09-21 18:09:58,092 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:17:42,294 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-22 10:17:45,763 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:17:46,058 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:17:46,068 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:17:46,070 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:17:46,070 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:17:46,084 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:32:21,781 INFO /home/admin/.local/bin/bench restart
+2026-09-22 10:32:24,451 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:32:24,766 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:32:24,790 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:32:24,790 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:32:24,794 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:32:24,796 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:33:32,562 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:33:32,847 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:33:32,854 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:33:32,873 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:33:32,897 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:33:32,906 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:37:30,168 INFO /home/admin/.local/bin/bench restart
+2026-09-22 10:37:31,963 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:37:32,311 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:37:32,313 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:37:32,314 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:37:32,330 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:37:32,334 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:46:13,327 INFO /home/admin/.local/bin/bench --site vms.localhost console
+2026-09-22 10:47:17,409 INFO /home/admin/.local/bin/bench restart
+2026-09-22 10:47:21,093 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:47:21,381 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:47:21,399 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:47:21,406 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:47:21,453 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:47:21,471 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:51:34,610 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:51:34,891 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:51:34,903 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:51:34,914 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:51:34,936 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:51:34,954 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:56:09,875 INFO /home/admin/.local/bin/bench restart
+2026-09-22 10:56:15,666 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:56:15,953 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:56:15,956 INFO /home/admin/.local/bin/bench worker
+2026-09-22 10:56:15,956 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:56:15,981 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:56:15,987 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:59:35,723 INFO /home/admin/.local/bin/bench start
+2026-09-22 10:59:36,004 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 10:59:36,035 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 10:59:36,040 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 10:59:36,046 INFO /home/admin/.local/bin/bench watch
+2026-09-22 10:59:36,049 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:05:43,858 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:05:44,117 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:05:44,158 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:05:44,159 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:05:44,171 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:05:44,176 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:08:55,539 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-22 11:08:58,702 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:08:58,974 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:08:59,004 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:08:59,006 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:08:59,020 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:08:59,030 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:11:30,812 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:11:31,101 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:11:31,113 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:11:31,130 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:11:31,159 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:11:31,189 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:11:49,768 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:11:50,107 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:11:50,109 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:11:50,109 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:11:50,125 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:11:50,132 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:19:40,141 INFO /home/admin/.local/bin/bench restart
+2026-09-22 11:19:43,569 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:19:43,889 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:19:43,903 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:19:43,904 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:19:43,936 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:19:43,953 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:22:33,347 INFO /home/admin/.local/bin/bench restart
+2026-09-22 11:22:36,051 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:22:36,345 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:22:36,348 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:22:36,380 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:22:36,380 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:22:36,384 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:23:49,777 INFO /home/admin/.local/bin/bench --site vms.localhost console
+2026-09-22 11:26:05,002 INFO /home/admin/.local/bin/bench restart
+2026-09-22 11:26:08,199 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:26:08,540 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:26:08,547 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:26:08,549 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:26:08,549 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:26:08,573 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:34:20,722 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:34:21,050 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:34:21,089 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:34:21,092 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:34:21,096 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:34:21,099 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:49:40,136 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:49:40,433 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:49:40,437 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:49:40,437 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:49:40,476 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:49:40,483 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 11:57:23,614 INFO /home/admin/.local/bin/bench start
+2026-09-22 11:57:23,924 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 11:57:23,925 INFO /home/admin/.local/bin/bench watch
+2026-09-22 11:57:23,928 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 11:57:23,964 INFO /home/admin/.local/bin/bench worker
+2026-09-22 11:57:23,973 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:00:02,080 INFO /home/admin/.local/bin/bench --verbose --site all backup
+2026-09-22 12:03:34,755 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:03:35,047 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:03:35,064 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:03:35,071 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:03:35,093 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:03:35,101 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:06:51,560 INFO /home/admin/.local/bin/bench restart
+2026-09-22 12:06:55,519 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:06:55,823 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:06:55,823 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:06:55,841 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:06:55,864 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:06:55,877 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:07:48,133 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:07:48,420 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:07:48,420 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:07:48,422 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:07:48,473 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:07:48,473 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:14:51,100 INFO /home/admin/.local/bin/bench restart
+2026-09-22 12:14:54,274 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:14:54,560 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:14:54,566 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:14:54,581 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:14:54,604 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:14:54,621 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:19:01,077 INFO /home/admin/.local/bin/bench restart
+2026-09-22 12:19:04,603 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:19:04,878 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:19:04,920 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:19:04,921 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:19:04,932 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:19:04,936 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:22:14,645 INFO /home/admin/.local/bin/bench restart
+2026-09-22 12:22:18,044 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:22:18,354 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:22:18,359 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:22:18,360 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:22:18,392 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:22:18,403 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:25:30,379 INFO /home/admin/.local/bin/bench restart
+2026-09-22 12:25:33,753 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:25:34,088 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:25:34,088 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:25:34,099 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:25:34,105 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:25:34,160 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:28:58,536 INFO /home/admin/.local/bin/bench restart
+2026-09-22 12:29:01,823 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:29:02,167 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:29:02,171 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:29:02,181 INFO /home/admin/.local/bin/bench worker
+2026-09-22 12:29:02,209 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:29:02,222 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:52:37,292 INFO /home/admin/.local/bin/bench start
+2026-09-22 12:52:37,631 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 12:52:37,650 INFO /home/admin/.local/bin/bench watch
+2026-09-22 12:52:37,658 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 12:52:37,658 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 12:52:37,662 INFO /home/admin/.local/bin/bench worker

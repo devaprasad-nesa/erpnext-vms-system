@@ -528,3 +528,138 @@ Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-22', '
 2026-09-21 18:11:46,610 ERROR frappe New Exception collected in error log
 Site: vms.localhost
 Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-22', 'service_slot': 'slot-0001', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 10:59:08,943 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_number': 'KL54E1234', 'vehicle_brand': 'Tata', 'vehicle_model': '2015', 'vehicle_type': 'Hatchback', 'fuel_type': 'Petrol', 'manufacturing_year': '2003', 'color': 'grey', 'chassis_number': 'CHASSIS123', 'engine_number': 'ENGININE781', 'registration_date': '2026-09-01', 'notes': '', 'cmd': 'vms_vehicle.api.create_vehicle'}
+2026-09-22 10:59:11,282 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_number': 'KL54E1234', 'vehicle_brand': 'Tata', 'vehicle_model': '2015', 'vehicle_type': 'Hatchback', 'fuel_type': 'Petrol', 'manufacturing_year': '2003', 'color': 'grey', 'chassis_number': 'CHASSIS123', 'engine_number': 'ENGININE781', 'registration_date': '2026-09-01', 'notes': '', 'cmd': 'vms_vehicle.api.create_vehicle'}
+2026-09-22 10:59:40,462 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_number': 'KL54E1234', 'vehicle_brand': 'Tata', 'vehicle_model': '2015', 'vehicle_type': 'Hatchback', 'fuel_type': 'Petrol', 'manufacturing_year': '2003', 'color': 'grey', 'chassis_number': 'CHASSIS123', 'engine_number': 'ENGININE781', 'registration_date': '2026-09-01', 'notes': '', 'cmd': 'vms_vehicle.api.create_vehicle'}
+2026-09-22 11:05:47,844 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_number': 'KL54E1234', 'vehicle_brand': 'Tata', 'vehicle_model': '2015', 'vehicle_type': 'Hatchback', 'fuel_type': 'Petrol', 'manufacturing_year': '2003', 'color': 'grey', 'chassis_number': 'CHASSIS123', 'engine_number': 'ENGININE781', 'registration_date': '2026-09-01', 'notes': '', 'cmd': 'vms_vehicle.api.create_vehicle'}
+2026-09-22 11:10:06,979 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:10:21,226 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00006', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:11:37,562 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:11:55,608 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:12:12,120 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00004', 'service_date': '2026-09-26', 'service_slot': 'slot-0001', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:20:04,496 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:20:15,761 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'service_date': '2026-09-24', 'cmd': 'vms_vehicle.api.get_available_service_slots'}
+2026-09-22 11:20:32,476 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:20:47,698 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00006', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:22:42,688 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:22:53,045 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00006', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:26:22,588 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:26:34,085 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00004', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:35:08,590 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:35:21,522 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:37:16,032 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:37:41,494 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:49:30,285 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:49:51,667 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 11:57:13,831 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 11:57:33,336 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-24', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:03:43,029 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:03:52,376 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:07:05,692 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:07:16,169 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:07:55,067 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:08:05,115 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-24', 'service_slot': 'slot-0001', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:15:10,757 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:15:20,953 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:15:29,623 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:19:22,568 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:19:33,508 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:22:28,310 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:22:41,132 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0002', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:25:42,125 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:25:52,102 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0001', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:29:38,912 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:29:48,640 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-25', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 12:38:23,469 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'doc': {'docstatus': 0, 'doctype': 'vms vehicle service registration', 'name': 'new-vms-vehicle-service-registration-iuvpszlqmy', '__islocal': 1, '__unsaved': 1, 'owner': 'Administrator', 'booking_status': 'Applied', 'vehicle': 'veh-00001', 'service_date': '2026-09-26', 'service_slot': 'slot-0002'}, 'action': 'Save', 'cmd': 'frappe.desk.form.save.savedocs'}
+2026-09-22 12:53:07,751 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 12:53:17,831 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-10-01', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
