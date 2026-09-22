@@ -663,3 +663,12 @@ Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
 2026-09-22 12:53:17,831 ERROR frappe New Exception collected in error log
 Site: vms.localhost
 Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-10-01', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 13:47:48,446 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.api.get_my_service_registrations'}
+2026-09-22 13:47:59,884 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'vehicle_registration': 'veh-00005', 'service_date': '2026-09-24', 'service_slot': 'slot-0003', 'service_description': '', 'cmd': 'vms_vehicle.api.register_vehicle_service'}
+2026-09-22 14:02:11,413 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'doc': {'docstatus': 0, 'doctype': 'vms vehicle service registration', 'name': 'new-vms-vehicle-service-registration-bpotexijsc', '__islocal': 1, '__unsaved': 1, 'owner': 'Administrator', 'booking_status': 'Applied', 'vehicle': 'veh-00001', 'service_date': '2026-09-10', 'service_slot': 'slot-0002'}, 'action': 'Save', 'cmd': 'frappe.desk.form.save.savedocs'}
