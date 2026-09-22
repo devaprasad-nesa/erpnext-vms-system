@@ -46,3 +46,9 @@ Form Dict: {'usr': 'technicianuser@domain.com'}
 2026-09-22 15:24:33,801 ERROR frappe New Exception collected in error log
 Site: vms.localhost
 Form Dict: {'usr': 'technicianuser@domain.com'}
+2026-09-22 15:38:13,456 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_inspection.api.get_dashboard_data'}
+2026-09-22 15:43:54,453 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_inspection.api.get_dashboard_data'}
