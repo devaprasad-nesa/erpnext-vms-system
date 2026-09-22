@@ -636,3 +636,25 @@
 2026-09-22 12:52:37,658 INFO /home/admin/.local/bin/bench serve --port 8000
 2026-09-22 12:52:37,658 INFO /home/admin/.local/bin/bench schedule
 2026-09-22 12:52:37,662 INFO /home/admin/.local/bin/bench worker
+2026-09-22 14:06:00,109 INFO /home/admin/.local/bin/bench start
+2026-09-22 14:06:00,679 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 14:06:00,706 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 14:06:00,715 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 14:06:00,726 INFO /home/admin/.local/bin/bench worker
+2026-09-22 14:06:00,735 INFO /home/admin/.local/bin/bench watch
+2026-09-22 14:13:07,220 INFO /home/admin/.local/bin/bench new-app vms_inspection
+2026-09-22 14:13:07,228 LOG creating new app vms_inspection
+2026-09-22 14:13:36,122 LOG Installing vms_inspection
+2026-09-22 14:13:36,123 DEBUG cd /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system && uv pip install --quiet -e /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/apps/vms_inspection  --python /home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/env/bin/python
+2026-09-22 14:13:37,459 DEBUG bench build --app vms_inspection
+2026-09-22 14:13:37,601 INFO /home/admin/.local/bin/bench build --app vms_inspection
+2026-09-22 14:13:59,614 INFO /home/admin/.local/bin/bench --site vms.localhost install-app vms_inspection
+2026-09-22 14:14:15,002 INFO /home/admin/.local/bin/bench --site vms-localhost clear-cache
+2026-09-22 14:14:22,971 INFO /home/admin/.local/bin/bench --site vms.localhost clear-cache
+2026-09-22 14:14:32,613 INFO /home/admin/.local/bin/bench restart
+2026-09-22 14:14:36,010 INFO /home/admin/.local/bin/bench start
+2026-09-22 14:14:36,411 INFO /home/admin/.local/bin/bench schedule
+2026-09-22 14:14:36,452 INFO /home/admin/.local/bin/bench worker
+2026-09-22 14:14:36,454 INFO /home/admin/.local/bin/bench socketio
+2026-09-22 14:14:36,458 INFO /home/admin/.local/bin/bench serve --port 8000
+2026-09-22 14:14:36,475 INFO /home/admin/.local/bin/bench watch

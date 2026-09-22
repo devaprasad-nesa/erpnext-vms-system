@@ -2505,3 +2505,50 @@ ALTER TABLE `tabvms vehicle service registration` ADD COLUMN `start_time` varcha
 2026-09-22 12:25:41,558 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-22 12:29:09,472 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-22 12:52:41,009 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 14:06:02,397 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 14:06:02,397 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 14:06:02,400 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 14:06:02,400 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 14:15:24,057 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 14:16:05,164 WARNING database DDL Query made to DB:
+create table `tabvms vehicle inspection` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-22 14:19:02,952 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms vehicle inspection` ADD COLUMN `customer_name` varchar(140), ADD COLUMN `vehicle_number` varchar(140), ADD COLUMN `issue` text, ADD COLUMN `spare_parts` text, ADD COLUMN `mechanic` text, ADD COLUMN `labour_hour` decimal(21,9) NOT NULL DEFAULT 0.0, ADD COLUMN `inspected` tinyint(4) NOT NULL DEFAULT 0
+2026-09-22 14:19:20,460 WARNING database DDL Query made to DB:
+create table `tabvms spare parts` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-22 14:21:05,850 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms spare parts` ADD COLUMN `part_name` varchar(140), ADD COLUMN `quantity` varchar(140), ADD COLUMN `cost` decimal(21,9) NOT NULL DEFAULT 0.0
+2026-09-22 14:22:24,777 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms vehicle inspection` ADD COLUMN `inspection_date` date

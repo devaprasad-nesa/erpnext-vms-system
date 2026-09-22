@@ -1,4 +1,5 @@
 frappe
 erpnext
+vms_inspection
 vms_vehicle
 vms_user

@@ -8,6 +8,7 @@
   "frappe",
   "erpnext",
   "vms_user",
-  "vms_vehicle"
+  "vms_vehicle",
+  "vms_inspection"
  ]
 }
