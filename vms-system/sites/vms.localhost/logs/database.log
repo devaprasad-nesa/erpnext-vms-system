@@ -2556,3 +2556,5 @@ ALTER TABLE `tabvms vehicle inspection` ADD COLUMN `inspection_date` date
 ALTER TABLE `tabvms vehicle inspection` ADD COLUMN `technician` varchar(140)
 2026-09-22 14:55:03,093 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-22 15:12:38,089 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 15:17:35,145 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-22 15:23:27,931 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'

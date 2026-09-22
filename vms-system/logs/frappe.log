@@ -22,3 +22,27 @@ Form Dict: {'usr': 'Administrator'}
 2026-09-22 15:13:30,710 ERROR frappe New Exception collected in error log
 Site: vms.localhost
 Form Dict: {'cmd': 'logout'}
+2026-09-22 15:17:47,711 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'usr': 'Administrator'}
+2026-09-22 15:20:11,856 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'doctype': 'User', 'name': '', 'cmd': 'frappe.realtime.has_permission'}
+2026-09-22 15:20:13,586 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'doctype': 'User', 'name': 'technicianuser@domain.com', 'cmd': 'frappe.realtime.has_permission'}
+2026-09-22 15:20:13,636 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'doctype': 'User', 'name': 'technicianuser@domain.com', 'cmd': 'frappe.realtime.has_permission'}
+2026-09-22 15:20:28,408 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'doctype': 'User', 'name': 'technicianuser@domain.com', 'cmd': 'frappe.realtime.has_permission'}
+2026-09-22 15:23:48,118 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'logout'}
+2026-09-22 15:24:22,951 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'usr': 'technicianuser@domain.com'}
+2026-09-22 15:24:33,801 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'usr': 'technicianuser@domain.com'}
