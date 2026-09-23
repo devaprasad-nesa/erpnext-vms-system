@@ -1,2 +1,0 @@
-2026-09-21 14:22:00,679 ERROR scheduler Skipped queueing frappe.email.queue.retry_sending_emails because it was found in queue for vms.localhost
-2026-09-22 15:46:00,657 ERROR scheduler Skipped queueing frappe.email.queue.flush because it was found in queue for vms.localhost
