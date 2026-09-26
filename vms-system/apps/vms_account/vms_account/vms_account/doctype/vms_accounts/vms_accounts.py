@@ -21,6 +21,7 @@ class vmsaccounts(Document):
 		audited: DF.Check
 		customer_name: DF.Link | None
 		invoice_date: DF.Date | None
+		payment: DF.Check
 		spare_parts_amount: DF.Currency
 		total_bill: DF.Currency
 		vehicle_inspection: DF.Link | None

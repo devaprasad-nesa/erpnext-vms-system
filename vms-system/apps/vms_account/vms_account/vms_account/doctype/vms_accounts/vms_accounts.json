@@ -15,7 +15,8 @@
   "vehicle_spare_parts",
   "spare_parts_amount",
   "total_bill",
-  "audited"
+  "audited",
+  "payment"
  ],
  "fields": [
   {
@@ -67,12 +68,18 @@
    "fieldname": "audited",
    "fieldtype": "Check",
    "label": "Paid"
+  },
+  {
+   "default": "0",
+   "fieldname": "payment",
+   "fieldtype": "Check",
+   "label": "payment"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-24 12:25:18.343885",
+ "modified": "2026-09-26 10:40:43.468486",
  "modified_by": "Administrator",
  "module": "Vms Account",
  "name": "vms accounts",

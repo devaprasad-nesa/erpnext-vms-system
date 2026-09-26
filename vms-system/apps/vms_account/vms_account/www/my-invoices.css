@@ -1,0 +1,10 @@
+/* my-invoices.css */
+.customer-home-page {
+    min-height: 100vh;
+    padding: 0 0 60px;
+}
+
+.invoice-header-banner {
+    background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.25);
+}

@@ -700,3 +700,39 @@ Form Dict: {'cmd': 'frappe.auth.logout'}
 2026-09-25 17:50:33,613 ERROR frappe New Exception collected in error log
 Site: vms.localhost
 Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-26 10:45:47,727 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '1', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-26 10:45:47,727 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_inspection.api.get_my_vehicle_inspections'}
+2026-09-26 10:45:53,898 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '0', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-26 10:51:26,052 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '0', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-26 11:01:11,269 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '0', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-26 11:01:11,284 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '1', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-26 11:01:11,323 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_inspection.api.get_my_vehicle_inspections'}
+2026-09-26 11:09:24,471 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-26 11:24:18,501 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'invoice_name': 'INV-00016', 'cmd': 'vms_account.api.enable_payment'}
+2026-09-26 11:24:27,034 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-26 11:26:35,543 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-26 11:41:17,639 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}

@@ -128,6 +128,7 @@ def get_dashboard_data() -> dict:
                 "invoice_date",
                 "total_bill",
                 "audited",
+                "payment",
             ],
             "order_by": "modified desc",
         })
@@ -419,6 +420,9 @@ def audit_invoice(invoice_name: str) -> dict:
         return {
             "message": _("Invoice is already audited.")
         }
+        
+    if not doc.payment:
+        frappe.throw(_("Payment must be confirmed by the customer before auditing."))
 
     doc.audited = 1
     doc.save()
@@ -427,6 +431,32 @@ def audit_invoice(invoice_name: str) -> dict:
         "message": _("Invoice audited successfully."),
         "invoice": doc.name,
         "audited": doc.audited,
+    }
+
+
+@frappe.whitelist()
+def enable_payment(invoice_name: str) -> dict:
+    require_role(CUSTOMER_ROLE, "System Manager", "Administrator")
+
+    doc = frappe.get_doc(ACCOUNT_DOCTYPE, invoice_name)
+    user = frappe.session.user
+    user_roles = frappe.get_roles(user)
+    is_admin = user == "Administrator" or "System Manager" in user_roles
+    
+    if not is_admin and doc.customer_name != user:
+        frappe.throw(_("You can only access your own invoice."), frappe.PermissionError)
+
+    if doc.payment:
+        return {"message": _("Payment already enabled."), "success": True}
+
+    doc.payment = 1
+    doc.save()
+
+    return {
+        "message": _("Payment enabled successfully."),
+        "success": True,
+        "invoice": doc.name,
+        "payment": doc.payment,
     }
 
 
@@ -456,6 +486,7 @@ def get_my_invoices(only_audited: int | str | None = None) -> list:
             "spare_parts_amount",
             "total_bill",
             "audited",
+            "payment",
         ],
         order_by="invoice_date desc, creation desc",
         limit_page_length=200,
@@ -501,6 +532,7 @@ def get_customer_invoice_details(invoice_name: str) -> dict:
         "invoice_date": str(doc.invoice_date or ""),
         "total_bill": flt(doc.total_bill),
         "audited": int(doc.audited or 0),
+        "payment": int(doc.payment or 0),
     }
 
 

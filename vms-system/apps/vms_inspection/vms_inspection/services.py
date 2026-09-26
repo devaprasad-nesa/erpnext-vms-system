@@ -386,6 +386,18 @@ def create_inspection(data: dict) -> dict:
 
     values = validate_inspection_data(data)
 
+    # Prevent duplicate submissions with the same data
+    if frappe.db.exists(
+        INSPECTION_DOCTYPE,
+        {
+            "vehicle_number": values["vehicle_number"],
+            "inspection_date": values["inspection_date"],
+            "issue": values["issue"],
+            "technician": user,
+        },
+    ):
+        frappe.throw(_("An identical inspection has already been submitted for this vehicle by you on this date."))
+
     doc = frappe.get_doc({
         "doctype": INSPECTION_DOCTYPE,
         **values,
@@ -470,6 +482,10 @@ def create_spare_part(data: dict) -> dict:
     check_doctype_permission(SPARE_PARTS_DOCTYPE, "create")
 
     values = validate_spare_part_data(data)
+    
+    if frappe.db.exists(SPARE_PARTS_DOCTYPE, {"part_name": values["part_name"]}):
+        frappe.throw(_("A spare part with this name already exists."))
+        
     doc = frappe.get_doc({"doctype": SPARE_PARTS_DOCTYPE, **values})
     doc.insert()
 
