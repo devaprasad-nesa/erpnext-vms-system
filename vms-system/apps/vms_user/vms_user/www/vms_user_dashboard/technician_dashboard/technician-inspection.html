@@ -1,0 +1,107 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Vehicle Inspection
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+<link rel="stylesheet" href="/assets/vms_inspection/css/vms-inspection.css">
+
+<div class="vms-inspection-page">
+    <div class="vms-inspection-container">
+        <div class="vms-page-header">
+            <div class="vms-page-title">
+                <h2>🔍 Create Vehicle Inspection</h2>
+                <p>Complete inspection details for the selected vehicle</p>
+            </div>
+            <a href="/technician-dashboard/vehicle-service-list" class="vms-btn vms-btn-light">← Back to List</a>
+        </div>
+
+        <div class="vms-inspection-card">
+            <form id="vms-inspection-form">
+                <input type="hidden" id="booking_id" value="{{ frappe.form_dict.booking_id or '' }}">
+                
+                <div class="vms-form-grid">
+                    <div class="vms-field">
+                        <label for="customer_name">Customer Name</label>
+                        <input type="text" id="customer_name" class="vms-input vms-readonly" value="{{ frappe.form_dict.customer_name or '' }}" readonly>
+                    </div>
+
+                    <div class="vms-field">
+                        <label for="vehicle_number">Vehicle *</label>
+                        <input type="text" id="vehicle_number" class="vms-input vms-readonly" value="{{ frappe.form_dict.vehicle_number or '' }}" readonly>
+                    </div>
+
+                    <div class="vms-field">
+                        <label for="inspection_date">Inspection Date *</label>
+                        <input type="date" id="inspection_date" class="vms-input" required>
+                    </div>
+
+                    <div class="vms-field">
+                        <label for="technician">Technician</label>
+                        <input type="text" id="technician" class="vms-input vms-readonly" value="{{ frappe.session.user }}" readonly>
+                    </div>
+
+                    <div class="vms-field vms-field-full">
+                        <label for="issue">Issue Description / Findings *</label>
+                        <textarea id="issue" class="vms-input" rows="3" placeholder="Describe inspection findings, issues or checkup notes..." required></textarea>
+                    </div>
+
+                    <div class="vms-field">i
+                        <label for="spare_parts">Spare Parts</label>
+                        <select id="spare_parts" class="vms-input">
+                            <option value="">None / Select spare part</option>
+                            {% for part in spare_parts %}
+                            <option value="{{ part.name }}">{{ part.part_name }} (Stock: {{ part.quantity or '1' }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="vms-field">
+                        <label for="spare_part_quantity">Spare Part Quantity</label>
+                        <input type="number" id="spare_part_quantity" class="vms-input" value="1" min="1">
+                    </div>
+
+                    <div class="vms-field">
+                        <label for="mechanic">Mechanic</label>
+                        <select id="mechanic" class="vms-input">
+                            <option value="">Select mechanic</option>
+                            {% for m in mechanics %}
+                            <option value="{{ m.name }}">{{ m.full_name or m.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="vms-field">
+                        <label for="labour_hour">Labour Hours</label>
+                        <input type="number" id="labour_hour" class="vms-input" value="1.0" step="0.25" min="0">
+                    </div>
+
+                    <div class="vms-field vms-checkbox-field">
+                        <input type="checkbox" id="inspected" checked>
+                        <label for="inspected">Inspection Completed</label>
+                    </div>
+                </div>
+
+                <div class="vms-form-footer">
+                    <button type="submit" id="btn-save-inspection" class="vms-btn vms-btn-success">
+                        <span>✓</span> Save Vehicle Inspection
+                    </button>
+                    <span id="create-inspection-msg" class="vms-action-msg"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/vms_inspection/js/vms-inspection.js"></script>
+{% endblock %}

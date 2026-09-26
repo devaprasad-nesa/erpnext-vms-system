@@ -1,0 +1,1127 @@
+/* =========================================================
+   VMS MY VEHICLES
+   Purple Customer Portal Theme
+   ========================================================= */
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.my-vehicles-page {
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    background:
+        radial-gradient(circle at 80% 10%,
+            rgba(126, 58, 220, 0.55),
+            transparent 35%),
+        radial-gradient(circle at 10% 30%,
+            rgba(99, 48, 175, 0.35),
+            transparent 35%),
+        linear-gradient(135deg,
+            #171024 0%,
+            #29164b 40%,
+            #47207d 75%,
+            #5b2aa0 100%);
+
+    color: #ffffff;
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   REMOVE FRAPPE DEFAULT PAGE SPACING
+   ========================================================= */
+
+.page-header-wrapper,
+body .page-header-wrapper {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.vms-min-bar {
+    color: white;
+}
+
+.my-vehicles-page *,
+.my-vehicles-page *::before,
+.my-vehicles-page *::after {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NAVBAR & BASE STYLING
+   Inherited from customer-home.css
+   ========================================================= */
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.vms-main-container {
+
+    width: 100%;
+
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    padding: 38px 42px 70px;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+section.page-header,
+.vms-main-container .page-header {
+
+    width: 100%;
+
+    min-height: 180px;
+
+    padding: 30px 34px;
+
+    border-radius: 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-bottom: 24px;
+
+    background:
+        linear-gradient(135deg,
+            rgba(126, 86, 174, 0.52),
+            rgba(104, 51, 177, 0.40));
+
+    border:
+        1px solid rgba(255, 255, 255, 0.20);
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.20);
+
+    backdrop-filter: blur(12px);
+
+    -webkit-backdrop-filter: blur(12px);
+}
+
+
+.page-header-content {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+
+.page-icon {
+
+    width: 62px;
+
+    height: 62px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 17px;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.25);
+
+    font-size: 27px;
+
+    color: #ffffff;
+}
+
+
+.page-label {
+
+    display: inline-block;
+
+    padding: 7px 14px;
+
+    margin-bottom: 9px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.22);
+
+    color: rgba(255, 255, 255, 0.88);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+.page-header h1 {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 32px;
+
+    font-weight: 750;
+
+    line-height: 1.2;
+}
+
+
+.page-header p {
+
+    margin: 8px 0 0;
+
+    color: rgba(255, 255, 255, 0.68);
+
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   REGISTER BUTTON
+   ========================================================= */
+
+.register-vehicle-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 13px 21px;
+
+    border-radius: 11px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(135deg,
+            #7350a9,
+            #60339a);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.28);
+
+    font-size: 14px;
+
+    font-weight: 650;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.register-vehicle-btn:hover {
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   VEHICLE SECTION
+   ========================================================= */
+
+.vehicles-section {
+
+    width: 100%;
+
+    padding: 0;
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    background:
+        rgba(91, 59, 127, 0.62);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.18);
+
+    box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.20);
+
+    backdrop-filter: blur(12px);
+
+    -webkit-backdrop-filter: blur(12px);
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.section-header {
+
+    padding: 24px 27px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.14);
+}
+
+
+.section-header h2 {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+
+.section-header p {
+
+    margin: 6px 0 0;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   REFRESH BUTTON
+   ========================================================= */
+
+.refresh-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 14px;
+
+    border-radius: 9px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.20);
+
+    color: rgba(255, 255, 255, 0.85);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.refresh-btn:hover {
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    transform: translateY(-1px);
+}
+
+
+.refresh-btn.refreshing i {
+
+    animation:
+        vehicle-spin 0.8s linear infinite;
+}
+
+
+@keyframes vehicle-spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   VEHICLE LIST CONTAINER
+   ========================================================= */
+
+#vehicle-list {
+
+    padding: 28px;
+}
+
+
+/* =========================================================
+   VEHICLE GRID
+   ========================================================= */
+
+.vehicle-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+   VEHICLE CARD
+   ========================================================= */
+
+.vehicle-card {
+
+    min-height: 285px;
+
+    padding: 22px;
+
+    border-radius: 17px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background:
+        linear-gradient(145deg,
+            rgba(112, 78, 151, 0.72),
+            rgba(67, 39, 100, 0.70));
+
+    border:
+        1px solid rgba(255, 255, 255, 0.17);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.16);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.vehicle-card:hover {
+
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(255, 255, 255, 0.30);
+
+    box-shadow:
+        0 18px 35px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.vehicle-card-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+
+.vehicle-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    border-radius: 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.18);
+
+    color: #ffffff;
+
+    font-size: 19px;
+}
+
+
+.vehicle-badge {
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(75, 190, 135, 0.15);
+
+    border:
+        1px solid rgba(110, 220, 165, 0.28);
+
+    color: #b8f1d0;
+
+    font-size: 11px;
+
+    font-weight: 650;
+}
+
+
+/* =========================================================
+   VEHICLE INFORMATION
+   ========================================================= */
+
+.vehicle-number {
+
+    margin: 0 0 7px;
+
+    color: #ffffff;
+
+    font-size: 20px;
+
+    font-weight: 750;
+
+    letter-spacing: 0.4px;
+}
+
+
+.vehicle-model {
+
+    margin: 0 0 7px;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.vehicle-type {
+
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.52);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   VIEW DETAILS BUTTON
+   ========================================================= */
+
+.vehicle-details-btn {
+
+    width: 100%;
+
+    margin-top: auto;
+
+    padding: 11px 14px;
+
+    border-radius: 9px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.20);
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.vehicle-details-btn:hover {
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.vehicle-loading {
+
+    min-height: 250px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: rgba(255, 255, 255, 0.65);
+}
+
+
+.vehicle-loading p {
+
+    margin: 15px 0 0;
+
+    font-size: 14px;
+}
+
+
+.loading-spinner {
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 50%;
+
+    border:
+        3px solid rgba(255, 255, 255, 0.15);
+
+    border-top-color: #ffffff;
+
+    animation:
+        vehicle-spin 0.8s linear infinite;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.vehicle-empty {
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 35px;
+}
+
+
+.vehicle-empty-icon {
+
+    width: 72px;
+
+    height: 72px;
+
+    border-radius: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    background:
+        rgba(255, 255, 255, 0.10);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.18);
+
+    color:
+        rgba(255, 255, 255, 0.75);
+
+    font-size: 28px;
+}
+
+
+.vehicle-empty h3 {
+
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-size: 20px;
+}
+
+
+.vehicle-empty p {
+
+    margin: 0 0 20px;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   EMPTY STATE REGISTER BUTTON
+   ========================================================= */
+
+.empty-register-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border-radius: 9px;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(135deg,
+            #7350a9,
+            #60339a);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.25);
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 650;
+}
+
+
+.empty-register-btn:hover {
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.vehicle-error {
+
+    padding: 30px;
+
+    text-align: center;
+
+    border-radius: 15px;
+
+    background:
+        rgba(220, 70, 90, 0.10);
+
+    border:
+        1px solid rgba(255, 120, 135, 0.25);
+}
+
+
+.vehicle-error-icon {
+
+    font-size: 32px;
+
+    margin-bottom: 12px;
+
+    color: #ffb3bd;
+}
+
+
+.vehicle-error h3 {
+
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-size: 18px;
+}
+
+
+.vehicle-error p {
+
+    margin: 0 0 18px;
+
+    color: rgba(255, 255, 255, 0.60);
+
+    font-size: 13px;
+}
+
+
+.retry-btn {
+
+    padding: 9px 16px;
+
+    border-radius: 8px;
+
+    color: #ffffff;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.20);
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   LOGOUT OVERLAY
+   ========================================================= */
+
+.logout-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        rgba(14, 7, 24, 0.78);
+
+    backdrop-filter: blur(7px);
+
+    -webkit-backdrop-filter: blur(7px);
+}
+
+
+.logout-overlay.active {
+
+    display: flex;
+}
+
+
+.logout-box {
+
+    width: 300px;
+
+    padding: 30px;
+
+    border-radius: 18px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(145deg,
+            #5e3a80,
+            #321c4d);
+
+    border:
+        1px solid rgba(255, 255, 255, 0.20);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.40);
+}
+
+
+.logout-spinner {
+
+    width: 34px;
+
+    height: 34px;
+
+    margin: 0 auto 15px;
+
+    border-radius: 50%;
+
+    border:
+        3px solid rgba(255, 255, 255, 0.18);
+
+    border-top-color: #ffffff;
+
+    animation:
+        vehicle-spin 0.8s linear infinite;
+}
+
+
+.logout-box h3 {
+
+    margin: 0 0 6px;
+
+    color: #ffffff;
+
+    font-size: 18px;
+}
+
+
+.logout-box p {
+
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .vehicle-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .vms-navbar {
+
+        padding: 12px 18px;
+
+    }
+
+
+    .vms-brand-subtitle {
+
+        display: none;
+    }
+
+
+    .vms-brand-title {
+
+        font-size: 13px;
+    }
+
+
+    .vms-nav-btn span {
+
+        display: none;
+    }
+
+
+    .vms-nav-btn {
+
+        width: 42px;
+
+        padding: 9px;
+    }
+
+
+    .vms-main-container {
+
+        padding: 22px 16px 50px;
+    }
+
+
+    section.page-header,
+    .vms-main-container .page-header {
+
+        padding: 24px;
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .page-header-content {
+
+        align-items: flex-start;
+    }
+
+
+    .page-header h1 {
+
+        font-size: 27px;
+    }
+
+
+    .register-vehicle-btn {
+
+        width: 100%;
+    }
+
+
+    .section-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .refresh-btn {
+
+        width: 100%;
+    }
+
+
+    #vehicle-list {
+
+        padding: 18px;
+    }
+
+
+    .vehicle-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .vms-navbar {
+
+        min-height: 66px;
+    }
+
+
+    .vms-logo {
+
+        width: 38px;
+
+        height: 38px;
+    }
+
+
+    section.page-header,
+    .vms-main-container .page-header {
+
+        border-radius: 17px;
+    }
+
+
+    .page-header-content {
+
+        flex-direction: column;
+    }
+
+
+    .page-icon {
+
+        width: 52px;
+
+        height: 52px;
+    }
+
+
+    .page-header h1 {
+
+        font-size: 24px;
+    }
+
+
+    .vehicles-section {
+
+        border-radius: 17px;
+    }
+
+}

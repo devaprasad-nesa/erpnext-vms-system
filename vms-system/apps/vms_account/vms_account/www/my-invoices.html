@@ -1,0 +1,363 @@
+{% extends "templates/web.html" %}
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+
+<div class="customer-home-page" style="min-height: 100vh; padding: 0 0 60px;">
+
+<!-- =========================================================
+     MINIMAL NAVIGATION BAR
+========================================================== -->
+<header class="vms-min-bar vms-min-navbar">
+    <!-- Left End: User Name -->
+    <div class="vms-min-left">
+        <span class="vms-min-user-badge">
+            <span class="vms-min-user-icon">👤</span>
+            <span class="vms-min-user-label">Customer:</span>
+            <strong class="vms-min-user-name">{{ customer_name or user or frappe.session.user }}</strong>
+        </span>
+    </div>
+
+    <!-- Center: Nav Elements Equally Distanced -->
+    <nav class="vms-min-center">
+        <a href="/customer-home" class="vms-min-link">Dashboard</a>
+        <a href="/my-vehicles" class="vms-min-link">My Vehicles</a>
+        <a href="/vehicle-register" class="vms-min-link">Register Vehicle</a>
+        <a href="/my-invoices" class="vms-min-link active">Invoices</a>
+    </nav>
+
+    <!-- Right End: Logout Button -->
+    <div class="vms-min-right">
+        <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()" title="Logout">
+            <span>Logout</span>
+            <span class="vms-min-logout-icon">↪</span>
+        </button>
+    </div>
+</header>
+
+<div class="container my-4" style="max-width: 1100px;">
+
+    <!-- Hero / Header Banner -->
+    <div class="p-4 mb-4 rounded-3 text-white" style="background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%); box-shadow: 0 4px 14px rgba(15, 118, 110, 0.25);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <span class="badge bg-light text-dark mb-2 font-weight-bold">BILLING & INVOICES</span>
+                <h2 class="mb-1 text-white font-weight-bold">My Vehicle Service Invoices</h2>
+                <p class="mb-0 text-white-50">Review and download workshop-audited service and repair invoices.</p>
+            </div>
+            <div>
+                <button type="button" class="btn btn-light btn-sm font-weight-bold" onclick="loadCustomerInvoices()">
+                    &#x21bb; Refresh Invoices
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Pills / Tabs -->
+    <div class="card shadow-sm border-0 mb-4 rounded-3">
+        <div class="card-body py-2 px-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-primary font-weight-bold active" id="tab-audited" onclick="switchFilter(true)">
+                    Paid Invoices (Ready)
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary font-weight-bold" id="tab-all" onclick="switchFilter(false)">
+                    All Invoices
+                </button>
+            </div>
+            <div id="invoice-count-badge" class="badge bg-light text-dark border px-3 py-2">
+                Loading invoices...
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoices Table Card -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 font-weight-bold text-dark" id="table-title">Paid Invoices</h5>
+            <small class="text-muted">Invoices verified and settled by Workshop Accounts</small>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Vehicle</th>
+                            <th>Invoice Date</th>
+                            <th>Spare Parts</th>
+                            <th>Total Bill</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoices-table-body">
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">
+                                <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                Loading your invoices...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal: Invoice Details -->
+<div class="modal fade" id="invoiceDetailsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom bg-light">
+                <h5 class="modal-title font-weight-bold text-dark" id="modal-invoice-id">Invoice Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="modal-invoice-content">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                    <div>
+                        <h4 class="mb-0 font-weight-bold text-primary" id="modal-display-id">-</h4>
+                        <small class="text-muted" id="modal-display-date">-</small>
+                    </div>
+                    <span id="modal-display-status" class="badge bg-success px-3 py-2 font-weight-bold">Paid</span>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <small class="text-muted text-uppercase d-block">Vehicle Number</small>
+                        <strong id="modal-display-vehicle" class="fs-6">-</strong>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted text-uppercase d-block">Customer</small>
+                        <span id="modal-display-customer" class="text-dark">-</span>
+                    </div>
+                    <div class="col-12" id="modal-inspection-row">
+                        <small class="text-muted text-uppercase d-block">Inspection Observation</small>
+                        <span id="modal-display-issue" class="text-muted">-</span>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-light rounded-3 mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Spare Parts (<span id="modal-display-spare-name">-</span>):</span>
+                        <strong id="modal-display-parts-amount">₹0.00</strong>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-2 mt-2">
+                        <h5 class="mb-0 font-weight-bold text-dark">Total Amount Due:</h5>
+                        <h5 class="mb-0 font-weight-bold text-primary" id="modal-display-total">₹0.00</h5>
+                    </div>
+                </div>
+
+                <div class="alert alert-success d-flex align-items-center py-2 mb-0" id="modal-audit-alert">
+                    <span class="me-2">&#x2714;</span>
+                    <small><strong>Audited & Approved:</strong> This bill has been formally audited by Workshop Accounts.</small>
+                </div>
+            </div>
+            <div class="modal-footer border-top bg-light">
+                <button type="button" class="btn btn-outline-secondary btn-sm font-weight-bold" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-sm font-weight-bold" onclick="window.print()">
+                    &#x1f5b6; Print Invoice
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+let currentOnlyAudited = true;
+let invoicesCache = [];
+
+function switchFilter(onlyAudited) {
+    currentOnlyAudited = onlyAudited;
+
+    const tabAudited = document.getElementById("tab-audited");
+    const tabAll = document.getElementById("tab-all");
+    const tableTitle = document.getElementById("table-title");
+
+    if (onlyAudited) {
+        tabAudited.classList.add("btn-primary", "active");
+        tabAudited.classList.remove("btn-outline-secondary");
+        tabAll.classList.add("btn-outline-secondary");
+        tabAll.classList.remove("btn-primary", "active");
+        tableTitle.textContent = "Paid Invoices";
+    } else {
+        tabAll.classList.add("btn-primary", "active");
+        tabAll.classList.remove("btn-outline-secondary");
+        tabAudited.classList.add("btn-outline-secondary");
+        tabAudited.classList.remove("btn-primary", "active");
+        tableTitle.textContent = "All Invoices";
+    }
+
+    renderInvoicesTable();
+}
+
+function loadCustomerInvoices() {
+    const tbody = document.getElementById("invoices-table-body");
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="7" class="text-center py-4 text-muted">
+                <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                Loading your invoices...
+            </td>
+        </tr>
+    `;
+
+    frappe.call({
+        method: "vms_account.api.get_my_invoices",
+        args: {
+            only_audited: 0 // fetch all to cache, filter client-side
+        },
+        callback: function (r) {
+            invoicesCache = r.message || [];
+            renderInvoicesTable();
+        },
+        error: function (err) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-danger font-weight-bold">
+                        Failed to load invoices. Please refresh or try again later.
+                    </td>
+                </tr>
+            `;
+        }
+    });
+}
+
+function renderInvoicesTable() {
+    const tbody = document.getElementById("invoices-table-body");
+    const badge = document.getElementById("invoice-count-badge");
+
+    const filtered = currentOnlyAudited
+        ? invoicesCache.filter(inv => Boolean(Number(inv.audited)))
+        : invoicesCache;
+
+    badge.textContent = `${filtered.length} ${currentOnlyAudited ? "Paid" : "Total"} Invoice${filtered.length === 1 ? "" : "s"}`;
+
+    if (!filtered || filtered.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                    <div class="mb-2" style="font-size: 2rem;">&#x1f9fe;</div>
+                    <h6 class="font-weight-bold text-dark">No ${currentOnlyAudited ? "Paid " : ""}Invoices Found</h6>
+                    <p class="small text-muted mb-3">
+                        ${currentOnlyAudited
+                            ? "Invoices will appear here once the workshop accountant confirms and marks your service bill as paid."
+                            : "You do not have any invoices created yet."}
+                    </p>
+                    <a href="/customer-home" class="btn btn-outline-primary btn-sm font-weight-bold">Go to Customer Home</a>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = filtered.map(inv => {
+        const isAudited = Boolean(Number(inv.audited));
+        const statusBadge = isAudited
+            ? `<span class="badge bg-success px-2 py-1">&#x2714; Paid</span>`
+            : `<span class="badge bg-warning text-dark px-2 py-1">Pending</span>`;
+
+        const totalFormatted = (inv.total_bill !== null && inv.total_bill !== undefined)
+            ? Number(inv.total_bill).toLocaleString("en-IN", { style: "currency", currency: "INR" })
+            : "₹0.00";
+
+        const partsFormatted = (inv.spare_parts_amount !== null && inv.spare_parts_amount !== undefined)
+            ? Number(inv.spare_parts_amount).toLocaleString("en-IN", { style: "currency", currency: "INR" })
+            : "₹0.00";
+
+        return `
+            <tr>
+                <td><strong>${frappe.utils.escape_html(inv.name)}</strong></td>
+                <td><span class="badge bg-light text-dark border font-weight-bold">${frappe.utils.escape_html(inv.vehicle_number || "-")}</span></td>
+                <td>${frappe.utils.escape_html(inv.invoice_date || "-")}</td>
+                <td>${partsFormatted}</td>
+                <td><strong class="text-primary">${totalFormatted}</strong></td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-outline-primary font-weight-bold" onclick="viewInvoiceDetails('${frappe.utils.escape_html(inv.name)}')">
+                        View Details
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join("");
+}
+
+function viewInvoiceDetails(invoiceName) {
+    frappe.call({
+        method: "vms_account.api.get_customer_invoice_details",
+        args: {
+            invoice_name: invoiceName
+        },
+        callback: function (r) {
+            const data = r.message;
+            if (!data) return;
+
+            document.getElementById("modal-invoice-id").textContent = `Invoice ${data.name}`;
+            document.getElementById("modal-display-id").textContent = data.name;
+            document.getElementById("modal-display-date").textContent = `Invoice Date: ${data.invoice_date || "-"}`;
+            document.getElementById("modal-display-vehicle").textContent = data.vehicle_number || "-";
+            document.getElementById("modal-display-customer").textContent = data.customer_name || "-";
+            document.getElementById("modal-display-issue").textContent = data.inspection_issue || "Standard service inspection completed.";
+            document.getElementById("modal-display-spare-name").textContent = data.vehicle_spare_parts || "None";
+
+            const partsFormatted = Number(data.spare_parts_amount || 0).toLocaleString("en-IN", { style: "currency", currency: "INR" });
+            const totalFormatted = Number(data.total_bill || 0).toLocaleString("en-IN", { style: "currency", currency: "INR" });
+
+            document.getElementById("modal-display-parts-amount").textContent = partsFormatted;
+            document.getElementById("modal-display-total").textContent = totalFormatted;
+
+            const isAudited = Boolean(Number(data.audited));
+            const statusEl = document.getElementById("modal-display-status");
+            const alertEl = document.getElementById("modal-audit-alert");
+
+            if (isAudited) {
+                statusEl.className = "badge bg-success px-3 py-2 font-weight-bold";
+                statusEl.textContent = "Paid & Verified";
+                alertEl.className = "alert alert-success d-flex align-items-center py-2 mb-0";
+                alertEl.innerHTML = `<span class="me-2">&#x2714;</span><small><strong>Paid & Approved:</strong> This bill has been audited and finalized as Paid by Workshop Accounts.</small>`;
+            } else {
+                statusEl.className = "badge bg-warning text-dark px-3 py-2 font-weight-bold";
+                statusEl.textContent = "Pending Payment";
+                alertEl.className = "alert alert-warning d-flex align-items-center py-2 mb-0";
+                alertEl.innerHTML = `<span class="me-2">&#x23f3;</span><small><strong>Pending Verification:</strong> Workshop Accounts has not marked this invoice as Paid yet.</small>`;
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById("invoiceDetailsModal"));
+            modal.show();
+        }
+    });
+}
+
+function logoutCustomer() {
+    const btn = document.getElementById("customer-logout-btn");
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Logging out...</span>`;
+    }
+    frappe.call({
+        method: "frappe.auth.logout",
+        callback: function () {
+            window.location.href = "/login-page/vms-login";
+        },
+        error: function () {
+            window.location.href = "/login-page/vms-login";
+        }
+    });
+}
+
+frappe.ready(function () {
+    loadCustomerInvoices();
+});
+</script>
+{% endblock %}

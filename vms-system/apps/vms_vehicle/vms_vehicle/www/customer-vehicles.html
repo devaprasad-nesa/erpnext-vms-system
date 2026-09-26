@@ -1,0 +1,156 @@
+
+{% extends "templates/web.html" %}
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<!-- =========================================================
+     MINIMAL NAVIGATION BAR
+========================================================== -->
+<header class="vms-min-bar vms-min-navbar"style="Color:White">
+    <!-- Left End: User Name -->
+    <div class="vms-min-left">
+        <span class="vms-min-user-badge">
+            <span class="vms-min-user-icon">👤</span>
+            <span class="vms-min-user-label">Customer:</span>
+            <strong class="vms-min-user-name">{{ (customer_profile and customer_profile.customer_name) or customer_name or frappe.session.user }}</strong>
+        </span>
+    </div>
+
+    <!-- Center: Nav Elements Equally Distanced -->
+    <nav class="vms-min-center">
+        <a href="/customer-home" class="vms-min-link">Dashboard</a>
+        <a href="/my-vehicles" class="vms-min-link active">My Vehicles</a>
+        <a href="/vehicle-register" class="vms-min-link">Register Vehicle</a>
+        <a href="/my-invoices" class="vms-min-link">Invoices</a>
+    </nav>
+
+    <!-- Right End: Logout Button -->
+    <div class="vms-min-right">
+        <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()" title="Logout">
+            <span>Logout</span>
+            <span class="vms-min-logout-icon">↪</span>
+        </button>
+    </div>
+</header>
+
+<div class="container my-5">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>My Vehicles</h2>
+      <p class="text-muted">
+        Manage your registered vehicles.
+      </p>
+    </div>
+
+    <a href="/vehicle-register" class="btn btn-primary">
+      Register New Vehicle
+    </a>
+  </div>
+
+  <div id="vehicle-list">
+    <p>Loading vehicles...</p>
+  </div>
+
+</div>
+
+<script>
+frappe.ready(function () {
+    loadVehicles();
+});
+
+function loadVehicles() {
+    frappe.call({
+        method: "vms_vehicle.api.get_my_vehicles",
+        callback: function (r) {
+            const vehicles = r.message || [];
+            const container = document.getElementById("vehicle-list");
+
+            if (!vehicles.length) {
+                container.innerHTML = `
+                    <div class="text-center p-5 border rounded">
+                        <h4>No vehicles registered</h4>
+                        <p class="text-muted">
+                            Register your first vehicle to get started.
+                        </p>
+                        <a href="/vehicle-register"
+                           class="btn btn-primary">
+                            Register Vehicle
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Vehicle Number</th>
+                        <th>Brand</th>
+                        <th>Model</th>
+                        <th>Fuel Type</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${vehicles.map(v => `
+                        <tr>
+                          <td>${escapeHTML(v.vehicle_number)}</td>
+                          <td>${escapeHTML(v.vehicle_brand || "")}</td>
+                          <td>${escapeHTML(v.vehicle_model || "")}</td>
+                          <td>${escapeHTML(v.fuel_type || "")}</td>
+                          <td>
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="/vehicle-details?name=${encodeURIComponent(v.name)}">
+                               View
+                            </a>
+                          </td>
+                        </tr>
+                      `).join("")}
+                    </tbody>
+                  </table>
+                </div>
+            `;
+        }
+    });
+}
+
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+function logoutCustomer() {
+    const btn = document.getElementById("customer-logout-btn");
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Logging out...</span>`;
+    }
+    frappe.call({
+        method: "frappe.auth.logout",
+        callback: function () {
+            window.location.href = "/login-page/vms-login";
+        },
+        error: function () {
+            window.location.href = "/login-page/vms-login";
+        }
+    });
+}
+</script>
+
+{% endblock %}

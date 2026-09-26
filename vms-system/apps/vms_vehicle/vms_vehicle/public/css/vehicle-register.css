@@ -1,0 +1,661 @@
+/* =========================================================
+   VMS Vehicle Registration
+   Purple Theme - Clean Form Inputs + Hover Effects
+   ========================================================= */
+
+#vehicle-register-page {
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 0 60px;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at 88% 8%, rgba(141, 73, 255, 0.52), transparent 32%),
+        radial-gradient(circle at 8% 25%, rgba(106, 63, 190, 0.38), transparent 30%),
+        linear-gradient(135deg, #25103f 0%, #32145f 45%, #4d2190 100%);
+}
+
+#vehicle-register-page *,
+#vehicle-register-page *::before,
+#vehicle-register-page *::after {
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   Main Shell
+   ========================================================= */
+
+.vehicle-register-shell {
+    width: min(1120px, 100%);
+    margin: 0 auto;
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+
+.vehicle-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+
+    padding: 30px 34px;
+    margin-bottom: 22px;
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 24px;
+
+    background:
+        linear-gradient(115deg,
+            rgba(255, 255, 255, 0.13),
+            rgba(255, 255, 255, 0.07));
+
+    box-shadow:
+        0 20px 45px rgba(18, 5, 35, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+/* Portal Badge */
+
+.portal-badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 36px;
+    padding: 7px 15px;
+    margin-bottom: 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.11);
+
+    color: rgba(255, 255, 255, 0.92);
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+/* Header Title */
+
+.vehicle-page-header h1 {
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-size: clamp(28px, 3vw, 40px);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* Header Description */
+
+.vehicle-page-header p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.70);
+
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* Back Button */
+
+.back-link {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 46px;
+    padding: 0 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 12px;
+
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.08);
+
+    text-decoration: none !important;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.back-link:hover {
+    color: #ffffff !important;
+
+    background: rgba(255, 255, 255, 0.16);
+
+    border-color: rgba(255, 255, 255, 0.42);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(10, 2, 25, 0.20);
+}
+
+/* =========================================================
+   Main Form Card
+   ========================================================= */
+
+.vehicle-form-card {
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-radius: 24px;
+
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.12),
+            rgba(255, 255, 255, 0.055));
+
+    box-shadow:
+        0 24px 60px rgba(15, 4, 31, 0.30),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+/* =========================================================
+   Card Heading
+   ========================================================= */
+
+.card-heading {
+    padding: 26px 30px 22px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.card-heading h2 {
+    margin: 0 0 6px;
+
+    color: #ffffff;
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.card-heading p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.58);
+
+    font-size: 13px;
+}
+
+.card-heading p span,
+.form-group label span {
+    color: #e8b8ff;
+    font-weight: 800;
+}
+
+/* =========================================================
+   Form
+   ========================================================= */
+
+#vehicle-form {
+    padding: 30px;
+}
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 22px 24px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group {
+    min-width: 0;
+}
+
+/* =========================================================
+   Labels
+   ========================================================= */
+
+.form-group label {
+    display: block;
+
+    margin: 0 0 9px;
+
+    color: rgba(255, 255, 255, 0.90);
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   Form Inputs
+   Clean Solid Style
+   ========================================================= */
+
+.form-control {
+    display: block;
+
+    width: 100%;
+    min-height: 48px;
+
+    padding: 12px 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.20) !important;
+    border-radius: 11px !important;
+
+    outline: none;
+
+    color: #ffffff !important;
+
+    /*
+       Solid input background.
+       Glass/translucent effect removed.
+    */
+    background: #241536 !important;
+
+    box-shadow: none !important;
+
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+/* Placeholder */
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.40);
+}
+
+/* =========================================================
+   Input Hover
+   ========================================================= */
+
+.form-control:hover {
+    border-color: rgba(207, 158, 255, 0.55) !important;
+
+    background: #2b1941 !important;
+
+    box-shadow:
+        0 5px 16px rgba(12, 3, 28, 0.22) !important;
+}
+
+/* =========================================================
+   Input Focus
+   ========================================================= */
+
+.form-control:focus {
+    border-color: #c896ff !important;
+
+    background: #29173d !important;
+
+    box-shadow:
+        0 0 0 3px rgba(184, 113, 255, 0.16),
+        0 8px 20px rgba(13, 3, 30, 0.22) !important;
+
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   Select
+   ========================================================= */
+
+select.form-control {
+    cursor: pointer;
+}
+
+select.form-control option {
+    color: #ffffff;
+    background: #32145f;
+}
+
+/* =========================================================
+   Textarea
+   ========================================================= */
+
+textarea.form-control {
+    min-height: 115px;
+    resize: vertical;
+}
+
+/* =========================================================
+   Helper Text
+   ========================================================= */
+
+.form-group small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: rgba(255, 255, 255, 0.43);
+
+    font-size: 11px;
+}
+
+/* =========================================================
+   Browser Date Input
+   ========================================================= */
+
+.form-control[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+
+    opacity: 0.75;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   Messages
+   ========================================================= */
+
+.form-message {
+    margin-bottom: 22px;
+
+    padding: 13px 15px;
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 11px;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Error */
+
+.form-message.error {
+    border-color: rgba(255, 130, 150, 0.35);
+
+    color: #ffd9df;
+
+    background: rgba(180, 35, 65, 0.18);
+}
+
+/* Success */
+
+.form-message.success {
+    border-color: rgba(140, 255, 193, 0.28);
+
+    color: #d9ffe9;
+
+    background: rgba(24, 154, 91, 0.16);
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
+.form-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    margin-top: 30px;
+    padding-top: 24px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.btn {
+    min-height: 48px;
+
+    padding: 0 21px;
+
+    border-radius: 11px !important;
+
+    font-size: 14px;
+    font-weight: 750;
+
+    text-decoration: none !important;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Primary */
+
+.btn-primary {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 145px;
+
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+
+    color: #32145f !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 8px 22px rgba(9, 2, 20, 0.22);
+}
+
+.btn-primary:hover {
+    color: #32145f !important;
+
+    background: #f7efff !important;
+
+    box-shadow:
+        0 12px 26px rgba(9, 2, 20, 0.28);
+}
+
+/* Secondary */
+
+.btn-secondary {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgba(255, 255, 255, 0.27) !important;
+
+    color: #ffffff !important;
+
+    background: rgba(255, 255, 255, 0.07) !important;
+}
+
+.btn-secondary:hover {
+    color: #ffffff !important;
+
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Disabled */
+
+.btn:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.65;
+
+    transform: none;
+}
+
+/* =========================================================
+   Loader
+   ========================================================= */
+
+.btn-loader {
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+}
+
+.spinner {
+    width: 15px;
+    height: 15px;
+
+    display: inline-block;
+
+    border: 2px solid rgba(50, 20, 95, 0.25);
+
+    border-top-color: #32145f;
+
+    border-radius: 50%;
+
+    animation: vehicle-spinner 0.7s linear infinite;
+}
+
+@keyframes vehicle-spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================================
+   Footer Security Note
+   ========================================================= */
+
+.security-note {
+    margin: 17px 4px 0;
+
+    color: rgba(255, 255, 255, 0.50);
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+/* =========================================================
+   Additional Box Hover Effect
+   Applied to each form group
+   ========================================================= */
+
+.form-group {
+    padding: 8px;
+
+    margin: -8px;
+
+    border-radius: 14px;
+
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-group:hover {
+    background: rgba(255, 255, 255, 0.025);
+
+    box-shadow:
+        0 6px 18px rgba(10, 2, 25, 0.10);
+}
+
+/* =========================================================
+   Responsive - Tablet / Mobile
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    #vehicle-register-page {
+        padding: 24px 15px 45px;
+    }
+
+    .vehicle-page-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        padding: 24px 22px;
+
+        border-radius: 20px;
+    }
+
+    .back-link {
+        width: 100%;
+    }
+
+    .vehicle-form-card {
+        border-radius: 20px;
+    }
+
+    .card-heading,
+    #vehicle-form {
+        padding: 22px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+
+        gap: 19px;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+
+        align-items: stretch;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   Responsive - Small Mobile
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    #vehicle-register-page {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .vehicle-page-header h1 {
+        font-size: 28px;
+    }
+
+    .card-heading h2 {
+        font-size: 20px;
+    }
+
+    .card-heading,
+    #vehicle-form {
+        padding: 18px;
+    }
+
+    .form-control {
+        min-height: 46px;
+
+        padding: 11px 13px;
+
+        font-size: 13px;
+    }
+}

@@ -1,0 +1,159 @@
+/* vms-inspection.css */
+:root {
+    --vms-primary: #10b981; /* green */
+    --vms-primary-hover: #059669;
+    --vms-secondary: #f3f4f6;
+    --vms-text: #1f2937;
+    --vms-text-light: #6b7280;
+    --vms-border: #e5e7eb;
+    --vms-bg: #f9fafb;
+    --vms-error: #ef4444;
+}
+
+body {
+    background-color: var(--vms-bg);
+}
+
+.vms-inspection-page {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    color: var(--vms-text);
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.vms-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.vms-page-title h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.vms-page-title p {
+    margin: 0;
+    color: var(--vms-text-light);
+}
+
+.vms-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.vms-btn-light {
+    background: #fff;
+    border-color: var(--vms-border);
+    color: var(--vms-text);
+}
+.vms-btn-light:hover {
+    background: var(--vms-secondary);
+}
+
+.vms-btn-success {
+    background: var(--vms-primary);
+    color: #fff;
+}
+.vms-btn-success:hover {
+    background: var(--vms-primary-hover);
+}
+
+.vms-inspection-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 24px;
+}
+
+.vms-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.vms-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vms-field-full {
+    grid-column: 1 / -1;
+}
+
+.vms-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vms-text);
+}
+
+.vms-input {
+    padding: 10px 12px;
+    border: 1px solid var(--vms-border);
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.vms-input:focus {
+    outline: none;
+    border-color: var(--vms-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.vms-readonly {
+    background: var(--vms-secondary);
+    color: var(--vms-text-light);
+    cursor: not-allowed;
+}
+
+.vms-checkbox-field {
+    flex-direction: row;
+    align-items: center;
+    grid-column: 1 / -1;
+    background: #f0fdf4;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #bbf7d0;
+}
+
+.vms-checkbox-field input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--vms-primary);
+}
+
+.vms-checkbox-field label {
+    font-size: 14px;
+    color: #166534;
+    cursor: pointer;
+}
+
+.vms-form-footer {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--vms-border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.vms-action-msg {
+    font-size: 14px;
+}
+.vms-action-msg.success { color: var(--vms-primary); }
+.vms-action-msg.error { color: var(--vms-error); }

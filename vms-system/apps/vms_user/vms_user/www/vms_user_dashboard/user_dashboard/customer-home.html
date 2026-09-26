@@ -1,0 +1,622 @@
+{% extends "templates/web.html" %}
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+
+<div class="customer-home-page">
+
+    <!-- =========================================================
+         MINIMAL NAVIGATION BAR
+    ========================================================== -->
+    <header class="vms-min-bar vms-min-navbar">
+        <!-- Left End: User Name -->
+        <div class="vms-min-left">
+            <span class="vms-min-user-badge">
+                <span class="vms-min-user-icon">👤</span>
+                <span class="vms-min-user-label">Customer:</span>
+                <strong class="vms-min-user-name">{{ (customer_profile and customer_profile.customer_name) or customer_name or frappe.session.user }}</strong>
+            </span>
+        </div>
+
+        <!-- Center: Nav Elements Equally Distanced -->
+        <nav class="vms-min-center">
+            <a href="/customer-home" class="vms-min-link active">Dashboard</a>
+            <a href="/my-vehicles" class="vms-min-link">My Vehicles</a>
+            <a href="/vehicle-register" class="vms-min-link">Register Vehicle</a>
+            <a href="/my-invoices" class="vms-min-link">Invoices</a>
+        </nav>
+
+        <!-- Right End: Logout Button -->
+        <div class="vms-min-right">
+            <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()" title="Logout">
+                <span>Logout</span>
+                <span class="vms-min-logout-icon">↪</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="container customer-home-container" style="padding-top: 30px;">
+
+        <!-- =========================================================
+             HERO / WELCOME BANNER
+        ========================================================== -->
+        <div class="customer-hero glass-card mb-4">
+
+            <div class="customer-hero-content">
+
+                <div class="customer-hero-text">
+
+                    <span class="portal-badge">
+                        VMS CUSTOMER PORTAL
+                    </span>
+
+                    <h2>
+                        Welcome back,
+                        {{ customer_name }}!
+                    </h2>
+
+                    <p>
+                        Manage your registered vehicles, book service slots,
+                        and view inspection reports.
+                    </p>
+
+                </div>
+
+                <div class="customer-hero-actions">
+
+                    <a href="/my-vehicles" class="customer-btn customer-btn-light">
+                        My Vehicles
+                    </a>
+
+                    <a href="/my-invoices" class="customer-btn customer-btn-light">
+                        &#x1f9fe; My Invoices
+                    </a>
+
+                    <a href="/vehicle-register" class="customer-btn customer-btn-outline">
+                        Register Vehicle
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+             MAIN GRID
+        ========================================================== -->
+
+        <div class="row customer-main-grid">
+
+            <!-- =====================================================
+                 LEFT COLUMN
+            ====================================================== -->
+
+            <div class="col-lg-5 mb-4">
+
+                <!-- =================================================
+                     PROFILE CARD
+                ================================================== -->
+
+                <div class="glass-card customer-card mb-4">
+
+                    <div class="customer-card-header">
+
+                        <h5>
+                            Profile Details
+                        </h5>
+
+                        <button type="button" class="customer-small-btn" id="edit-profile-btn">
+                            Edit Profile
+                        </button>
+
+                    </div>
+
+                    <div class="customer-card-body">
+
+                        <div class="profile-field">
+
+                            <span class="profile-label">
+                                Full Name
+                            </span>
+
+                            <p id="display-customer-name">
+                                {{ customer_profile.customer_name or customer_name }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="profile-field">
+
+                            <span class="profile-label">
+                                Email
+                            </span>
+
+                            <p id="display-customer-email">
+                                {{ customer_profile.customer_email or user }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="profile-field">
+
+                            <span class="profile-label">
+                                Phone
+                            </span>
+
+                            <p id="display-customer-phone">
+                                {{ customer_profile.customer_phone or 'Not provided' }}
+                            </p>
+
+                        </div>
+
+
+                        <div class="profile-field">
+
+                            <span class="profile-label">
+                                Address
+                            </span>
+
+                            <p id="display-customer-address">
+                                {{ customer_profile.address or 'Not provided' }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     SERVICE BOOKING CARD
+                ================================================== -->
+
+                <div class="glass-card customer-card" id="book-service">
+
+                    <div class="customer-card-header">
+
+                        <h5 class="booking-title">
+                            Book Vehicle Service
+                        </h5>
+
+                    </div>
+
+
+                    <div class="customer-card-body">
+
+                        <form id="service-booking-form">
+
+                            <!-- Vehicle -->
+
+                            <div class="customer-form-group">
+
+                                <label for="booking-vehicle">
+                                    Select Vehicle
+                                </label>
+
+                                <select id="booking-vehicle" class="customer-form-control" required>
+
+                                    <option value="">
+                                        Loading your vehicles...
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Date -->
+
+                            <div class="customer-form-group">
+
+                                <label for="booking-date">
+                                    Service Date
+                                </label>
+
+                                <input type="date" id="booking-date" class="customer-form-control" required>
+
+                                <small>
+                                    Workshop is closed on Mondays.
+                                </small>
+
+                            </div>
+
+
+                            <!-- Slot -->
+
+                            <div class="customer-form-group">
+
+                                <label for="booking-slot">
+                                    Time Slot
+                                </label>
+
+                                <select id="booking-slot" class="customer-form-control" required disabled>
+
+                                    <option value="">
+                                        Select a date first
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Submit -->
+
+                            <button type="submit" id="submit-booking-btn" class="customer-submit-btn">
+
+                                Confirm Service Booking
+
+                            </button>
+
+                        </form>
+
+
+                        <div id="booking-message" class="booking-message">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 RIGHT COLUMN
+            ====================================================== -->
+
+            <div class="col-lg-7">
+
+
+                <!-- =================================================
+                     SERVICE BOOKINGS
+                ================================================== -->
+
+                <div class="glass-card customer-card mb-4">
+
+                    <div class="customer-card-header">
+
+                        <h5>
+                            My Service Bookings
+                        </h5>
+
+                        <button type="button" class="refresh-btn" onclick="loadBookings()">
+
+                            Refresh
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="customer-table-wrapper">
+
+                        <table class="customer-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Booking ID
+                                    </th>
+
+                                    <th>
+                                        Vehicle
+                                    </th>
+
+                                    <th>
+                                        Service Date
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="bookings-table-body">
+
+                                <tr>
+
+                                    <td colspan="4" class="table-loading">
+
+                                        Loading bookings...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     INSPECTION REPORTS
+                ================================================== -->
+
+                <div class="glass-card customer-card mb-4">
+
+                    <div class="customer-card-header">
+
+                        <h5>
+                            Vehicle Inspection Reports
+                        </h5>
+
+                        <button type="button" class="refresh-btn" onclick="loadInspections()">
+
+                            Refresh
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="customer-table-wrapper">
+
+                        <table class="customer-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Report
+                                    </th>
+
+                                    <th>
+                                        Vehicle
+                                    </th>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Issue / Observation
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="inspections-table-body">
+
+                                <tr>
+
+                                    <td colspan="5" class="table-loading">
+
+                                        Loading inspection reports...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     INVOICES
+                ================================================== -->
+
+                <div class="glass-card customer-card">
+
+                    <div class="customer-card-header">
+
+                        <h5>
+                            &#x1f9fe; My Invoices
+                        </h5>
+
+                        <a href="/my-invoices" class="customer-small-btn">
+
+                            View Invoices Page &rarr;
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="customer-table-wrapper">
+
+                        <table class="customer-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Invoice #
+                                    </th>
+
+                                    <th>
+                                        Vehicle
+                                    </th>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Total Bill
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="home-invoices-table-body">
+
+                                <tr>
+
+                                    <td colspan="5" class="table-loading">
+
+                                        Loading invoices...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =============================================================
+         EDIT PROFILE MODAL
+    ============================================================= -->
+
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered" role="document">
+
+            <div class="modal-content profile-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Update Profile
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <form id="edit-profile-form">
+
+                        <div class="customer-form-group">
+
+                            <label for="modal-name">
+                                Full Name
+                            </label>
+
+                            <input type="text" id="modal-name" class="customer-form-control"
+                                value="{{ customer_profile.customer_name or customer_name }}" required>
+
+                        </div>
+
+
+                        <div class="customer-form-group">
+
+                            <label for="modal-phone">
+                                Phone Number
+                            </label>
+
+                            <input type="tel" id="modal-phone" class="customer-form-control"
+                                value="{{ customer_profile.customer_phone or '' }}">
+
+                        </div>
+
+
+                        <div class="customer-form-group">
+
+                            <label for="modal-address">
+                                Address
+                            </label>
+
+                            <textarea id="modal-address" class="customer-form-control"
+                                rows="3">{{ customer_profile.address or '' }}</textarea>
+
+                        </div>
+
+
+                        <button type="submit" class="customer-submit-btn">
+
+                            Save Changes
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =============================================================
+     CUSTOMER HOME JAVASCRIPT
+============================================================= -->
+
+<script src="/assets/vms_user/js/customer-home.js"></script>
+<script>
+function logoutCustomer() {
+    const btn = document.getElementById("customer-logout-btn");
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Logging out...</span>`;
+    }
+    if (window.frappe?.call) {
+        frappe.call({
+            method: "logout",
+            callback: function () {
+                window.location.href = "/login";
+            },
+            error: function () {
+                window.location.href = "/login";
+            }
+        });
+    } else {
+        fetch("/api/method/logout", { method: "POST" }).finally(function () {
+            window.location.href = "/login";
+        });
+    }
+}
+</script>
+
+{% endblock %}

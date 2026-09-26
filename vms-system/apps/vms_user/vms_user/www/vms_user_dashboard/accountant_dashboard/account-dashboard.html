@@ -1,0 +1,129 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Accountant Dashboard
+{% endblock %}
+
+{% block page_content %}
+<div id="vms-account-dashboard" class="vms-account">
+
+    <header class="vms-account-header">
+        <div>
+            <h1>Accountant Dashboard</h1>
+            <p>
+                Review technician inspections, spare parts,
+                and vehicle service invoices.
+            </p>
+        </div>
+
+        <button id="vms-refresh" class="vms-btn vms-btn-secondary">
+            Refresh
+        </button>
+    </header>
+
+    <section class="vms-account-stats">
+
+        <article class="vms-stat-card">
+            <span>Released Inspections</span>
+            <strong id="stat-inspections">0</strong>
+        </article>
+
+        <article class="vms-stat-card">
+            <span>Total Invoices</span>
+            <strong id="stat-invoices">0</strong>
+        </article>
+
+        <article class="vms-stat-card">
+            <span>Pending Invoices</span>
+            <strong id="stat-pending">0</strong>
+        </article>
+
+        <article class="vms-stat-card">
+            <span>Paid Invoices</span>
+            <strong id="stat-audited">0</strong>
+        </article>
+
+    </section>
+
+    <section class="vms-account-panel">
+
+        <div class="vms-panel-heading">
+            <div>
+                <h2>Technician Inspection List</h2>
+                <p>
+                    Inspections released for account processing.
+                </p>
+            </div>
+
+            <a href="/vms-account-invoice" class="vms-btn">
+                + Create Invoice
+            </a>
+        </div>
+
+        <div class="vms-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Inspection</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Spare Parts</th>
+                        <th>Quantity</th>
+                        <th>Labour Hours</th>
+                        <th>Part Cost</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="inspection-list">
+                    <tr>
+                        <td colspan="8">
+                            Loading inspections...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <section class="vms-account-panel">
+
+        <div class="vms-panel-heading">
+            <div>
+                <h2>Invoice Register</h2>
+                <p>
+                    Review billing records and payment status.
+                </p>
+            </div>
+        </div>
+
+        <div class="vms-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="invoice-list">
+                    <tr>
+                        <td colspan="7">Loading invoices...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <div id="account-message" class="vms-account-message" role="status">
+    </div>
+
+</div>
+{% endblock %}

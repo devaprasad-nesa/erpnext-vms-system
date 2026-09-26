@@ -1,0 +1,16 @@
+{
+ "cards": [],
+ "charts": [],
+ "creation": "2026-09-19 15:49:33.100579",
+ "dashboard_name": "accountant dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2026-09-19 15:49:43.694782",
+ "modified_by": "Administrator",
+ "module": "Vms User",
+ "name": "accountant dashboard",
+ "owner": "Administrator"
+}

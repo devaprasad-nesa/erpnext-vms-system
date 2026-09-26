@@ -1,0 +1,625 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Technician Dashboard | VMS
+{% endblock %}
+
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/technician-dashboard.css">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<div id="vms-technician-dashboard" class="vms-dashboard">
+
+    <!-- =====================================================
+         TOP NAVBAR
+         ===================================================== -->
+    <header class="vms-navbar">
+
+        <div class="vms-navbar-left">
+
+            <div class="vms-brand">
+                <div class="vms-brand-icon">
+                    🔧
+                </div>
+
+                <div class="vms-brand-text">
+                    <span class="vms-brand-title">
+                        VMS
+                    </span>
+
+                    <span class="vms-brand-subtitle">
+                        Vehicle Management System
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Center Navigation Links -->
+        <nav class="vms-navbar-center">
+            <a href="/technician-dashboard" class="vms-nav-link active">
+                <span>📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/vehicle-service-list" class="vms-nav-link">
+                <span>🚗</span>
+                <span>Service Requests</span>
+            </a>
+            <a href="/app" class="vms-nav-link" title="Open ERPNext Desk">
+                <span>🖥️</span>
+                <span>Desk Navigation</span>
+                <span class="vms-desk-arrow">↗</span>
+            </a>
+        </nav>
+
+        <div class="vms-navbar-right">
+
+            <a href="/app" class="vms-desk-btn" title="Open ERPNext Desk">
+                <span>🖥️ Desk</span>
+                <span class="vms-desk-arrow">↗</span>
+            </a>
+
+            <div class="vms-user-info">
+
+                <span class="vms-user-label">
+                    Technician
+                </span>
+
+                <strong id="vms-current-user">
+                    {{ full_name or frappe.session.user }}
+                </strong>
+
+            </div>
+
+
+            <button type="button" id="vms-logout" class="vms-logout-btn" onclick="logoutTechnician()">
+                <span class="vms-logout-icon">↪</span>
+                <span>Logout</span>
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         DASHBOARD CONTENT
+         ===================================================== -->
+    <main class="vms-dashboard-content">
+
+
+        <!-- =================================================
+             PAGE HEADER
+             ================================================= -->
+        <section class="vms-page-header">
+
+            <div>
+
+                <div class="vms-page-title-row">
+
+                    <div class="vms-page-icon">
+                        🛠️
+                    </div>
+
+                    <div>
+
+                        <h1>
+                            Technician Dashboard
+                        </h1>
+
+                        <p>
+                            Vehicle inspections and spare parts management
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <a href="/vehicle-service-list" class="vms-btn vms-btn-primary vms-service-list-btn">
+                <span>🚗</span>
+
+                <span>
+                    Vehicle Service Requests
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             MESSAGE AREA
+             ================================================= -->
+        <div id="vms-message" class="vms-message" role="status" aria-live="polite" hidden></div>
+
+
+        <!-- =================================================
+             DASHBOARD TABS
+             ================================================= -->
+        <nav class="vms-tabs">
+
+            <button type="button" class="vms-tab active" data-tab="inspections">
+                <span class="vms-tab-icon">
+                    🔍
+                </span>
+
+                <span>
+                    Vehicle Inspections
+                </span>
+            </button>
+
+
+            <button type="button" class="vms-tab" data-tab="spare-parts">
+                <span class="vms-tab-icon">
+                    ⚙️
+                </span>
+
+                <span>
+                    Spare Parts
+                </span>
+            </button>
+
+        </nav>
+
+
+        <!-- =====================================================
+             VEHICLE INSPECTIONS
+             ===================================================== -->
+        <section id="tab-inspections" class="vms-panel">
+
+            <div class="vms-section-heading">
+
+                <div>
+
+                    <h2>
+                        Vehicle Inspections
+                    </h2>
+
+                    <p>
+                        Inspect vehicles and record issues.
+                    </p>
+
+                </div>
+
+
+                <button type="button" id="vms-new-inspection" class="vms-btn vms-btn-primary">
+                    <span>+</span>
+                    <span>New Inspection</span>
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 INSPECTION FORM
+                 ================================================= -->
+            <form id="vms-inspection-form" class="vms-form" hidden>
+
+                <div class="vms-form-header">
+
+                    <div>
+
+                        <span class="vms-form-badge">
+                            INSPECTION
+                        </span>
+
+                        <h3 id="vms-inspection-form-title">
+                            Create Vehicle Inspection
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <input type="hidden" id="inspection-name">
+
+
+                <div class="vms-form-grid">
+
+                    <!-- Customer -->
+                    <div class="vms-field">
+
+                        <label for="inspection-customer">
+                            Customer Name
+                        </label>
+
+                        <select id="inspection-customer">
+
+                            <option value="">
+                                Select customer
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Vehicle -->
+                    <div class="vms-field">
+
+                        <label for="inspection-vehicle">
+                            Vehicle Number *
+                        </label>
+
+                        <select id="inspection-vehicle" required>
+
+                            <option value="">
+                                Select vehicle
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Date -->
+                    <div class="vms-field">
+
+                        <label for="inspection-date">
+                            Inspection Date *
+                        </label>
+
+                        <input type="date" id="inspection-date" required>
+
+                    </div>
+
+
+                    <!-- Technician -->
+                    <div class="vms-field">
+
+                        <label for="inspection-technician">
+                            Technician
+                        </label>
+
+                        <input type="text" id="inspection-technician" readonly>
+
+                    </div>
+
+
+                    <!-- Issue -->
+                    <div class="vms-field vms-full-width">
+
+                        <label for="inspection-issue">
+                            Issue Description
+                        </label>
+
+                        <textarea id="inspection-issue" rows="4" placeholder="Describe the vehicle issue"></textarea>
+
+                    </div>
+
+
+                    <!-- Spare Parts -->
+                    <div class="vms-field">
+
+                        <label for="inspection-spare-parts">
+                            Spare Parts
+                        </label>
+
+                        <select id="inspection-spare-parts">
+
+                            <option value="">
+                                Select spare part
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Spare Quantity -->
+                    <div class="vms-field">
+
+                        <label for="inspection-spare-quantity">
+                            Spare Part Quantity Record
+                        </label>
+
+                        <select id="inspection-spare-quantity">
+
+                            <option value="">
+                                Select quantity record
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Mechanic -->
+                    <div class="vms-field">
+
+                        <label for="inspection-mechanic">
+                            Mechanic
+                        </label>
+
+                        <select id="inspection-mechanic">
+
+                            <option value="">
+                                Select mechanic
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Labour -->
+                    <div class="vms-field">
+
+                        <label for="inspection-labour">
+                            Labour Hours
+                        </label>
+
+                        <input type="number" id="inspection-labour" min="0" step="0.25" value="0">
+
+                    </div>
+
+
+                    <!-- Inspection status -->
+                    <div class="vms-field vms-checkbox-field">
+
+                        <input type="checkbox" id="inspection-inspected">
+
+                        <label for="inspection-inspected">
+                            Inspection completed
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Form buttons -->
+                <div class="vms-form-actions">
+
+                    <button type="submit" class="vms-btn vms-btn-primary">
+                        <span>✓</span>
+                        <span>Save Inspection</span>
+                    </button>
+
+
+                    <button type="button" id="vms-cancel-inspection" class="vms-btn vms-btn-secondary">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- =================================================
+                 INSPECTION TABLE
+                 ================================================= -->
+            <div class="vms-table-card">
+
+                <div class="vms-table-header">
+
+                    <div>
+
+                        <h3>
+                            Inspection Records
+                        </h3>
+
+                        <p>
+                            Vehicle inspection history
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="vms-table-wrapper">
+
+                    <table class="vms-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Inspection ID
+                                </th>
+
+                                <th>
+                                    Customer
+                                </th>
+
+                                <th>
+                                    Vehicle
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Issue
+                                </th>
+
+                                <th>
+                                    Technician
+                                </th>
+
+                                <th>
+                                    Labour Hours
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="vms-inspection-table">
+
+                            <tr>
+
+                                <td colspan="9" class="vms-empty">
+                                    Loading inspections...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SPARE PARTS
+             ===================================================== -->
+        <section id="tab-spare-parts" class="vms-panel" hidden>
+
+            <div class="vms-section-heading">
+
+                <div>
+
+                    <h2>
+                        Spare Parts
+                    </h2>
+
+                    <p>
+                        View spare-part records.
+                    </p>
+
+                </div>
+
+
+                <button type="button" id="vms-refresh-spare-parts" class="vms-btn vms-btn-secondary">
+                    <span>↻</span>
+                    <span>Refresh</span>
+                </button>
+
+            </div>
+
+
+            <div class="vms-table-card">
+
+                <div class="vms-table-header">
+
+                    <div>
+
+                        <h3>
+                            Spare Part Records
+                        </h3>
+
+                        <p>
+                            Available spare-part information
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="vms-table-wrapper">
+
+                    <table class="vms-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Part ID
+                                </th>
+
+                                <th>
+                                    Part Name
+                                </th>
+
+                                <th>
+                                    Quantity
+                                </th>
+
+                                <th>
+                                    Cost
+                                </th>
+
+                            </tr>
+
+                        </thead>
+                                            
+
+                        <tbody id="vms-spare-part-table">
+
+                            <tr>
+
+                                <td colspan="4" class="vms-empty">
+                                    Loading spare parts...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/assets/vms_user/js/technician-dashboard.js"></script>
+<script>
+function logoutTechnician() {
+    const btn = document.getElementById("vms-logout");
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Logging out...</span>`;
+    }
+    if (window.frappe && frappe.call) {
+        frappe.call({
+            method: "frappe.auth.logout",
+            callback: function () {
+                window.location.href = "/login";
+            },
+            error: function () {
+                window.location.href = "/login";
+            }
+        });
+    } else {
+        fetch("/api/method/logout", { method: "POST" }).finally(function () {
+            window.location.href = "/login";
+        });
+    }
+}
+</script>
+{% endblock %}

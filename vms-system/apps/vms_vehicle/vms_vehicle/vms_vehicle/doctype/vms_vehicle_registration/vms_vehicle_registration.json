@@ -1,0 +1,120 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "veh-.#####",
+ "creation": "2026-09-23 09:25:42.187748",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_ccvf",
+  "owner_user",
+  "owner_name",
+  "vehicle_number",
+  "vehicle_brand",
+  "vehicle_model",
+  "fuel_type",
+  "vehicle_color",
+  "chassis_number",
+  "engine_number",
+  "registration_date",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_ccvf",
+   "fieldtype": "Section Break",
+   "label": "Vehicle Registration"
+  },
+  {
+   "fetch_from": "owner_user.email",
+   "fetch_if_empty": 1,
+   "fieldname": "owner_name",
+   "fieldtype": "Link",
+   "label": "Owner Name",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vehicle_number",
+   "fieldtype": "Data",
+   "label": "Vehicle NUmber"
+  },
+  {
+   "fieldname": "vehicle_brand",
+   "fieldtype": "Data",
+   "label": "Vehicle Brand"
+  },
+  {
+   "fieldname": "vehicle_model",
+   "fieldtype": "Data",
+   "label": "Vehicle Model"
+  },
+  {
+   "fieldname": "fuel_type",
+   "fieldtype": "Data",
+   "label": "Fuel Type"
+  },
+  {
+   "fieldname": "vehicle_color",
+   "fieldtype": "Data",
+   "label": "Color"
+  },
+  {
+   "fieldname": "chassis_number",
+   "fieldtype": "Data",
+   "label": "Chassis Number"
+  },
+  {
+   "fieldname": "engine_number",
+   "fieldtype": "Data",
+   "label": "Engine NUmber"
+  },
+  {
+   "fieldname": "registration_date",
+   "fieldtype": "Date",
+   "label": "Registration Date"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Data",
+   "label": "Notes"
+  },
+  {
+   "fetch_from": "owner_name.first_name",
+   "fetch_if_empty": 1,
+   "fieldname": "owner_user",
+   "fieldtype": "Link",
+   "label": "owner_user",
+   "options": "User"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-25 14:39:00.910586",
+ "modified_by": "Administrator",
+ "module": "Vms Vehicle",
+ "name": "vms vehicle registration",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
