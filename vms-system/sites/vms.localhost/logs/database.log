@@ -207,3 +207,5 @@ ALTER TABLE `tabvms vehicle service registration` ADD COLUMN `mechanic` varchar(
 2026-09-26 10:40:43,669 WARNING database DDL Query made to DB:
 ALTER TABLE `tabvms accounts` ADD COLUMN `payment` tinyint(4) NOT NULL DEFAULT 0
 2026-09-26 11:37:09,728 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-26 11:56:14,422 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-26 12:07:27,935 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'

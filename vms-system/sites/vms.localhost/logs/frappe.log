@@ -736,3 +736,21 @@ Form Dict: {'cmd': 'frappe.auth.logout'}
 2026-09-26 11:41:17,639 ERROR frappe New Exception collected in error log
 Site: vms.localhost
 Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-26 12:05:07,733 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'invoice_name': 'INV-00015', 'cmd': 'vms_account.api.get_customer_invoice_details'}
+2026-09-26 12:07:46,169 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'invoice_name': 'INV-00015', 'total_bill': '54.65', 'invoice_date': '2026-09-25', 'cmd': 'vms_account.api.update_invoice'}
+2026-09-26 12:08:56,196 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-26 12:09:26,872 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'invoice_name': 'INV-00014', 'cmd': 'vms_account.api.audit_invoice'}
+2026-09-26 12:13:12,742 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'invoice_name': 'INV-00014', 'cmd': 'vms_account.api.audit_invoice'}
+2026-09-26 12:15:10,101 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'invoice_name': 'INV-00014', 'total_bill': '999.72', 'invoice_date': '2026-09-25', 'cmd': 'vms_account.api.update_invoice'}

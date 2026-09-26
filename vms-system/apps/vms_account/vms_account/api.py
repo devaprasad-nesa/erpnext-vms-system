@@ -409,7 +409,7 @@ def share_invoice(invoice_name: str) -> dict:
 
 @frappe.whitelist()
 def audit_invoice(invoice_name: str) -> dict:
-    require_role(MANAGER_ROLE, "System Manager")
+    require_role(ACCOUNTANT_ROLE, MANAGER_ROLE, "System Manager")
 
     doc = frappe.get_doc(
         ACCOUNT_DOCTYPE,
@@ -497,7 +497,7 @@ def get_my_invoices(only_audited: int | str | None = None) -> list:
 
 @frappe.whitelist()
 def get_customer_invoice_details(invoice_name: str) -> dict:
-    require_role(CUSTOMER_ROLE, "System Manager", "Administrator")
+    require_role(CUSTOMER_ROLE, ACCOUNTANT_ROLE, MANAGER_ROLE, "System Manager", "Administrator")
 
     if not invoice_name:
         frappe.throw(_("Invoice name is required."))
