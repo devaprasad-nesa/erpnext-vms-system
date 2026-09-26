@@ -21,7 +21,6 @@ lib/
 lib64/
 parts/
 sdist/
-var/
 wheels/
 *.egg-info/
 .installed.cfg
@@ -40,4 +39,3 @@ export_wp.py
 fix_perms.py
 fix_perms_bench.py
 reload_docs.py
-technician-dashboard.js
