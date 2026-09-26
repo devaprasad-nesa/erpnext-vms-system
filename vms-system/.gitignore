@@ -1,6 +1,5 @@
 # Bench specific ignores
 /env/
-/sites/
 /logs/
 /config/
 /archived_sites/

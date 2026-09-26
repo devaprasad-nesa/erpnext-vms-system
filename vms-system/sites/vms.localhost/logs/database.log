@@ -1,0 +1,205 @@
+2026-09-25 11:33:19,437 WARNING database DDL Query made to DB:
+ALTER TABLE `tabfuel type` ADD UNIQUE INDEX IF NOT EXISTS fuel_type_name (`fuel_type_name`)
+2026-09-25 11:34:40,530 WARNING database DDL Query made to DB:
+create table `tabVehicle Model` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-25 11:34:40,530 WARNING database DDL Query made to DB:
+create table `tabVehicle Model` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-25 11:36:55,458 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` ADD COLUMN `vehicle_brand` varchar(140), ADD COLUMN `model_name` varchar(140)
+2026-09-25 11:36:55,458 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` ADD COLUMN `vehicle_brand` varchar(140), ADD COLUMN `model_name` varchar(140)
+2026-09-25 11:38:05,474 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` ADD UNIQUE INDEX IF NOT EXISTS model_name (`model_name`)
+2026-09-25 11:39:37,666 WARNING database DDL Query made to DB:
+ALTER TABLE `tabfuel type` DROP INDEX `fuel_type_name`
+2026-09-25 11:41:20,232 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parent varchar(140)
+2026-09-25 11:41:20,244 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parenttype varchar(140)
+2026-09-25 11:41:20,256 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parentfield varchar(140)
+2026-09-25 11:41:20,301 WARNING database DDL Query made to DB:
+ALTER TABLE `tabfuel type` ADD COLUMN `fuel_type` varchar(140)
+2026-09-25 11:43:22,141 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvehicle brand` ADD COLUMN `brand_model` varchar(140)
+2026-09-25 11:50:57,950 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvehicle brand` DROP INDEX `brand_name`
+2026-09-25 11:51:34,641 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvehicle brand` ADD UNIQUE INDEX IF NOT EXISTS brand_name (`brand_name`)
+2026-09-25 11:53:12,287 WARNING database DDL Query made to DB:
+create table `tabvehicle model` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			parent varchar(140),
+parentfield varchar(140),
+parenttype varchar(140),
+index parent(parent))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-25 11:55:19,660 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parent varchar(140)
+2026-09-25 11:55:19,661 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parenttype varchar(140)
+2026-09-25 11:55:19,661 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parentfield varchar(140)
+2026-09-25 11:55:19,709 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvehicle model` ADD COLUMN `model_name` varchar(140), ADD COLUMN `brand_name` varchar(140)
+2026-09-25 11:55:34,601 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parent varchar(140)
+2026-09-25 11:55:34,601 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parenttype varchar(140)
+2026-09-25 11:55:34,602 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parentfield varchar(140)
+2026-09-25 11:55:46,123 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parent varchar(140)
+2026-09-25 11:55:46,123 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parenttype varchar(140)
+2026-09-25 11:55:46,123 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parentfield varchar(140)
+2026-09-25 11:56:24,517 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parent varchar(140)
+2026-09-25 11:56:24,517 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parent varchar(140)
+2026-09-25 11:56:24,518 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parenttype varchar(140)
+2026-09-25 11:56:24,518 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parenttype varchar(140)
+2026-09-25 11:56:24,518 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parentfield varchar(140)
+2026-09-25 11:56:24,518 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parentfield varchar(140)
+2026-09-25 11:56:36,644 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parent varchar(140)
+2026-09-25 11:56:36,644 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parenttype varchar(140)
+2026-09-25 11:56:36,645 WARNING database DDL Query made to DB:
+alter table `tabfuel type` add column if not exists parentfield varchar(140)
+2026-09-25 11:57:07,287 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parent varchar(140)
+2026-09-25 11:57:07,287 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parent varchar(140)
+2026-09-25 11:57:07,287 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parenttype varchar(140)
+2026-09-25 11:57:07,287 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parenttype varchar(140)
+2026-09-25 11:57:07,287 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parentfield varchar(140)
+2026-09-25 11:57:07,287 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parentfield varchar(140)
+2026-09-25 12:02:43,619 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parent varchar(140)
+2026-09-25 12:02:43,619 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parenttype varchar(140)
+2026-09-25 12:02:43,619 WARNING database DDL Query made to DB:
+alter table `tabvehicle model` add column if not exists parentfield varchar(140)
+2026-09-25 12:06:19,809 WARNING database DDL Query made to DB:
+create table `tabVehicle Brand` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-25 12:06:44,975 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Brand` ADD COLUMN `brand_name` varchar(140)
+2026-09-25 12:07:02,225 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` DROP INDEX `model_name`
+2026-09-25 12:07:28,826 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parent varchar(140)
+2026-09-25 12:07:28,836 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parenttype varchar(140)
+2026-09-25 12:07:28,846 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parentfield varchar(140)
+2026-09-25 12:07:47,251 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parent varchar(140)
+2026-09-25 12:07:47,251 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parent varchar(140)
+2026-09-25 12:07:47,251 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parenttype varchar(140)
+2026-09-25 12:07:47,251 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parenttype varchar(140)
+2026-09-25 12:07:47,251 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parentfield varchar(140)
+2026-09-25 12:07:47,251 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parentfield varchar(140)
+2026-09-25 12:07:47,287 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` ADD COLUMN `fuel_type` varchar(140)
+2026-09-25 12:07:47,287 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` ADD COLUMN `fuel_type` varchar(140)
+2026-09-25 12:08:11,819 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parent varchar(140)
+2026-09-25 12:08:11,819 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parenttype varchar(140)
+2026-09-25 12:08:11,819 WARNING database DDL Query made to DB:
+alter table `tabVehicle Model` add column if not exists parentfield varchar(140)
+2026-09-25 12:31:10,921 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 12:32:30,090 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 12:37:30,063 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 12:42:56,762 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 12:56:17,953 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 13:34:23,292 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 13:45:17,528 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 13:50:33,790 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 14:08:20,019 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 14:16:27,901 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 14:17:37,918 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 14:18:31,287 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 14:44:30,340 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 15:19:47,978 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 15:41:27,055 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 15:43:05,854 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 15:48:31,922 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms vehicle service registration` ADD COLUMN `mechanic` varchar(140)
+2026-09-25 15:51:12,423 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 16:19:47,350 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 16:35:56,385 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-25 16:47:11,809 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'

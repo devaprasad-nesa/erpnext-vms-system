@@ -1,0 +1,218 @@
+2026-09-19 16:49:20,173 INFO ipython === bench console session ===
+2026-09-19 16:49:20,173 INFO ipython import vms_user.api
+2026-09-19 16:49:20,173 INFO ipython bench --site vms.localhost console
+2026-09-19 16:49:20,173 INFO ipython === session end ===
+2026-09-19 16:50:27,005 INFO ipython === bench console session ===
+2026-09-19 16:50:27,005 INFO ipython print(vms_user.api.__file__)
+2026-09-19 16:50:27,005 INFO ipython print(
+;
+2026-09-19 16:50:27,005 INFO ipython === session end ===
+2026-09-19 16:54:48,789 INFO ipython === bench console session ===
+2026-09-19 16:54:48,789 INFO ipython import vms_user.api
+2026-09-19 16:54:48,789 INFO ipython print(vms_user.api.__file__)
+2026-09-19 16:54:48,789 INFO ipython print(hsattr(vms_user.api,"register_customer"))
+2026-09-19 16:54:48,789 INFO ipython print(hasattr(vms_user.api,"register_customer"))
+2026-09-19 16:54:48,789 INFO ipython dir(vms_user.api)
+2026-09-19 16:54:48,789 INFO ipython === session end ===
+2026-09-19 17:02:56,205 INFO ipython === bench console session ===
+2026-09-19 17:02:56,205 INFO ipython import inspect
+2026-09-19 17:02:56,205 INFO ipython import vms_user.api
+2026-09-19 17:02:56,205 INFO ipython print(vms_user.api.__file__)
+2026-09-19 17:02:56,205 INFO ipython print(inspect.signature(vms_user.api.register_customer))
+2026-09-19 17:02:56,205 INFO ipython === session end ===
+2026-09-19 17:04:46,606 INFO ipython === bench console session ===
+2026-09-19 17:04:46,606 INFO ipython import importlib
+2026-09-19 17:04:46,606 INFO ipython import inspect
+2026-09-19 17:04:46,606 INFO ipython import vms_user.api
+2026-09-19 17:04:46,606 INFO ipython importlib.reload(vms_user.api)
+2026-09-19 17:04:46,606 INFO ipython print(inspect.signature(vms_user.api.register_customer))
+2026-09-19 17:04:46,606 INFO ipython print(inspect.signature(vms_user.api.register_customer))
+2026-09-19 17:04:46,606 INFO ipython === session end ===
+2026-09-21 12:10:24,821 INFO ipython === bench console session ===
+2026-09-21 12:10:24,829 INFO ipython import vms_vehicle.api
+2026-09-21 12:10:24,829 INFO ipython print(vms_vehicle.api.__file__)
+2026-09-21 12:10:24,829 INFO ipython print(hasattr(vms_vehicle.api,"get_my_vehicle"))
+2026-09-21 12:10:24,829 INFO ipython === session end ===
+2026-09-21 12:13:30,228 INFO ipython === bench console session ===
+2026-09-21 12:13:30,228 INFO ipython import importlib
+importlib.reload(vms_vehicle.api)
+2026-09-21 12:13:30,228 INFO ipython import importlib
+2026-09-21 12:13:30,228 INFO ipython importlib.reload(vms_vehicle.api)
+2026-09-21 12:13:30,229 INFO ipython import importlib
+2026-09-21 12:13:30,229 INFO ipython import vms_vehicle.api
+2026-09-21 12:13:30,229 INFO ipython importlib.reload(vms_vehicle.api)
+2026-09-21 12:13:30,229 INFO ipython print(hasattr(vms_vehicle.api, "get_my_vehicles"))
+2026-09-21 12:13:30,229 INFO ipython print(hasattr(vms_vehicle.api, "create_vehicle"))
+2026-09-21 12:13:30,229 INFO ipython print([name for name in dir(vms_vehicle.api) if "vehicle" in name])
+2026-09-21 12:13:30,229 INFO ipython === session end ===
+2026-09-22 10:47:13,301 INFO ipython === bench console session ===
+2026-09-22 10:47:13,309 INFO ipython frappe.session.user
+2026-09-22 10:47:13,309 INFO ipython frappe.sessions.clear_sessions("Administrator")
+2026-09-22 10:47:13,309 INFO ipython === session end ===
+2026-09-22 11:25:59,665 INFO ipython === bench console session ===
+2026-09-22 11:25:59,665 INFO ipython frappe.db.exists("DocType","vms vehicle service booking")
+2026-09-22 11:25:59,665 INFO ipython frappe.get_all(
+    "DocType",
+    filters={"name": ["like", "%Service%Booking%"]},
+    fields=["name", "module"]
+)
+2026-09-22 11:25:59,665 INFO ipython meta = frappe.get_meta(
+    "VMS Vehicle Service Booking"
+)
+
+[(f.fieldname, f.label, f.fieldtype, f.options)
+ for f in meta.fields]
+2026-09-22 11:25:59,665 INFO ipython meta = frappe.get_meta(
+    "vms vehicle service booking"
+)
+
+[(f.fieldname, f.label, f.fieldtype, f.options)
+ for f in meta.fields]
+2026-09-22 11:25:59,665 INFO ipython === session end ===
+2026-09-23 11:54:29,359 INFO ipython === bench console session ===
+2026-09-23 11:54:29,359 INFO ipython import frappe
+2026-09-23 11:54:29,359 INFO ipython doctypes = [
+    "VMS Vehicle Inspection",
+    "VMS Spare Parts",
+    "VMS Vehicle Service Registration"
+]
+2026-09-23 11:54:29,359 INFO ipython role = "VMS Technician"
+2026-09-23 11:54:29,359 INFO ipython for dt in doctypes:
+    existing = frappe.get_all("DocPerm", filters={"parent": dt, "role": role}, fields=["name"])
+    if not existing:
+        doc = frappe.new_doc("DocPerm")
+        doc.parent = dt
+        doc.parenttype = "DocType"
+        doc.parentfield = "permissions"
+        doc.role = role
+        doc.read = 1
+        doc.write = 1
+        doc.create = 1
+        doc.delete = 1
+        doc.submit = 0
+        doc.cancel = 0
+        doc.amend = 0
+        doc.insert()
+        print(f"Added perms for {dt}")
+    else:
+        doc = frappe.get_doc("DocPerm", existing[0].name)
+        doc.read = 1
+        doc.write = 1
+        doc.create = 1
+        doc.delete = 1
+        doc.save()
+        print(f"Updated perms for {dt}")
+frappe.db.commit()
+2026-09-23 11:54:29,359 INFO ipython print("All done!")
+2026-09-23 11:54:29,359 INFO ipython === session end ===
+2026-09-23 12:11:09,500 INFO ipython === bench console session ===
+2026-09-23 12:11:09,500 INFO ipython import frappe
+2026-09-23 12:11:09,500 INFO ipython print(frappe.get_all("Web Page", fields=["name", "route", "module"]))
+2026-09-23 12:11:09,500 INFO ipython === session end ===
+2026-09-23 12:11:17,933 INFO ipython === bench console session ===
+2026-09-23 12:11:17,934 INFO ipython import frappe
+2026-09-23 12:11:17,934 INFO ipython doc = frappe.get_doc("Web Page", "technician-dashboard")
+2026-09-23 12:11:17,934 INFO ipython === session end ===
+2026-09-23 12:12:02,756 INFO ipython === bench console session ===
+2026-09-23 12:12:02,756 INFO ipython import frappe
+2026-09-23 12:12:02,756 INFO ipython doc = frappe.get_doc("Web Page", "technician-dashboard")
+2026-09-23 12:12:02,756 INFO ipython === session end ===
+2026-09-23 12:13:31,943 INFO ipython === bench console session ===
+2026-09-23 12:13:31,943 INFO ipython import frappe
+2026-09-23 12:13:31,943 INFO ipython doc = frappe.get_doc("Web Page", "technician-dashboard")
+2026-09-23 12:13:31,943 INFO ipython print("JS LEN:", len(doc.javascript or ""))
+2026-09-23 12:13:31,943 INFO ipython with open("/home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/technician-dashboard.js", "w") as f:
+    f.write(doc.javascript or "")
+print("Done writing")
+2026-09-23 12:13:31,943 INFO ipython === session end ===
+2026-09-23 12:18:31,220 INFO ipython === bench console session ===
+2026-09-23 12:18:31,221 INFO ipython import frappe
+2026-09-23 12:18:31,221 INFO ipython with open("/home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/technician-dashboard.js", "r") as f:
+    js_content = f.read()
+2026-09-23 12:18:31,221 INFO ipython frappe.db.set_value("Web Page", "technician-dashboard", "javascript", js_content)
+2026-09-23 12:18:31,221 INFO ipython frappe.db.commit()
+2026-09-23 12:18:31,221 INFO ipython print("Successfully updated database!")
+2026-09-23 12:18:31,221 INFO ipython === session end ===
+2026-09-23 13:01:50,433 INFO ipython === bench console session ===
+2026-09-23 13:01:50,433 INFO ipython users = frappe.get_all(
+    "User",
+    filters={
+        "name": ["not in", ["Administrator", "Guest"]]
+    },
+    fields=["name", "full_name", "enabled"]
+)
+
+for user in users:
+    print(user.name, "|", user.full_name, "| Enabled:", user.enabled)
+
+print("Total users to delete:", len(users))
+2026-09-23 13:01:50,433 INFO ipython for user in users:
+    try:
+        frappe.delete_doc(
+            "User",
+            user.name,
+            ignore_permissions=True
+        )
+        print("Deleted:", user.name)
+
+    except Exception as e:
+        print("FAILED:", user.name, str(e))
+
+frappe.db.commit()
+2026-09-23 13:01:50,433 INFO ipython frappe.get_all(
+    "User",
+    filters={
+        "name": ["not in", ["Administrator", "Guest"]]
+    },
+    fields=["name", "full_name", "enabled"]
+)
+2026-09-23 13:01:50,433 INFO ipython users = frappe.get_all("User", filters={"name": ["not in", ["Administrator", "Guest"]]}, pluck="name")
+2026-09-23 13:01:50,433 INFO ipython print("Users to disable:", users)
+2026-09-23 13:01:50,433 INFO ipython for user in users: frappe.db.set_value("User", user, "enabled", 0, update_modified=False)
+2026-09-23 13:01:50,433 INFO ipython frappe.db.commit()
+2026-09-23 13:01:50,434 INFO ipython print(frappe.get_all("User", fields=["name", "enabled"], order_by="name"))
+2026-09-23 13:01:50,434 INFO ipython users_to_delete = frappe.get_all("User", filters={"name": ["not in", ["Administrator", "Guest"]]}, pluck="name")
+2026-09-23 13:01:50,434 INFO ipython print("Deletion candidates:", users_to_delete)
+2026-09-23 13:01:50,434 INFO ipython for user in users_to_delete: frappe.delete_doc("User", user, ignore_permissions=True)
+2026-09-23 13:01:50,434 INFO ipython print(frappe.get_all("User", fields=["name", "enabled"], order_by="name"))
+2026-09-23 13:01:50,434 INFO ipython === session end ===
+2026-09-23 15:05:42,631 INFO ipython === bench console session ===
+2026-09-23 15:05:42,639 INFO ipython import frappe
+2026-09-23 15:05:42,639 INFO ipython invoices = frappe.get_all('vms accounts', fields=['name', 'customer_name', 'audited', 'total_bill', 'status'])
+2026-09-23 15:05:42,639 INFO ipython print('Invoices:', invoices)
+2026-09-23 15:05:42,639 INFO ipython === session end ===
+2026-09-24 15:54:12,406 INFO ipython === bench console session ===
+2026-09-24 15:54:12,415 INFO ipython user = frappe.get_doc("User", "techuser4@gmail.com")
+user.new_password = "200308"
+user.save(ignore_permissions=True)
+frappe.db.commit()
+2026-09-24 15:54:12,415 INFO ipython === session end ===
+2026-09-24 15:56:31,915 INFO ipython === bench console session ===
+2026-09-24 15:56:31,916 INFO ipython user = frappe.get_doc("User", "techuser4@gmail.com")
+user.new_password = "Password"
+user.save(ignore_permissions=True)
+frappe.db.commit()
+2026-09-24 15:56:31,916 INFO ipython user = frappe.get_doc("User", "techuser4@gmail.com")
+user.new_password = "SomePassword"
+user.save(ignore_permissions=True)
+frappe.db.commit()
+2026-09-24 15:56:31,916 INFO ipython user = frappe.get_doc("User", "techuser4@gmail.com")
+user.new_password = "techuser4"
+user.save(ignore_permissions=True)
+frappe.db.commit()
+2026-09-24 15:56:31,916 INFO ipython user = frappe.get_doc("User", "techuser4@gmail.com")
+user.new_password = "Mynewpass"
+user.save(ignore_permissions=True)
+frappe.db.commit()
+2026-09-24 15:56:31,916 INFO ipython user = frappe.get_doc("User", "techuser4@gmail.com")
+user.new_password = "Mynewpass2003"
+user.save(ignore_permissions=True)
+frappe.db.commit()
+2026-09-24 15:56:31,916 INFO ipython exir()
+2026-09-24 15:56:31,916 INFO ipython === session end ===
+2026-09-25 14:14:29,412 INFO ipython === bench console session ===
+2026-09-25 14:14:29,421 INFO ipython import vms_vehicle.api
+2026-09-25 14:14:29,421 INFO ipython print(vms_vehicle.api.__file__)
+2026-09-25 14:14:29,421 INFO ipython print(vms_vehicle.api.get_vehicle_brands)
+2026-09-25 14:14:29,421 INFO ipython print(getattr(vms_vehicle.api.get_vehicle_brands, "is_whitelisted", False))
+2026-09-25 14:14:29,421 INFO ipython === session end ===
