@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "INV-.#####",
+ "creation": "2026-09-23 09:25:28.694290",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_86mf",
+  "customer_name",
+  "vehicle_number",
+  "invoice_date",
+  "vehicle_inspection",
+  "vehicle_spare_parts",
+  "spare_parts_amount",
+  "total_bill",
+  "audited"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_86mf",
+   "fieldtype": "Section Break",
+   "label": "Invoice & Billing Details"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Link",
+   "label": "Customer Name",
+   "options": "User"
+  },
+  {
+   "fieldname": "vehicle_number",
+   "fieldtype": "Link",
+   "label": "Vehicle Number",
+   "options": "vms vehicle registration"
+  },
+  {
+   "fieldname": "vehicle_inspection",
+   "fieldtype": "Link",
+   "label": "Vehicle inspection",
+   "options": "vms vehicle inspection"
+  },
+  {
+   "fieldname": "vehicle_spare_parts",
+   "fieldtype": "Link",
+   "label": "Vehicle spare parts",
+   "options": "vms spare parts"
+  },
+  {
+   "fieldname": "total_bill",
+   "fieldtype": "Currency",
+   "label": "Total bill"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Date"
+  },
+  {
+   "fieldname": "spare_parts_amount",
+   "fieldtype": "Currency",
+   "label": "Spare parts amount"
+  },
+  {
+   "default": "0",
+   "fieldname": "audited",
+   "fieldtype": "Check",
+   "label": "Paid"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-24 12:25:18.343885",
+ "modified_by": "Administrator",
+ "module": "Vms Account",
+ "name": "vms accounts",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "vms manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "vms accountant",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "vms customer"
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,133 @@
+{% extends "templates/web.html" %}
+
+{% block head_include %}
+<link
+    rel="stylesheet"
+    href="/assets/vms_user/css/signup.css"
+>
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<div class="vms-signup-page">
+
+    <div class="vms-signup-card">
+
+        <!-- VMS LOGO -->
+        <div class="vms-signup-logo">
+            V
+        </div>
+
+        <!-- PAGE TITLE -->
+        <h2>Create VMS Account</h2>
+
+        <!-- SIGNUP FORM -->
+        <form id="vms-signup-form">
+
+            <!-- USERNAME -->
+            <div class="form-group">
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    class="form-control"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+
+            <!-- EMAIL -->
+            <div class="form-group">
+                <label for="email">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+
+            <!-- PASSWORD -->
+            <div class="form-group">
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Create a password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="form-group">
+                <label for="confirm_password">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    id="confirm_password"
+                    class="form-control"
+                    placeholder="Confirm your password"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+
+            <!-- CREATE ACCOUNT BUTTON -->
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+
+        <!-- LOGIN LINK -->
+        <div class="vms-login-link">
+
+            Already registered?
+
+            <a href="/login">
+                Login
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SIGNUP JAVASCRIPT -->
+<script src="/assets/vms_user/js/signup.js"></script>
+
+{% endblock %}

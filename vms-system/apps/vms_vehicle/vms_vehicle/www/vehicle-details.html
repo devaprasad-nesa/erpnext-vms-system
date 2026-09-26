@@ -1,0 +1,206 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Vehicle Details | VMS Customer Portal
+{% endblock %}
+
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+<link rel="stylesheet" href="/assets/vms_vehicle/css/vehicle-details.css">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+<link rel="stylesheet" href="/assets/vms_vehicle/css/vehicle-details.css">
+
+<!-- =========================================================
+     MINIMAL NAVIGATION BAR
+========================================================== -->
+<header class="vms-min-bar vms-min-navbar">
+    <!-- Left End: User Name -->
+    <div class="vms-min-left">
+        <span class="vms-min-user-badge">
+            <span class="vms-min-user-icon">👤</span>
+            <span class="vms-min-user-label">Customer:</span>
+            <strong class="vms-min-user-name">{{ (customer_profile and customer_profile.customer_name) or customer_name or frappe.session.user }}</strong>
+        </span>
+    </div>
+
+    <!-- Center: Nav Elements Equally Distanced -->
+    <nav class="vms-min-center">
+        <a href="/customer-home" class="vms-min-link">Dashboard</a>
+        <a href="/my-vehicles" class="vms-min-link active">My Vehicles</a>
+        <a href="/vehicle-register" class="vms-min-link">Register Vehicle</a>
+        <a href="/my-invoices" class="vms-min-link">Invoices</a>
+    </nav>
+
+    <!-- Right End: Logout Button -->
+    <div class="vms-min-right">
+        <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()" title="Logout">
+            <span>Logout</span>
+            <span class="vms-min-logout-icon">↪</span>
+        </button>
+    </div>
+</header>
+
+<div class="vehicle-details-page">
+    <div class="vehicle-details-container">
+
+        <!-- =====================================================
+             HERO BANNER CARD
+        ====================================================== -->
+        <div class="vd-hero-card">
+            <div>
+                <span class="vd-portal-badge">VMS CUSTOMER PORTAL</span>
+                <h1 class="vd-hero-title" id="vehicle-hero-title">Vehicle Details</h1>
+                <p class="vd-hero-subtitle">Comprehensive vehicle specifications, registration info, and service options.</p>
+            </div>
+            <div class="vd-hero-actions">
+                <a href="/my-vehicles" class="vd-btn vd-btn-ghost">
+                    <span>←</span>
+                    <span>My Vehicles</span>
+                </a>
+                <a href="/customer-home" class="vd-btn vd-btn-primary btn-book-service">
+                    <span>🔧</span>
+                    <span>Book Service</span>
+                </a>
+                <button type="button" id="delete-vehicle-btn" class="vd-btn vd-btn-danger">
+                    <span>🗑️</span>
+                    <span>Delete Vehicle</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- =====================================================
+             LOADING STATE
+        ====================================================== -->
+        <div id="vehicle-loading" class="vd-state-card">
+            <div class="vd-spinner"></div>
+            <p class="vd-state-text">Loading vehicle specifications...</p>
+        </div>
+
+        <!-- =====================================================
+             ERROR STATE
+        ====================================================== -->
+        <div id="vehicle-error" class="vd-state-card" style="display: none;">
+            <div class="vd-error-icon">⚠️</div>
+            <p class="vd-state-text" id="vehicle-error-message">Vehicle not found or you do not have permission to view it.</p>
+            <div style="margin-top: 20px;">
+                <a href="/my-vehicles" class="vd-btn vd-btn-ghost">← Return to My Vehicles</a>
+            </div>
+        </div>
+
+        <!-- =====================================================
+             MAIN VEHICLE DETAILS CARD
+        ====================================================== -->
+        <div id="vehicle-card" class="vd-details-card" style="display: none;">
+            <div class="vd-card-header">
+                <div class="vd-plate-badge">
+                    <span class="plate-icon">🚗</span>
+                    <span id="v-number">-</span>
+                </div>
+                <div class="vd-brand-badge" id="v-brand-model">
+                    -
+                </div>
+            </div>
+
+            <!-- Specs Grid -->
+            <div class="vd-specs-grid">
+                <div class="vd-spec-tile">
+                    <div class="vd-spec-label">
+                        <span class="vd-spec-label-icon">⛽</span>
+                        <span>Fuel Type</span>
+                    </div>
+                    <p class="vd-spec-value" id="v-fuel">-</p>
+                </div>
+
+                <div class="vd-spec-tile">
+                    <div class="vd-spec-label">
+                        <span class="vd-spec-label-icon">🎨</span>
+                        <span>Vehicle Color</span>
+                    </div>
+                    <p class="vd-spec-value" id="v-color">-</p>
+                </div>
+
+                <div class="vd-spec-tile">
+                    <div class="vd-spec-label">
+                        <span class="vd-spec-label-icon">📅</span>
+                        <span>Manufacturing Year</span>
+                    </div>
+                    <p class="vd-spec-value" id="v-year">-</p>
+                </div>
+
+                <div class="vd-spec-tile">
+                    <div class="vd-spec-label">
+                        <span class="vd-spec-label-icon">📝</span>
+                        <span>Registration Date</span>
+                    </div>
+                    <p class="vd-spec-value" id="v-date">-</p>
+                </div>
+
+                <div class="vd-spec-tile">
+                    <div class="vd-spec-label">
+                        <span class="vd-spec-label-icon">⚙️</span>
+                        <span>Chassis Number</span>
+                    </div>
+                    <p class="vd-spec-value vd-spec-monospace" id="v-chassis">-</p>
+                </div>
+
+                <div class="vd-spec-tile">
+                    <div class="vd-spec-label">
+                        <span class="vd-spec-label-icon">🔧</span>
+                        <span>Engine Number</span>
+                    </div>
+                    <p class="vd-spec-value vd-spec-monospace" id="v-engine">-</p>
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="vd-notes-box">
+                <div class="vd-notes-title">
+                    <span>📌</span>
+                    <span>Special Notes & Instructions</span>
+                </div>
+                <p class="vd-notes-text" id="v-notes">No special notes recorded for this vehicle.</p>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="vd-footer-actions">
+                <a href="/my-vehicles" class="vd-btn vd-btn-ghost">
+                    <span>← Back to My Vehicles</span>
+                </a>
+                <a href="/customer-home" class="vd-btn vd-btn-primary btn-book-service">
+                    <span>🔧 Book Vehicle Service</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="/assets/vms_vehicle/js/vehicle-details.js"></script>
+<script>
+function logoutCustomer() {
+    const btn = document.getElementById("customer-logout-btn");
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Logging out...</span>`;
+    }
+    frappe.call({
+        method: "frappe.auth.logout",
+        callback: function () {
+            window.location.href = "/login-page/vms-login";
+        },
+        error: function () {
+            window.location.href = "/login-page/vms-login";
+        }
+    });
+}
+</script>
+{% endblock %}

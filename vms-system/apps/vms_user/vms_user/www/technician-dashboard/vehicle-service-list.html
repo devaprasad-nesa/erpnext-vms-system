@@ -1,0 +1,414 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Vehicle Service List
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<link
+    rel="stylesheet"
+    href="/assets/vms_user/css/vehicle-service-list.css"
+>
+<link
+    rel="stylesheet"
+    href="/assets/vms_vehicle/css/vehicle-service-list.css"
+>
+
+<div id="vms-technician-dashboard">
+
+    <!-- =========================================================
+         VMS HEADER
+         ========================================================= -->
+    <header class="vms-header">
+
+        <div class="vms-header-brand">
+
+            <div class="vms-logo">
+                🔧
+            </div>
+
+            <div class="vms-brand-text">
+                <h1>VMS</h1>
+                <p>Vehicle Management System</p>
+            </div>
+
+        </div>
+
+        <div class="vms-header-title" style="display: flex; align-items: center; gap: 16px;">
+            <a href="/app" style="color: #ffffff; text-decoration: none; font-weight: 700; font-size: 13px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 6px 14px; border-radius: 8px; transition: all 0.2s;" title="Open ERPNext Desk">
+                <span>🖥️ Desk</span> <span style="font-size: 14px;">↗</span>
+            </a>
+            <div>
+                <span>TECHNICIAN</span>
+                <strong>{{ frappe.session.user }}</strong>
+            </div>
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+    <main class="vms-main-container">
+
+        <!-- =====================================================
+             PAGE HEADER
+             ===================================================== -->
+        <section class="vms-page-header">
+
+            <div class="vms-page-title">
+
+                <div class="vms-page-icon">
+                    🚗
+                </div>
+
+                <div>
+                    <h1>Vehicle Service List</h1>
+
+                    <p>
+                        View and manage vehicle service bookings
+                    </p>
+                </div>
+
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <a
+                    href="/technician-dashboard"
+                    class="vms-btn vms-btn-light"
+                    style="text-decoration: none;"
+                >
+                    <span>←</span>
+                    Dashboard
+                </a>
+
+                <a
+                    href="/app"
+                    class="vms-btn vms-btn-light"
+                    style="text-decoration: none;"
+                    title="Open ERPNext Desk"
+                >
+                    <span>🖥️ Desk ↗</span>
+                </a>
+
+                <button
+                    id="refresh-bookings"
+                    class="vms-btn vms-btn-primary"
+                    type="button"
+                >
+                    <span class="btn-icon">↻</span>
+                    Refresh
+                </button>
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             STATISTICS
+             ===================================================== -->
+        <section class="vms-stats">
+
+            <!-- Total -->
+            <div class="vms-stat-card">
+
+                <div class="vms-stat-icon">
+                    📋
+                </div>
+
+                <div class="vms-stat-content">
+                    <span>Total Bookings</span>
+                    <strong id="total-count">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- Applied -->
+            <div class="vms-stat-card">
+
+                <div class="vms-stat-icon">
+                    📝
+                </div>
+
+                <div class="vms-stat-content">
+                    <span>Applied</span>
+                    <strong id="applied-count">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- Confirmed -->
+            <div class="vms-stat-card">
+
+                <div class="vms-stat-icon">
+                    ✓
+                </div>
+
+                <div class="vms-stat-content">
+                    <span>Confirmed</span>
+                    <strong id="confirmed-count">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- Rescheduled -->
+            <div class="vms-stat-card">
+
+                <div class="vms-stat-icon">
+                    ↻
+                </div>
+
+                <div class="vms-stat-content">
+                    <span>Rescheduled</span>
+                    <strong id="rescheduled-count">0</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SERVICE BOOKINGS PANEL
+             ===================================================== -->
+        <section class="vms-list-panel">
+
+            <!-- Panel Header -->
+            <div class="vms-list-heading">
+
+                <div>
+
+                    <h2>Service Bookings</h2>
+
+                    <p>
+                        Vehicle service registration records
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 FILTERS
+                 ================================================= -->
+            <div class="vms-filters">
+
+                <div class="vms-search-wrapper">
+
+                    <span class="vms-search-icon">
+                        🔍
+                    </span>
+
+                    <input
+                        type="search"
+                        id="booking-search"
+                        placeholder="Search customer, vehicle or booking ID..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="vms-select-wrapper">
+
+                    <select id="status-filter">
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        <option value="Applied">
+                            Applied
+                        </option>
+
+                        <option value="Confirmed">
+                            Confirmed
+                        </option>
+
+                        <option value="Under Work">
+                            Under Work
+                        </option>
+
+                        <option value="Updated">
+                            Updated
+                        </option>
+
+                        <option value="Cancelled">
+                            Cancelled
+                        </option>
+
+                        <option value="Rescheduled">
+                            Rescheduled
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MESSAGE
+                 ================================================= -->
+            <div
+                id="booking-message"
+                class="vms-message"
+            >
+                Loading service bookings...
+            </div>
+
+
+            <!-- =================================================
+                 TABLE
+                 ================================================= -->
+            <div class="vms-table-wrapper">
+
+                <table class="vms-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Booking ID</th>
+
+                            <th>Customer</th>
+
+                            <th>Vehicle</th>
+
+                            <th>Service Date</th>
+
+                            <th>Service Slot</th>
+
+                            <th>Status</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="booking-table-body">
+
+                        <tr>
+
+                            <td colspan="7">
+                                Loading...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- =================================================
+                 PAGINATION
+                 ================================================= -->
+            <div class="vms-pagination">
+
+                <span id="booking-count">
+                    0 bookings
+                </span>
+
+
+                <div class="vms-pagination-controls">
+
+                    <button
+                        id="previous-page"
+                        class="vms-btn vms-btn-light"
+                        type="button"
+                    >
+                        ← Previous
+                    </button>
+
+
+                    <span id="page-number">
+                        Page 1
+                    </span>
+
+
+                    <button
+                        id="next-page"
+                        class="vms-btn vms-btn-light"
+                        type="button"
+                    >
+                        Next →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             BOOKING DETAILS
+             ===================================================== -->
+        <section
+            id="booking-details"
+            class="vms-details"
+            hidden
+        >
+
+            <div class="vms-details-heading">
+
+                <div>
+
+                    <h2>Booking Details</h2>
+
+                    <p>
+                        Complete information about the selected booking
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="close-details"
+                    class="vms-btn vms-btn-light"
+                    type="button"
+                >
+                    ✕ Close
+                </button>
+
+            </div>
+
+
+            <div id="booking-details-content"></div>
+
+
+
+        </section>
+
+    </main>
+
+</div>
+
+<script>
+    window.is_vms_technician = {{ is_technician or 0 }};
+    window.current_vms_user = "{{ user or '' }}";
+</script>
+
+<script src="/assets/vms_user/js/vehicle-service-list.js"></script>
+
+{% endblock %}
+

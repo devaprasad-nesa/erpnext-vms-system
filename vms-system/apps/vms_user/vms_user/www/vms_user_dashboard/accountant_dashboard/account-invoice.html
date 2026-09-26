@@ -1,0 +1,505 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+VMS Account Invoice
+{% endblock %}
+
+{% block page_content %}
+
+    <div id="vms-account-invoice-page">
+
+        <!-- =========================================================
+         NAVBAR
+         ========================================================= -->
+
+        <header class="account-navbar">
+
+            <div class="account-navbar-left">
+
+                <a href="/account-dashboard" class="account-brand">
+
+                    VMS Accounts
+
+                </a>
+
+                <span class="navbar-divider"></span>
+
+                <span id="invoice-page-mode" class="navbar-page-title">
+
+                    Create Invoice
+
+                </span>
+
+            </div>
+
+
+            <div class="account-navbar-right">
+
+                <a href="/account-dashboard" class="navbar-btn">
+
+                    Dashboard
+
+                </a>
+
+                <button type="button" id="invoice-back-btn" class="navbar-btn">
+
+                    Back
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================================================
+         MESSAGE
+         ========================================================= -->
+
+        <div id="invoice-message" class="invoice-message">
+        </div>
+
+
+        <!-- =========================================================
+         MAIN CONTENT
+         ========================================================= -->
+
+        <main class="invoice-container">
+
+            <div class="invoice-card">
+
+
+                <!-- =================================================
+                 CARD HEADER
+                 ================================================= -->
+
+                <div class="invoice-card-header">
+
+                    <div>
+
+                        <div class="invoice-title-row">
+
+                            <h1 id="invoice-form-title">
+                                Create Invoice
+                            </h1>
+
+                            <span id="invoice-mode-badge" class="mode-badge">
+                                New
+                            </span>
+
+                        </div>
+
+
+                        <p id="invoice-form-description">
+
+                            Create a new invoice from the
+                            vehicle inspection details.
+
+                        </p>
+
+                    </div>
+
+
+                    <div id="invoice-status-container" class="invoice-status-container">
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 FORM
+                 ================================================= -->
+
+                <form id="account-invoice-form" autocomplete="off">
+
+
+                    <!-- =================================================
+                     HIDDEN VALUES
+                     ================================================= -->
+
+                    <input type="hidden" id="invoice-name">
+
+                    <input type="hidden" id="inspection-name">
+
+
+                    <!-- =================================================
+                     CUSTOMER DETAILS
+                     ================================================= -->
+
+                    <section class="invoice-section">
+
+                        <div class="section-heading">
+
+                            <span class="section-number">
+                                01
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Customer & Vehicle
+                                </h2>
+
+                                <p>
+                                    Customer and vehicle information
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group">
+
+                                <label for="customer-name">
+                                    Customer Name
+                                </label>
+
+                                <input type="text" id="customer-name" class="form-control" placeholder="Customer name"
+                                    required>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="vehicle-number">
+                                    Vehicle Number
+                                </label>
+
+                                <input type="text" id="vehicle-number" class="form-control" placeholder="Vehicle number"
+                                    required>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                     INVOICE DETAILS
+                     ================================================= -->
+
+                    <section class="invoice-section">
+
+                        <div class="section-heading">
+
+                            <span class="section-number">
+                                02
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Invoice Details
+                                </h2>
+
+                                <p>
+                                    Invoice date and payment status
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group">
+
+                                <label for="invoice-date">
+                                    Invoice Date
+                                </label>
+
+                                <input type="date" id="invoice-date" class="form-control" required>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="audited">
+                                    Payment Status
+                                </label>
+
+                                <select id="audited" class="form-control">
+
+                                    <option value="0">
+                                        Pending
+                                    </option>
+
+                                    <option value="1">
+                                        Paid
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                     SPARE PARTS
+                     ================================================= -->
+
+                    <section class="invoice-section">
+
+                        <div class="section-heading">
+
+                            <span class="section-number">
+                                03
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Spare Parts
+                                </h2>
+
+                                <p>
+                                    Parts used during the service
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group">
+
+                                <label for="spare-parts">
+                                    Spare Parts
+                                </label>
+
+                                <input type="text" id="spare-parts" class="form-control" placeholder="Spare part">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="spare-part-quantity">
+                                    Quantity
+                                </label>
+
+                                <input type="number" id="spare-part-quantity" class="form-control" min="0" step="1"
+                                    placeholder="0">
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                     COST
+                     ================================================= -->
+
+                    <section class="invoice-section">
+
+                        <div class="section-heading">
+
+                            <span class="section-number">
+                                04
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Cost Details
+                                </h2>
+
+                                <p>
+                                    Parts and labour calculation
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-grid">
+
+
+                            <div class="form-group">
+
+                                <label for="part-cost">
+                                    Spare Parts Cost
+                                </label>
+
+                                <div class="input-prefix">
+
+                                    <span>
+                                        ₹
+                                    </span>
+
+                                    <input type="number" id="part-cost" class="form-control" min="0" step="0.01"
+                                        placeholder="0.00">
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="labour-hour">
+                                    Labour Hours
+                                </label>
+
+                                <input type="number" id="labour-hour" class="form-control" min="0" step="0.01"
+                                    placeholder="0">
+
+                            </div>
+
+
+                            <div class="form-group">
+
+                                <label for="labour-cost">
+                                    Labour Cost
+                                </label>
+
+                                <div class="input-prefix">
+
+                                    <span>
+                                        ₹
+                                    </span>
+
+                                    <input type="number" id="labour-cost" class="form-control" min="0" step="0.01"
+                                        placeholder="0.00">
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="form-group total-field">
+
+                                <label for="total-bill">
+                                    Total Bill
+                                </label>
+
+                                <div class="input-prefix total-input">
+
+                                    <span>
+                                        ₹
+                                    </span>
+
+                                    <input type="number" id="total-bill" class="form-control" min="0" step="0.01"
+                                        placeholder="0.00" required>
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                     SERVICE DESCRIPTION
+                     ================================================= -->
+
+                    <section class="invoice-section">
+
+                        <div class="section-heading">
+
+                            <span class="section-number">
+                                05
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Service Description
+                                </h2>
+
+                                <p>
+                                    Description of service performed
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="service-description">
+                                Description
+                            </label>
+
+                            <textarea id="service-description" class="form-control textarea-control" rows="5"
+                                placeholder="Enter service description...">
+                        </textarea>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                     ACTION BAR
+                     ================================================= -->
+
+                    <div class="invoice-action-bar">
+
+
+                        <button type="button" id="invoice-cancel-btn" class="invoice-btn invoice-btn-secondary">
+
+                            Cancel
+
+                        </button>
+
+
+                        <div class="action-right">
+
+
+                            <span id="save-status" class="save-status">
+                            </span>
+
+
+                            <button type="submit" id="invoice-save-btn" class="invoice-btn invoice-btn-primary">
+
+                                Create Invoice
+
+                            </button>
+
+
+                        </div>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
+        </main>
+
+    </div>
+
+{% endblock %}

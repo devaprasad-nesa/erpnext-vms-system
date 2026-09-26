@@ -1,0 +1,588 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Mechanic Dashboard
+{% endblock %}
+
+{% block page_content %}
+
+<div id="mechanic-dashboard-page">
+
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
+
+    <header class="mechanic-navbar">
+
+        <div class="mechanic-navbar-left">
+            <div class="mechanic-logo">
+                VMS
+            </div>
+
+            <div class="mechanic-title">
+                Mechanic Dashboard
+            </div>
+        </div>
+
+        <div class="mechanic-navbar-right">
+
+            <div class="mechanic-user-info">
+                <span class="user-label">Logged in as</span>
+                <span id="mechanic-user-name">Loading...</span>
+            </div>
+
+            <button type="button" id="mechanic-refresh-btn" class="navbar-btn">
+                Refresh
+            </button>
+
+            <button type="button" id="mechanic-logout-btn" class="navbar-btn logout-btn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         ACCESS DENIED
+         ===================================================== -->
+
+    <section id="mechanic-access-denied" class="access-denied" hidden>
+        <div class="access-denied-card">
+
+            <div class="access-denied-icon">
+                !
+            </div>
+
+            <h2>Access Restricted</h2>
+
+            <p>
+                This dashboard is available only to users with
+                the <strong>vms mechanic</strong> role.
+            </p>
+
+            <button type="button" id="access-denied-login-btn" class="primary-btn">
+                Return to Login
+            </button>
+
+        </div>
+    </section>
+
+
+    <!-- =====================================================
+         MAIN DASHBOARD
+         ===================================================== -->
+
+    <main id="mechanic-dashboard-content" class="dashboard-container" hidden>
+
+        <!-- =================================================
+             PAGE HEADER
+             ================================================= -->
+
+        <section class="dashboard-heading">
+
+            <div>
+                <p class="dashboard-eyebrow">
+                    VEHICLE MANAGEMENT SYSTEM
+                </p>
+
+                <h1>
+                    Mechanic Workspace
+                </h1>
+
+                <p class="dashboard-description">
+                    Manage assigned vehicle service bookings and
+                    inspect vehicles assigned to you.
+                </p>
+            </div>
+
+            <div class="dashboard-role-badge">
+                VMS Mechanic
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SUMMARY CARDS
+             ================================================= -->
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-card-label">
+                    Service Bookings
+                </div>
+
+                <div id="total-bookings" class="summary-card-value">
+                    0
+                </div>
+
+                <div class="summary-card-description">
+                    Vehicle service registrations
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-card-label">
+                    Applied
+                </div>
+
+                <div id="applied-bookings" class="summary-card-value">
+                    0
+                </div>
+
+                <div class="summary-card-description">
+                    Awaiting processing
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-card-label">
+                    Under Work
+                </div>
+
+                <div id="under-work-bookings" class="summary-card-value">
+                    0
+                </div>
+
+                <div class="summary-card-description">
+                    Vehicles currently under work
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-card-label">
+                    My Inspections
+                </div>
+
+                <div id="total-inspections" class="summary-card-value">
+                    0
+                </div>
+
+                <div class="summary-card-description">
+                    Inspections assigned to you
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MESSAGE
+             ================================================= -->
+
+        <div id="mechanic-message" class="dashboard-message" hidden></div>
+
+
+        <!-- =================================================
+             SERVICE REGISTRATION SECTION
+             ================================================= -->
+
+        <section class="dashboard-card">
+
+            <div class="section-header">
+
+                <div>
+                    <p class="section-eyebrow">
+                        SERVICE MANAGEMENT
+                    </p>
+
+                    <h2>
+                        Vehicle Service Registrations
+                    </h2>
+
+                    <p>
+                        View registered vehicle service requests
+                        and update their booking status.
+                    </p>
+                </div>
+
+                <div class="section-actions">
+
+                    <button type="button" id="refresh-bookings-btn" class="secondary-btn">
+                        Refresh
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Search -->
+
+            <div class="table-toolbar">
+
+                <div class="search-wrapper">
+
+                    <input type="search" id="booking-search" class="search-input"
+                        placeholder="Search booking, customer, vehicle..." autocomplete="off">
+
+                </div>
+
+                <div class="filter-wrapper">
+
+                    <select id="booking-status-filter" class="filter-select">
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        <option value="Applied">
+                            Applied
+                        </option>
+
+                        <option value="Confirmed">
+                            Confirmed
+                        </option>
+
+                        <option value="Under Work">
+                            Under Work
+                        </option>
+
+                        <option value="Updated">
+                            Updated
+                        </option>
+
+                        <option value="Cancelled">
+                            Cancelled
+                        </option>
+
+                        <option value="Rescheduled">
+                            Rescheduled
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- Loading -->
+
+            <div id="bookings-loading" class="table-state">
+                Loading service registrations...
+            </div>
+
+
+            <!-- Table -->
+
+            <div id="bookings-table-wrapper" class="table-wrapper" hidden>
+
+                <table class="vms-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Booking ID
+                            </th>
+
+                            <th>
+                                Customer
+                            </th>
+
+                            <th>
+                                Vehicle
+                            </th>
+
+                            <th>
+                                Service Date
+                            </th>
+
+                            <th>
+                                Service Slot
+                            </th>
+
+                            <th>
+                                Booking Status
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="bookings-table-body"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Empty -->
+
+            <div id="bookings-empty" class="table-state" hidden>
+                No vehicle service registrations found.
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             VEHICLE INSPECTION SECTION
+             ================================================= -->
+
+        <section class="dashboard-card">
+
+            <div class="section-header">
+
+                <div>
+                    <p class="section-eyebrow">
+                        WORK ASSIGNMENTS
+                    </p>
+
+                    <h2>
+                        My Vehicle Inspections
+                    </h2>
+
+                    <p>
+                        Vehicle inspections where the mechanic
+                        field is assigned to your logged-in user.
+                    </p>
+                </div>
+
+                <div class="section-actions">
+
+                    <button type="button" id="refresh-inspections-btn" class="secondary-btn">
+                        Refresh
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Inspection loading -->
+
+            <div id="inspections-loading" class="table-state">
+                Loading assigned inspections...
+            </div>
+
+
+            <!-- Inspection table -->
+
+            <div id="inspections-table-wrapper" class="table-wrapper" hidden>
+
+                <table class="vms-table inspection-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Inspection ID
+                            </th>
+
+                            <th>
+                                Vehicle
+                            </th>
+
+                            <th>
+                                Inspection Date
+                            </th>
+
+                            <th>
+                                Inspection Status
+                            </th>
+
+                            <th>
+                                Issue Description
+                            </th>
+
+                            <th>
+                                Spare Parts
+                            </th>
+
+                            <th>
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="inspections-table-body"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Inspection empty -->
+
+            <div id="inspections-empty" class="table-state" hidden>
+                No vehicle inspections are currently assigned
+                to you.
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         BOOKING STATUS MODAL
+         ===================================================== -->
+
+    <div id="booking-status-modal" class="modal-overlay" hidden>
+
+        <div class="modal-card">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <p class="section-eyebrow">
+                        UPDATE BOOKING
+                    </p>
+
+                    <h2>
+                        Change Booking Status
+                    </h2>
+
+                </div>
+
+                <button type="button" id="close-status-modal" class="modal-close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <div class="modal-booking-info">
+
+                    <div>
+                        <span class="modal-label">
+                            Booking ID
+                        </span>
+
+                        <strong id="modal-booking-id">
+                            —
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span class="modal-label">
+                            Current Status
+                        </span>
+
+                        <strong id="modal-current-status">
+                            —
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <label for="new-booking-status" class="form-label">
+                    New Booking Status
+                </label>
+
+                <select id="new-booking-status" class="status-select">
+
+                    <option value="Applied">
+                        Applied
+                    </option>
+
+                    <option value="Confirmed">
+                        Confirmed
+                    </option>
+
+                    <option value="Under Work">
+                        Under Work
+                    </option>
+
+                    <option value="Updated">
+                        Updated
+                    </option>
+
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
+
+                    <option value="Rescheduled">
+                        Rescheduled
+                    </option>
+
+                </select>
+
+
+                <div id="status-update-message" class="modal-message" hidden></div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button" id="cancel-status-update" class="secondary-btn">
+                    Cancel
+                </button>
+
+                <button type="button" id="save-status-update" class="primary-btn">
+                    Update Status
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         INSPECTION DETAILS MODAL
+         ===================================================== -->
+
+    <div id="inspection-details-modal" class="modal-overlay" hidden>
+
+        <div class="modal-card large-modal">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <p class="section-eyebrow">
+                        VEHICLE INSPECTION
+                    </p>
+
+                    <h2>
+                        Inspection Details
+                    </h2>
+
+                </div>
+
+                <button type="button" id="close-inspection-modal" class="modal-close">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div id="inspection-details-content" class="inspection-details"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

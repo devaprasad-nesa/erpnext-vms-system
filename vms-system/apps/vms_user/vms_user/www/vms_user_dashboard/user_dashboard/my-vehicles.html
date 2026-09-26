@@ -1,0 +1,191 @@
+{% extends "templates/web.html" %}
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+<link rel="stylesheet" href="/assets/vms_user/css/my-vehicles.css">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+<link rel="stylesheet" href="/assets/vms_user/css/my-vehicles.css">
+
+<div class="my-vehicles-page">
+
+    <!-- =========================================================
+         MINIMAL NAVIGATION BAR
+    ========================================================== -->
+    <header class="vms-min-bar vms-min-navbar">
+        <!-- Left End: User Name -->
+        <div class="vms-min-left">
+            <span class="vms-min-user-badge">
+                <span class="vms-min-user-icon">👤</span>
+                <span class="vms-min-user-label">Customer:</span>
+                <strong class="vms-min-user-name">{{ (customer_profile and customer_profile.customer_name) or customer_name or frappe.session.user }}</strong>
+            </span>
+        </div>
+
+        <!-- Center: Nav Elements Equally Distanced -->
+        <nav class="vms-min-center">
+            <a href="/customer-home" class="vms-min-link">Dashboard</a>
+            <a href="/my-vehicles" class="vms-min-link active">My Vehicles</a>
+            <a href="/vehicle-register" class="vms-min-link">Register Vehicle</a>
+            <a href="/my-invoices" class="vms-min-link">Invoices</a>
+        </nav>
+
+        <!-- Right End: Logout Button -->
+        <div class="vms-min-right">
+            <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()" title="Logout">
+                <span>Logout</span>
+                <span class="vms-min-logout-icon">↪</span>
+            </button>
+        </div>
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+    <main class="vms-main-container">
+
+        <!-- Page Header -->
+        <section class="page-header">
+
+            <div class="page-header-content">
+
+                <div class="page-icon">
+                    <i class="fa fa-car"></i>
+                </div>
+
+                <div>
+
+                    <div class="page-label">
+                        VMS CUSTOMER PORTAL
+                    </div>
+
+                    <h1>
+                        My Vehicles
+                    </h1>
+
+                    <p>
+                        View and manage your registered vehicles.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <a href="/vehicle-register" class="register-vehicle-btn">
+
+                <i class="fa fa-plus"></i>
+
+                <span>
+                    Register New Vehicle
+                </span>
+
+            </a>
+
+        </section>
+
+
+        <!-- =================================================
+             VEHICLE LIST
+             ================================================= -->
+        <section class="vehicles-section">
+
+            <div class="section-header">
+
+                <div>
+                    <h2>
+                        Registered Vehicles
+                    </h2>
+
+                    <p>
+                        Vehicles registered under your account
+                    </p>
+                </div>
+
+                <button type="button" id="refresh-vehicles" class="refresh-btn">
+
+                    <i class="fa fa-refresh"></i>
+
+                    <span>
+                        Refresh
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <div id="vehicle-list" aria-live="polite">
+
+                <!-- Loading state -->
+                <div class="vehicle-loading">
+
+                    <div class="loading-spinner"></div>
+
+                    <p>
+                        Loading your vehicles...
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         LOGOUT OVERLAY
+         ===================================================== -->
+    <div id="logout-overlay" class="logout-overlay">
+
+        <div class="logout-box">
+
+            <div class="logout-spinner"></div>
+
+            <h3>
+                Logging out...
+            </h3>
+
+            <p>
+                Please wait.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="/assets/vms_user/js/my-vehicles.js"></script>
+<script>
+function logoutCustomer() {
+    const btn = document.getElementById("customer-logout-btn");
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Logging out...</span>`;
+    }
+    frappe.call({
+        method: "frappe.auth.logout",
+        callback: function () {
+            window.location.href = "/login";
+        },
+        error: function () {
+            window.location.href = "/login";
+        }
+    });
+}
+</script>
+{% endblock %}

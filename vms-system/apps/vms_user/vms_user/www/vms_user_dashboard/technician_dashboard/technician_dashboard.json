@@ -1,0 +1,16 @@
+{
+ "cards": [],
+ "charts": [],
+ "creation": "2026-09-19 15:48:51.127138",
+ "dashboard_name": "technician dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2026-09-19 15:49:14.881978",
+ "modified_by": "Administrator",
+ "module": "Vms User",
+ "name": "technician dashboard",
+ "owner": "Administrator"
+}

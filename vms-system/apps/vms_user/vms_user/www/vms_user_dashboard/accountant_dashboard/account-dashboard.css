@@ -1,0 +1,181 @@
+
+#vms-account-dashboard {
+    --vms-primary: #155eef;
+    --vms-text: #182230;
+    --vms-muted: #667085;
+    --vms-border: #e4e7ec;
+    --vms-bg: #f7f9fc;
+    --vms-success: #067647;
+    --vms-warning: #b54708;
+
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px;
+    color: var(--vms-text);
+    font-family: inherit;
+}
+
+#vms-account-dashboard * {
+    box-sizing: border-box;
+}
+
+#vms-account-dashboard .vms-account-header,
+#vms-account-dashboard .vms-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+#vms-account-dashboard .vms-account-header {
+    margin-bottom: 24px;
+}
+
+#vms-account-dashboard h1 {
+    margin: 0 0 8px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+#vms-account-dashboard h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+}
+
+#vms-account-dashboard p {
+    color: var(--vms-muted);
+    margin: 0;
+}
+
+#vms-account-dashboard .vms-account-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+#vms-account-dashboard .vms-stat-card {
+    background: white;
+    border: 1px solid var(--vms-border);
+    border-radius: 12px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#vms-account-dashboard .vms-stat-card span {
+    color: var(--vms-muted);
+    font-size: 14px;
+}
+
+#vms-account-dashboard .vms-stat-card strong {
+    font-size: 30px;
+}
+
+#vms-account-dashboard .vms-account-panel {
+    background: white;
+    border: 1px solid var(--vms-border);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 24px;
+}
+
+#vms-account-dashboard .vms-panel-heading {
+    margin-bottom: 20px;
+}
+
+#vms-account-dashboard .vms-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vms-primary);
+    color: white;
+    border: 1px solid var(--vms-primary);
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+}
+
+#vms-account-dashboard .vms-btn-secondary {
+    background: white;
+    color: var(--vms-text);
+    border-color: var(--vms-border);
+}
+
+#vms-account-dashboard .vms-btn-small {
+    padding: 6px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+#vms-account-dashboard .vms-table-wrap {
+    overflow-x: auto;
+}
+
+#vms-account-dashboard table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+#vms-account-dashboard th,
+#vms-account-dashboard td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--vms-border);
+    text-align: left;
+    font-size: 13px;
+}
+
+#vms-account-dashboard th {
+    background: var(--vms-bg);
+    color: var(--vms-muted);
+    font-weight: 600;
+}
+
+#vms-account-dashboard .vms-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#vms-account-dashboard .vms-status-success {
+    background: #ecfdf3;
+    color: var(--vms-success);
+}
+
+#vms-account-dashboard .vms-status-pending {
+    background: #fffaeb;
+    color: var(--vms-warning);
+}
+
+#vms-account-dashboard .vms-account-message {
+    margin-top: 12px;
+    color: var(--vms-muted);
+}
+
+@media (max-width: 900px) {
+    #vms-account-dashboard .vms-account-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    #vms-account-dashboard {
+        padding: 12px;
+    }
+
+    #vms-account-dashboard .vms-account-stats {
+        grid-template-columns: 1fr;
+    }
+
+    #vms-account-dashboard h1 {
+        font-size: 24px;
+    }
+}

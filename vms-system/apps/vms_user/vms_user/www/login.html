@@ -1,0 +1,118 @@
+{% extends "templates/web.html" %}
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/vms-login.css">
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block navbar %}
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+{% block page_content %}
+
+<!--comment-not: Main VMS login page wrapper and glassmorphism card-->
+<div class="vms-login-page">
+
+    <!--comment-not: Decorative background elements for the dark-violet theme-->
+    <div class="vms-bg-orb vms-bg-orb-one"></div>
+    <div class="vms-bg-orb vms-bg-orb-two"></div>
+    <div class="vms-bg-grid"></div>
+
+    <!--comment-not: Frosted-glass login card-->
+    <main class="vms-login-card">
+
+        <!--comment-not: Login page heading and description-->
+        <div class="vms-login-header">
+            <div class="vms-login-logo" aria-hidden="true">
+                <span>V</span>
+            </div>
+            <h1>VMS Login</h1>
+            <p>Sign in to access your Vehicle Management System</p>
+        </div>
+
+        <!--comment-not: Existing VMS login form; IDs are preserved for the existing JavaScript-->
+        <form id="vms-login-form">
+
+            <!--comment-not: Username or email input section-->
+            <div class="vms-form-group">
+                <label for="vms-login-user">Username or Email</label>
+
+                <div class="vms-input-wrapper">
+                    <span class="vms-input-icon" aria-hidden="true">✉</span>
+                    <input type="text" id="vms-login-user" class="vms-login-input" placeholder="e.g. admin@example.com"
+                        autocomplete="username" required>
+                </div>
+            </div>
+
+            <!--comment-not: Password input section-->
+            <div class="vms-form-group">
+                <label for="vms-login-password">Password</label>
+
+                <div class="vms-input-wrapper">
+                    <span class="vms-input-icon" aria-hidden="true">●</span>
+                    <input type="password" id="vms-login-password" class="vms-login-input"
+                        placeholder="Enter your password" autocomplete="current-password" required>
+                </div>
+            </div>
+
+            <!--comment-not: Existing login button with a visual loading state-->
+            <button type="submit" id="vms-login-button" class="vms-login-button">
+                <span class="vms-login-button-text">Login</span>
+                <span class="vms-login-spinner" aria-hidden="true"></span>
+            </button>
+        </form>
+
+        <!--comment-not: Existing login status message container; classes are preserved-->
+        <div id="vms-login-message" class="vms-login-message"></div>
+
+        <!--comment-not: Account creation link; redirected to the requested VMS signup page-->
+        <p class="vms-create-account">
+            Don't have an account?
+            <a href="../signup-page/signup.html">Create Account</a>
+        </p>
+
+    </main>
+</div>
+
+<!--comment-not: Existing login JavaScript is preserved and continues to handle login functionality-->
+<script src="/assets/vms_user/js/vms_login.js"></script>
+
+<!--comment-not: Visual-only loading state; does not replace or modify the existing login API logic-->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("vms-login-form");
+        const button = document.getElementById("vms-login-button");
+        const message = document.getElementById("vms-login-message");
+
+        if (!form || !button) {
+            return;
+        }
+
+        //comment-not: Add the loading class when the existing form submission starts.
+        form.addEventListener("submit", function () {
+            button.classList.add("is-loading");
+            button.setAttribute("aria-busy", "true");
+        }, true);
+
+        //comment-not: Watch the existing message area so the visual loading state ends
+        //comment-not: when the existing login JavaScript reports an error or success.
+        if (message) {
+            const observer = new MutationObserver(function () {
+                if (message.textContent.trim() !== "") {
+                    button.classList.remove("is-loading");
+                    button.removeAttribute("aria-busy");
+                }
+            });
+
+            observer.observe(message, {
+                childList: true,
+                subtree: true,
+                characterData: true,
+                attributes: true
+            });
+        }
+    });
+</script>
+
+{% endblock %}

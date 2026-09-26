@@ -1,0 +1,1483 @@
+/* ============================================================
+   VEHICLE SERVICE LIST
+   VMS GREEN THEME
+   ============================================================ */
+
+
+/* ============================================================
+   ROOT VARIABLES
+   ============================================================ */
+
+#vms-technician-dashboard {
+
+    --vms-green: #176b3a;
+    --vms-green-dark: #12552e;
+    --vms-green-light: #e9f5ed;
+    --vms-green-soft: #f2f8f4;
+
+    --vms-border: #d9e6dd;
+
+    --vms-text: #14251c;
+    --vms-text-secondary: #61756a;
+
+    --vms-white: #ffffff;
+
+    --vms-danger: #dc3545;
+    --vms-warning: #c78a00;
+
+    width: 100%;
+    min-height: 100vh;
+
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+    color: var(--vms-text);
+
+    background: #f4f8f5;
+}
+
+
+/* ============================================================
+   GLOBAL BOX SIZING
+   ============================================================ */
+
+#vms-technician-dashboard *,
+#vms-technician-dashboard *::before,
+#vms-technician-dashboard *::after {
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   HIDE FRAPPE & ERPNEXT DEFAULT HEADER, NAVBAR, AND FOOTER
+   ============================================================ */
+
+nav.navbar,
+header.navbar,
+footer.web-footer,
+.web-footer,
+.page-breadcrumbs,
+.page-header-wrapper,
+body .page-header-wrapper,
+body > nav.navbar,
+body > header.navbar,
+body > footer.web-footer,
+body > footer {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    visibility: hidden !important;
+}
+
+body .page-content-wrapper,
+body .page-content-wrapper > main,
+body .page-content-wrapper > main.container,
+body .page_content,
+body .web-page-container,
+body .web-page-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+#vms-technician-dashboard .vms-header {
+
+    width: 100%;
+
+    min-height: 82px;
+
+    padding: 0 32px;
+
+    background: var(--vms-green);
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+/* ============================================================
+   HEADER BRAND
+   ============================================================ */
+
+#vms-technician-dashboard .vms-header-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+
+#vms-technician-dashboard .vms-logo {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.16);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 25px;
+}
+
+
+#vms-technician-dashboard .vms-brand-text h1 {
+
+    margin: 0;
+
+    font-size: 23px;
+
+    font-weight: 700;
+
+    line-height: 1.1;
+}
+
+
+#vms-technician-dashboard .vms-brand-text p {
+
+    margin: 4px 0 0;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    font-size: 12px;
+
+    letter-spacing: 0.2px;
+}
+
+
+/* ============================================================
+   HEADER USER
+   ============================================================ */
+
+#vms-technician-dashboard .vms-header-title {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    padding-left: 28px;
+
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+
+#vms-technician-dashboard .vms-header-title span {
+
+    font-size: 11px;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    letter-spacing: 1px;
+
+    margin-bottom: 3px;
+}
+
+
+#vms-technician-dashboard .vms-header-title strong {
+
+    font-size: 15px;
+
+    color: white;
+}
+
+
+/* ============================================================
+   MAIN CONTAINER
+   ============================================================ */
+
+#vms-technician-dashboard .vms-main-container {
+
+    width: 100%;
+
+    max-width: 1600px;
+
+    margin: 0 auto;
+
+    padding: 32px 40px 60px;
+}
+
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+
+#vms-technician-dashboard .vms-page-header {
+
+    background: white;
+
+    border: 1px solid var(--vms-border);
+
+    border-radius: 16px;
+
+    padding: 28px 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    box-shadow: 0 2px 7px rgba(20, 60, 35, 0.04);
+
+    margin-bottom: 24px;
+}
+
+
+#vms-technician-dashboard .vms-page-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+}
+
+
+#vms-technician-dashboard .vms-page-icon {
+
+    width: 56px;
+
+    height: 56px;
+
+    border-radius: 14px;
+
+    background: #ddf3e5;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 27px;
+}
+
+
+#vms-technician-dashboard .vms-page-title h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    color: #11251a;
+}
+
+
+#vms-technician-dashboard .vms-page-title p {
+
+    margin: 6px 0 0;
+
+    font-size: 14px;
+
+    color: var(--vms-text-secondary);
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+#vms-technician-dashboard .vms-btn {
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 11px 18px;
+
+    min-height: 42px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+}
+
+
+#vms-technician-dashboard .vms-btn:hover {
+
+    transform: translateY(-1px);
+}
+
+
+#vms-technician-dashboard .vms-btn:active {
+
+    transform: translateY(0);
+}
+
+
+#vms-technician-dashboard .vms-btn:disabled {
+
+    cursor: not-allowed;
+
+    opacity: 0.55;
+
+    transform: none;
+}
+
+
+#vms-technician-dashboard .vms-btn-primary {
+
+    background: var(--vms-green);
+
+    color: white;
+}
+
+
+#vms-technician-dashboard .vms-btn-primary:hover {
+
+    background: var(--vms-green-dark);
+
+    box-shadow: 0 4px 12px rgba(23, 107, 58, 0.2);
+}
+
+
+#vms-technician-dashboard .vms-btn-light {
+
+    background: white;
+
+    color: #285c3e;
+
+    border: 1px solid #cbdcd1;
+}
+
+
+#vms-technician-dashboard .vms-btn-light:hover {
+
+    background: var(--vms-green-soft);
+
+    border-color: #a8c6b4;
+}
+
+
+/* ============================================================
+   STATISTICS
+   ============================================================ */
+
+#vms-technician-dashboard .vms-stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 24px;
+}
+
+
+#vms-technician-dashboard .vms-stat-card {
+
+    background: white;
+
+    border: 1px solid var(--vms-border);
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    box-shadow: 0 2px 6px rgba(20, 60, 35, 0.03);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#vms-technician-dashboard .vms-stat-card:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 15px rgba(20, 60, 35, 0.07);
+}
+
+
+#vms-technician-dashboard .vms-stat-icon {
+
+    width: 48px;
+
+    height: 48px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: var(--vms-green-light);
+
+    color: var(--vms-green);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+
+#vms-technician-dashboard .vms-stat-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+}
+
+
+#vms-technician-dashboard .vms-stat-content span {
+
+    font-size: 13px;
+
+    color: var(--vms-text-secondary);
+
+    margin-bottom: 5px;
+}
+
+
+#vms-technician-dashboard .vms-stat-content strong {
+
+    font-size: 25px;
+
+    line-height: 1;
+
+    color: var(--vms-green-dark);
+}
+
+
+/* ============================================================
+   LIST PANEL
+   ============================================================ */
+
+#vms-technician-dashboard .vms-list-panel {
+
+    width: 100%;
+
+    background: white;
+
+    border: 1px solid var(--vms-border);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow: 0 2px 7px rgba(20, 60, 35, 0.04);
+}
+
+
+/* ============================================================
+   LIST HEADING
+   ============================================================ */
+
+#vms-technician-dashboard .vms-list-heading {
+
+    padding: 26px 28px 20px;
+
+    border-bottom: 1px solid #e4ece7;
+}
+
+
+#vms-technician-dashboard .vms-list-heading h2 {
+
+    margin: 0;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #13261b;
+}
+
+
+#vms-technician-dashboard .vms-list-heading p {
+
+    margin: 5px 0 0;
+
+    font-size: 14px;
+
+    color: var(--vms-text-secondary);
+}
+
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+
+#vms-technician-dashboard .vms-filters {
+
+    padding: 18px 28px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 220px;
+
+    gap: 14px;
+
+    background: #f8fbf9;
+
+    border-bottom: 1px solid #e2ebe5;
+}
+
+
+#vms-technician-dashboard .vms-search-wrapper {
+
+    position: relative;
+}
+
+
+#vms-technician-dashboard .vms-search-icon {
+
+    position: absolute;
+
+    left: 14px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    font-size: 15px;
+
+    pointer-events: none;
+}
+
+
+#vms-technician-dashboard #booking-search {
+
+    width: 100%;
+
+    height: 44px;
+
+    padding: 0 14px 0 42px;
+
+    border: 1px solid #cbdcd1;
+
+    border-radius: 9px;
+
+    background: white;
+
+    color: #1b2c22;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#vms-technician-dashboard #booking-search:focus {
+
+    border-color: var(--vms-green);
+
+    box-shadow: 0 0 0 3px rgba(23, 107, 58, 0.10);
+}
+
+
+#vms-technician-dashboard #booking-search::placeholder {
+
+    color: #84968b;
+}
+
+
+#vms-technician-dashboard .vms-select-wrapper {
+
+    position: relative;
+}
+
+
+#vms-technician-dashboard #status-filter {
+
+    width: 100%;
+
+    height: 44px;
+
+    padding: 0 38px 0 14px;
+
+    border: 1px solid #cbdcd1;
+
+    border-radius: 9px;
+
+    background: white;
+
+    color: #273b2f;
+
+    font-size: 14px;
+
+    outline: none;
+
+    cursor: pointer;
+}
+
+
+#vms-technician-dashboard #status-filter:focus {
+
+    border-color: var(--vms-green);
+
+    box-shadow: 0 0 0 3px rgba(23, 107, 58, 0.10);
+}
+
+
+/* ============================================================
+   MESSAGE
+   ============================================================ */
+
+#vms-technician-dashboard .vms-message {
+
+    min-height: 0;
+
+    padding: 0 28px;
+
+    color: var(--vms-text-secondary);
+
+    font-size: 13px;
+
+    background: white;
+}
+
+
+#vms-technician-dashboard .vms-message:not(:empty) {
+
+    padding-top: 13px;
+
+    padding-bottom: 13px;
+
+    border-bottom: 1px solid #e4ece7;
+}
+
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+#vms-technician-dashboard .vms-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+#vms-technician-dashboard .vms-table {
+
+    width: 100%;
+
+    min-width: 950px;
+
+    border-collapse: collapse;
+
+    table-layout: auto;
+}
+
+
+/* ============================================================
+   TABLE HEADER
+   ============================================================ */
+
+#vms-technician-dashboard .vms-table thead {
+
+    background: #edf7f0;
+}
+
+
+#vms-technician-dashboard .vms-table th {
+
+    padding: 15px 16px;
+
+    text-align: left;
+
+    color: #295a40;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.2px;
+
+    border-bottom: 1px solid #d9e8dd;
+
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   TABLE BODY
+   ============================================================ */
+
+#vms-technician-dashboard .vms-table td {
+
+    padding: 16px;
+
+    font-size: 13px;
+
+    color: #26372d;
+
+    border-bottom: 1px solid #e5ece8;
+
+    vertical-align: middle;
+}
+
+
+#vms-technician-dashboard .vms-table tbody tr {
+
+    transition: background 0.15s ease;
+}
+
+
+#vms-technician-dashboard .vms-table tbody tr:hover {
+
+    background: #f6faf7;
+}
+
+
+#vms-technician-dashboard .vms-table tbody tr:last-child td {
+
+    border-bottom: none;
+}
+
+
+/* ============================================================
+   VIEW BUTTON
+   ============================================================ */
+
+#vms-technician-dashboard .vms-view-btn {
+
+    border: 1px solid #a9cbb5;
+
+    background: white;
+
+    color: var(--vms-green);
+
+    border-radius: 7px;
+
+    padding: 7px 13px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+#vms-technician-dashboard .vms-view-btn:hover {
+
+    background: var(--vms-green);
+
+    color: white;
+
+    border-color: var(--vms-green);
+}
+
+
+/* ============================================================
+   STATUS BADGES
+   ============================================================ */
+
+#vms-technician-dashboard .vms-status,
+#vms-technician-dashboard .vms-status-select {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 5px 10px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    border: 1px solid transparent;
+}
+
+#vms-technician-dashboard .vms-status-select {
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 20px;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2210%22%20height%3D%225%22%20viewBox%3D%220%200%2010%205%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M0%200l5%205%205-5z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    background-size: 8px 4px;
+}
+
+
+/* Applied */
+
+#vms-technician-dashboard .status-applied {
+
+    background: #fff5d8;
+
+    color: #866300;
+
+    border-color: #f2df9d;
+}
+
+
+/* Confirmed */
+
+#vms-technician-dashboard .status-confirmed {
+
+    background: #dff4e6;
+
+    color: #176b3a;
+
+    border-color: #b8e1c6;
+}
+
+
+/* Under Work */
+
+#vms-technician-dashboard .status-under-work {
+
+    background: #e1efff;
+
+    color: #245b91;
+
+    border-color: #bfd8f0;
+}
+
+
+/* Updated */
+
+#vms-technician-dashboard .status-updated {
+
+    background: #e5f6ef;
+
+    color: #19724d;
+
+    border-color: #bfe4d3;
+}
+
+
+/* Cancelled */
+
+#vms-technician-dashboard .status-cancelled {
+
+    background: #fde5e7;
+
+    color: #a32935;
+
+    border-color: #f3c4c9;
+}
+
+
+/* Rescheduled */
+
+#vms-technician-dashboard .status-rescheduled {
+
+    background: #f1e7fa;
+
+    color: #70429b;
+
+    border-color: #dcc7ed;
+}
+
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+
+#vms-technician-dashboard .vms-pagination {
+
+    min-height: 70px;
+
+    padding: 14px 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-top: 1px solid #e4ece7;
+
+    background: #fbfdfc;
+
+    color: var(--vms-text-secondary);
+
+    font-size: 13px;
+}
+
+
+#vms-technician-dashboard .vms-pagination-controls {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+#vms-technician-dashboard #page-number {
+
+    min-width: 95px;
+
+    text-align: center;
+
+    color: #315b43;
+
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   DETAILS PANEL
+   ============================================================ */
+
+#vms-technician-dashboard .vms-details {
+
+    margin-top: 24px;
+
+    background: white;
+
+    border: 1px solid var(--vms-border);
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow: 0 2px 7px rgba(20, 60, 35, 0.04);
+}
+
+
+#vms-technician-dashboard .vms-details-heading {
+
+    padding: 23px 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border-bottom: 1px solid #e2ebe5;
+
+    background: #f8fbf9;
+}
+
+
+#vms-technician-dashboard .vms-details-heading h2 {
+
+    margin: 0;
+
+    font-size: 21px;
+
+    color: #15271c;
+}
+
+
+#vms-technician-dashboard .vms-details-heading p {
+
+    margin: 5px 0 0;
+
+    color: var(--vms-text-secondary);
+
+    font-size: 13px;
+}
+
+
+/* ============================================================
+   DETAIL GRID
+   ============================================================ */
+
+#vms-technician-dashboard .vms-detail-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 1px;
+
+    background: #dce8e0;
+}
+
+
+#vms-technician-dashboard .vms-detail-item {
+
+    min-height: 95px;
+
+    padding: 20px;
+
+    background: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+#vms-technician-dashboard .vms-detail-item span {
+
+    margin-bottom: 7px;
+
+    color: #718278;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+#vms-technician-dashboard .vms-detail-item strong {
+
+    color: #20372a;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    word-break: break-word;
+}
+
+
+/* ============================================================
+   EMPTY TABLE
+   ============================================================ */
+
+#vms-technician-dashboard .vms-table td[colspan] {
+
+    text-align: center;
+
+    padding: 45px 20px;
+
+    color: #718278;
+}
+
+
+/* ============================================================
+   RESPONSIVE - TABLET
+   ============================================================ */
+
+@media (max-width: 1000px) {
+
+    #vms-technician-dashboard .vms-main-container {
+
+        padding: 24px;
+    }
+
+
+    #vms-technician-dashboard .vms-stats {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    #vms-technician-dashboard .vms-detail-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* ============================================================
+   RESPONSIVE - MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    #vms-technician-dashboard .vms-header {
+
+        padding: 0 18px;
+
+        min-height: 70px;
+    }
+
+
+    #vms-technician-dashboard .vms-header-title {
+
+        display: none;
+    }
+
+
+    #vms-technician-dashboard .vms-main-container {
+
+        padding: 18px 14px 40px;
+    }
+
+
+    #vms-technician-dashboard .vms-page-header {
+
+        padding: 20px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    #vms-technician-dashboard .vms-page-title h1 {
+
+        font-size: 24px;
+    }
+
+
+    #vms-technician-dashboard .vms-page-header .vms-btn {
+
+        width: 100%;
+    }
+
+
+    #vms-technician-dashboard .vms-stats {
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 12px;
+    }
+
+
+    #vms-technician-dashboard .vms-stat-card {
+
+        padding: 16px;
+
+        gap: 10px;
+    }
+
+
+    #vms-technician-dashboard .vms-stat-icon {
+
+        width: 40px;
+
+        height: 40px;
+
+        font-size: 17px;
+    }
+
+
+    #vms-technician-dashboard .vms-stat-content strong {
+
+        font-size: 21px;
+    }
+
+
+    #vms-technician-dashboard .vms-filters {
+
+        grid-template-columns: 1fr;
+
+        padding: 16px;
+    }
+
+
+    #vms-technician-dashboard .vms-list-heading {
+
+        padding: 20px;
+    }
+
+
+    #vms-technician-dashboard .vms-pagination {
+
+        padding: 15px;
+
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+
+    #vms-technician-dashboard .vms-pagination-controls {
+
+        justify-content: space-between;
+    }
+
+
+    #vms-technician-dashboard .vms-detail-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    #vms-technician-dashboard .vms-details-heading {
+
+        padding: 20px;
+
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    #vms-technician-dashboard .vms-details-heading .vms-btn {
+
+        width: 100%;
+    }
+
+}
+
+
+/* ============================================================
+   VERY SMALL SCREENS
+   ============================================================ */
+
+@media (max-width: 450px) {
+
+    #vms-technician-dashboard .vms-stats {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    #vms-technician-dashboard .vms-page-title {
+
+        align-items: flex-start;
+    }
+
+
+    #vms-technician-dashboard .vms-logo {
+
+        width: 42px;
+
+        height: 42px;
+    }
+
+
+    #vms-technician-dashboard .vms-brand-text h1 {
+
+        font-size: 20px;
+    }
+
+}
+
+
+/* ============================================================
+   SUBPANELS & ACTION BUTTONS (EDIT BOOKING & CREATE INSPECTION)
+   ============================================================ */
+
+#vms-technician-dashboard .vms-btn-success {
+    background: #10b981;
+    color: #ffffff;
+    border: 1px solid #059669;
+}
+
+#vms-technician-dashboard .vms-btn-success:hover {
+    background: #059669;
+}
+
+#vms-technician-dashboard .vms-subpanel {
+    margin-top: 24px;
+    padding: 24px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    animation: vmsFadeIn 0.25s ease-out;
+}
+
+@keyframes vmsFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#vms-technician-dashboard .vms-subpanel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+#vms-technician-dashboard .vms-subpanel-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#vms-technician-dashboard .vms-link-subtle {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+#vms-technician-dashboard .vms-link-subtle:hover {
+    text-decoration: underline;
+    color: #1d4ed8;
+}
+
+#vms-technician-dashboard .vms-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+#vms-technician-dashboard .vms-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+#vms-technician-dashboard .vms-field-full {
+    grid-column: 1 / -1;
+}
+
+#vms-technician-dashboard .vms-field label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+}
+
+#vms-technician-dashboard .vms-input {
+    width: 100%;
+    padding: 9px 13px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #1e293b;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#vms-technician-dashboard .vms-input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+#vms-technician-dashboard .vms-input.vms-readonly {
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+#vms-technician-dashboard .vms-checkbox-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+#vms-technician-dashboard .vms-checkbox-field input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #10b981;
+}
+
+#vms-technician-dashboard .vms-checkbox-field label {
+    margin: 0;
+    cursor: pointer;
+}
+
+#vms-technician-dashboard .vms-form-footer {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+}
+
+#vms-technician-dashboard .vms-action-msg {
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+#vms-technician-dashboard .vms-action-msg.success {
+    color: #059669;
+}
+
+#vms-technician-dashboard .vms-action-msg.error {
+    color: #dc2626;
+}

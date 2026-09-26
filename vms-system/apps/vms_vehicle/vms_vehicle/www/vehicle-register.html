@@ -1,0 +1,231 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Register Vehicle | VMS Customer Portal
+{% endblock %}
+
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+<link rel="stylesheet" href="/assets/vms_user/css/vehicle-register.css">
+<link rel="stylesheet" href="/assets/vms_vehicle/css/vehicle-register.css">
+{% endblock %}
+
+{% block page_content %}
+
+<link rel="stylesheet" href="/assets/vms_user/css/customer-home.css">
+<link rel="stylesheet" href="/assets/vms_user/css/vehicle-register.css">
+<link rel="stylesheet" href="/assets/vms_vehicle/css/vehicle-register.css">
+
+<div id="vehicle-register-page">
+
+    <!-- =========================================================
+         MINIMAL NAVIGATION BAR
+    ========================================================== -->
+    <header class="vms-min-bar vms-min-navbar">
+        <!-- Left End: User Name -->
+        <div class="vms-min-left">
+            <span class="vms-min-user-badge">
+                <span class="vms-min-user-icon">👤</span>
+                <span class="vms-min-user-label">Customer:</span>
+                <strong class="vms-min-user-name">{{ (customer_profile and customer_profile.customer_name) or
+                    customer_name or frappe.session.user }}</strong>
+            </span>
+        </div>
+
+        <!-- Center: Nav Elements Equally Distanced -->
+        <nav class="vms-min-center">
+            <a href="/customer-home" class="vms-min-link">Dashboard</a>
+            <a href="/my-vehicles" class="vms-min-link">My Vehicles</a>
+            <a href="/vehicle-register" class="vms-min-link active">Register Vehicle</a>
+            <a href="/my-invoices" class="vms-min-link">Invoices</a>
+        </nav>
+
+        <!-- Right End: Logout Button -->
+        <div class="vms-min-right">
+            <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()"
+                title="Logout">
+                <span>Logout</span>
+                <span class="vms-min-logout-icon">↪</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="vehicle-register-shell" style="padding-top: 30px;">
+
+        <!-- Page Header -->
+        <header class="vehicle-page-header">
+            <div>
+                <div class="portal-badge">VMS CUSTOMER PORTAL</div>
+                <h1>Register a Vehicle</h1>
+                <p>Enter your vehicle details below to add a vehicle to your account.</p>
+            </div>
+
+            <a href="/my-vehicles" class="back-link">
+                ← My Vehicles
+            </a>
+        </header>
+
+        <!-- Registration Card -->
+        <section class="vehicle-form-card">
+
+            <div class="card-heading">
+                <div>
+                    <h2>Vehicle Details</h2>
+                    <p>All fields marked with <span>*</span> are required.</p>
+                </div>
+            </div>
+
+            <form id="vehicle-form" novalidate>
+
+                <div id="vehicle-form-message" class="form-message" hidden></div>
+
+                <div class="form-grid">
+
+                    <!-- Registration Number -->
+                    <div class="form-group full-width">
+                        <label for="vehicle-number">
+                            Vehicle Registration Number <span>*</span>
+                        </label>
+                        <input id="vehicle-number" class="form-control" name="vehicle_number" type="text" required
+                            maxlength="20" autocomplete="off" placeholder="KL07AB1234">
+                        <small>Example: KL07AB1234</small>
+                    </div>
+
+                    <!-- Brand -->
+                    <div class="form-group">
+                        <label for="vehicle-brand">
+                            Vehicle Brand <span>*</span>
+                        </label>
+
+                        <input id="vehicle-brand" class="form-control" name="vehicle_brand" type="text" required
+                            maxlength="100" placeholder="e.g. Maruti Suzuki">
+                    </div>
+
+                    <!-- Model -->
+                    <div class="form-group">
+                        <label for="vehicle-model">
+                            Vehicle Model <span>*</span>
+                        </label>
+
+                        <input id="vehicle-model" class="form-control" name="vehicle_model" type="text" required
+                            maxlength="100" placeholder="e.g. Swift">
+                    </div>
+
+                    <!-- Vehicle Type -->
+                    <div class="form-group">
+                        <label for="vehicle-type">
+                            Vehicle Type <span>*</span>
+                        </label>
+                        <select id="vehicle-type" class="form-control" name="vehicle_type" required>
+                            <option value="">Select type</option>
+                            <option>Hatchback</option>
+                            <option>Sedan</option>
+                            <option>SUV</option>
+                            <option>MUV</option>
+                            <option>Van</option>
+                            <option>Pickup</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <!-- Fuel Type -->
+                    <div class="form-group">
+                        <label for="fuel-type">
+                            Fuel Type <span>*</span>
+                        </label>
+
+                        <input id="fuel-type" class="form-control" name="fuel_type" type="text" required
+                            maxlength="50" placeholder="e.g. Petrol">
+                    </div>
+
+                    <!-- Manufacturing Year -->
+                    <div class="form-group">
+                        <label for="manufacturing-year">Manufacturing Year</label>
+                        <input id="manufacturing-year" class="form-control" type="number" name="manufacturing_year"
+                            min="1900" max="2100" placeholder="e.g. 2022">
+                    </div>
+
+                    <!-- Color -->
+                    <div class="form-group">
+                        <label for="color">Color</label>
+                        <input id="color" class="form-control" name="color" type="text" maxlength="50"
+                            placeholder="e.g. White">
+                    </div>
+
+                    <!-- Chassis Number -->
+                    <div class="form-group">
+                        <label for="chassis-number">Chassis Number</label>
+                        <input id="chassis-number" class="form-control" name="chassis_number" type="text"
+                            maxlength="100" placeholder="Enter chassis number">
+                    </div>
+
+                    <!-- Engine Number -->
+                    <div class="form-group">
+                        <label for="engine-number">Engine Number</label>
+                        <input id="engine-number" class="form-control" name="engine_number" type="text" maxlength="100"
+                            placeholder="Enter engine number">
+                    </div>
+
+                    <!-- Registration Date -->
+                    <div class="form-group">
+                        <label for="registration-date">Registration Date</label>
+                        <input id="registration-date" class="form-control" type="date" name="registration_date">
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="form-group full-width">
+                        <label for="notes">Additional Notes</label>
+                        <textarea id="notes" class="form-control" name="notes" rows="4" maxlength="1000"
+                            placeholder="Add any additional information about this vehicle..."></textarea>
+                    </div>
+
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a href="/my-vehicles" class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                    <button type="submit" id="save-vehicle-btn" class="btn btn-primary">
+                        <span class="btn-text">Save Vehicle</span>
+                    </button>
+                </div>
+
+            </form>
+        </section>
+
+        <p class="security-note">
+            🔒 This vehicle will be registered under your currently logged-in VMS customer account.
+        </p>
+
+    </div>
+</div>
+
+<script src="/assets/vms_user/js/vehicle-register.js"></script>
+<script>
+    function logoutCustomer() {
+        const btn = document.getElementById("customer-logout-btn") || document.getElementById("logout-btn");
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span>Logging out...</span>`;
+        }
+        if (window.frappe?.call) {
+            frappe.call({
+                method: "logout",
+                callback: function () {
+                    window.location.href = "/login-page/vms-login";
+                },
+                error: function () {
+                    window.location.href = "/login-page/vms-login";
+                }
+            });
+        } else {
+            fetch("/api/method/logout", { method: "POST" }).finally(function () {
+                window.location.href = "/login-page/vms-login";
+            });
+        }
+    }
+</script>
+
+{% endblock %}

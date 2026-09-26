@@ -1,0 +1,140 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "vehicle_number.-inspection_date",
+ "creation": "2026-09-22 14:16:04.901522",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1w0v",
+  "customer_name",
+  "vehicle_number",
+  "inspection_date",
+  "issue",
+  "spare_parts",
+  "spare_part_quantity",
+  "technician",
+  "mechanic",
+  "labour_hour",
+  "inspected"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1w0v",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "vehicle_number.owner_name",
+   "fetch_if_empty": 1,
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vehicle_number",
+   "fieldtype": "Link",
+   "label": "Vehicle Number",
+   "options": "vms vehicle registration"
+  },
+  {
+   "fieldname": "issue",
+   "fieldtype": "Text",
+   "label": "Issue"
+  },
+  {
+   "fieldname": "spare_parts",
+   "fieldtype": "Link",
+   "label": "Spare Parts",
+   "options": "vms spare parts"
+  },
+  {
+   "fieldname": "mechanic",
+   "fieldtype": "Data",
+   "label": "Mechanic"
+  },
+  {
+   "fieldname": "labour_hour",
+   "fieldtype": "Float",
+   "label": "Labour Hour"
+  },
+  {
+   "default": "0",
+   "fieldname": "inspected",
+   "fieldtype": "Check",
+   "label": "Inspected"
+  },
+  {
+   "fieldname": "inspection_date",
+   "fieldtype": "Date",
+   "label": "Inspection Date"
+  },
+  {
+   "fieldname": "technician",
+   "fieldtype": "Link",
+   "label": "Technician",
+   "options": "User"
+  },
+  {
+   "fetch_from": "spare_parts.quantity",
+   "fetch_if_empty": 1,
+   "fieldname": "spare_part_quantity",
+   "fieldtype": "Data",
+   "label": "Spare part Quantity",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-22 17:10:25.442674",
+ "modified_by": "Administrator",
+ "module": "Vms Inspection",
+ "name": "vms vehicle inspection",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "VMS Technician",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 0,
+   "export": 1,
+   "print": 0,
+   "read": 1,
+   "report": 1,
+   "role": "vms mechanic",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
