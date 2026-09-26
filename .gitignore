@@ -1,1 +1,4 @@
 .env
+# Frappe/ERPNext framework repositories
+/vms-system/apps/frappe/
+/vms-system/apps/erpnext/

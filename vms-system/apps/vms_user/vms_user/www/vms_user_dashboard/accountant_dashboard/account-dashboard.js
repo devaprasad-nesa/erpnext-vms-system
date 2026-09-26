@@ -185,7 +185,7 @@ frappe.ready(() => {
 
         if (action === "open") {
             window.location.href =
-                "/app/vms-accounts/" +
+                "/vms-account-invoice?invoice=" +
                 encodeURIComponent(id);
         }
     });
