@@ -246,7 +246,18 @@ frappe.ready(() => {
             "invoice-date",
             getToday()
         );
+        
+        const auditedSelect = $("audited");
+        if (auditedSelect) {
+            auditedSelect.value = "0";
+            auditedSelect.disabled = true;
+            auditedSelect.title = "Customer must confirm payment first";
+        }
 
+        const paymentStatus = $("payment-status");
+        if (paymentStatus) {
+            paymentStatus.checked = false;
+        }
 
         if (inspectionName) {
 
@@ -430,12 +441,22 @@ frappe.ready(() => {
         );
 
 
-        setValue(
-            "audited",
-            invoice.audited
-                ? "1"
-                : "0"
-        );
+        const auditedSelect = $("audited");
+        if (auditedSelect) {
+            auditedSelect.value = invoice.audited ? "1" : "0";
+            if (!invoice.payment) {
+                auditedSelect.disabled = true;
+                auditedSelect.title = "Customer must confirm payment first";
+            } else {
+                auditedSelect.disabled = false;
+                auditedSelect.title = "";
+            }
+        }
+        
+        const paymentStatus = $("payment-status");
+        if (paymentStatus) {
+            paymentStatus.checked = !!invoice.payment;
+        }
 
 
         setValue(
@@ -985,11 +1006,17 @@ frappe.ready(() => {
                 );
 
             }
-
-
+            
             const savedName =
                 response.message.name ||
                 invoiceName;
+                
+            if (data.audited === "1") {
+                await frappe.call({
+                    method: "vms_account.api.audit_invoice",
+                    args: { invoice_name: savedName }
+                });
+            }
 
 
             console.log(

@@ -92,6 +92,15 @@ frappe.ready(() => {
                 <td>${money(row.total_bill)}</td>
                 <td>
                     <span class="vms-status ${
+                        row.payment
+                            ? "vms-status-success"
+                            : "vms-status-pending"
+                    }">
+                        ${row.payment ? "Enabled" : "Disabled"}
+                    </span>
+                </td>
+                <td>
+                    <span class="vms-status ${
                         row.audited
                             ? "vms-status-success"
                             : "vms-status-pending"
