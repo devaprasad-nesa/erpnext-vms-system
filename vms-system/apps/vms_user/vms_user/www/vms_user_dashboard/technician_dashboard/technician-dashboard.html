@@ -491,6 +491,14 @@ Technician Dashboard | VMS
 
                 </div>
 
+                <div class="vms-pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; flex-wrap: wrap; gap: 8px;">
+                    <div id="inspection-page-info" class="vms-pagination-info" style="font-weight: 500; font-size: 13px;">Page 1 of 1</div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" id="inspection-prev-btn" class="vms-btn vms-btn-secondary" style="padding: 6px 12px; font-size: 13px;" disabled>&larr; Previous</button>
+                        <button type="button" id="inspection-next-btn" class="vms-btn vms-btn-secondary" style="padding: 6px 12px; font-size: 13px;" disabled>Next &rarr;</button>
+                    </div>
+                </div>
+
             </div>
 
         </section>
@@ -589,6 +597,14 @@ Technician Dashboard | VMS
 
                 </div>
 
+                <div class="vms-pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; flex-wrap: wrap; gap: 8px;">
+                    <div id="spare-part-page-info" class="vms-pagination-info" style="font-weight: 500; font-size: 13px;">Page 1 of 1</div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" id="spare-part-prev-btn" class="vms-btn vms-btn-secondary" style="padding: 6px 12px; font-size: 13px;" disabled>&larr; Previous</button>
+                        <button type="button" id="spare-part-next-btn" class="vms-btn vms-btn-secondary" style="padding: 6px 12px; font-size: 13px;" disabled>Next &rarr;</button>
+                    </div>
+                </div>
+
             </div>
 
         </section>
@@ -597,7 +613,6 @@ Technician Dashboard | VMS
 
 </div>
 
-<script src="/assets/vms_user/js/technician-dashboard.js"></script>
 <script>
 function logoutTechnician() {
     const btn = document.getElementById("vms-logout");

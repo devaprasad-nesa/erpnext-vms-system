@@ -43,6 +43,13 @@ function loadCustomerInvoices() {
         },
         callback: function (r) {
             invoicesCache = r.message || [];
+            
+            const totalPages = r.pagination?.[window.ACCOUNT_DOCTYPE || "vms accounts"]?.total_pages || r.total_pages || 1;
+            const pageInfo = document.getElementById("invoice-page-info");
+            if (pageInfo) {
+                pageInfo.textContent = `Total Received Pages: ${totalPages}`;
+            }
+
             renderInvoicesTable();
         },
         error: function (err) {
@@ -57,14 +64,15 @@ function loadCustomerInvoices() {
     });
 }
 
-function enablePayment(invoiceName) {
-    frappe.confirm('Are you sure you want to mark payment as done for this invoice?', () => {
+function togglePayment(invoiceName, currentState) {
+    const newState = currentState ? 0 : 1;
+    frappe.confirm(`Are you sure you want to mark payment as ${newState ? 'done' : 'pending'} for this invoice?`, () => {
         frappe.call({
-            method: "vms_account.api.enable_payment",
-            args: { invoice_name: invoiceName },
+            method: "vms_account.api.toggle_payment",
+            args: { invoice_name: invoiceName, payment: newState },
             callback: function(r) {
                 if (r.message && r.message.success) {
-                    frappe.show_alert({message: "Payment marked as done.", indicator: "green"});
+                    frappe.show_alert({message: `Payment marked as ${newState ? 'done' : 'pending'}.`, indicator: "green"});
                     loadCustomerInvoices();
                 }
             }
@@ -116,8 +124,8 @@ function renderInvoicesTable() {
 
         const isPayment = Boolean(Number(inv.payment));
         const paymentCheckbox = isPayment
-            ? `<input type="checkbox" checked disabled class="form-check-input" /> <label class="small text-success mb-0 ms-1">Paid</label>`
-            : `<input type="checkbox" class="form-check-input" onclick="enablePayment('${frappe.utils.escape_html(inv.name)}')"/> <label class="small text-muted mb-0 ms-1">Pay</label>`;
+            ? `<input type="checkbox" checked class="form-check-input" onclick="togglePayment('${frappe.utils.escape_html(inv.name)}', 1)" /> <label class="small text-success mb-0 ms-1">Paid</label>`
+            : `<input type="checkbox" class="form-check-input" onclick="togglePayment('${frappe.utils.escape_html(inv.name)}', 0)"/> <label class="small text-muted mb-0 ms-1">Pay</label>`;
 
         return `
             <tr>
@@ -174,23 +182,21 @@ function viewInvoiceDetails(invoiceName) {
             const paymentCheckbox = document.getElementById("modal-payment-checkbox");
             
             paymentCheckbox.checked = isPayment;
-            paymentCheckbox.disabled = isPayment;
+            paymentCheckbox.disabled = false;
             
             paymentCheckbox.onchange = function() {
-                if (paymentCheckbox.checked) {
-                    frappe.call({
-                        method: "vms_account.api.enable_payment",
-                        args: { invoice_name: invoiceName },
-                        callback: function(r) {
-                            if (r.message && r.message.success) {
-                                paymentCheckbox.disabled = true;
-                                loadCustomerInvoices();
-                            } else {
-                                paymentCheckbox.checked = false;
-                            }
+                const newState = paymentCheckbox.checked ? 1 : 0;
+                frappe.call({
+                    method: "vms_account.api.toggle_payment",
+                    args: { invoice_name: invoiceName, payment: newState },
+                    callback: function(r) {
+                        if (r.message && r.message.success) {
+                            loadCustomerInvoices();
+                        } else {
+                            paymentCheckbox.checked = !newState;
                         }
-                    });
-                }
+                    }
+                });
             };
 
             if (isAudited) {

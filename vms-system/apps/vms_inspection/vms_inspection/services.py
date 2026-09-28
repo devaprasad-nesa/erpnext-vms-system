@@ -7,7 +7,7 @@
 import frappe
 from frappe import _
 from frappe.utils import flt, getdate
-from vms_user.pagination import apply_pagination
+from vms_user.pagination import apply_pagination, get_paginated_data
 
 INSPECTION_DOCTYPE = "vms vehicle inspection"
 SPARE_PARTS_DOCTYPE = "vms spare parts"
@@ -289,7 +289,7 @@ def sync_service_status_on_inspection(vehicle_docname: str, inspection_date, ins
 # TECHNICIAN DASHBOARD & LISTING APIS
 # =========================================================
 
-def list_inspections() -> list[dict]:
+def list_inspections(page=None) -> list[dict]:
     """Return inspections visible to the logged-in user."""
     user = getattr(frappe.session, "user", None) or "Guest"
     if user == "Guest":
@@ -300,51 +300,48 @@ def list_inspections() -> list[dict]:
     if "vms technician" in roles and "vms manager" not in roles and "system manager" not in roles and "administrator" != user.lower():
         filters["technician"] = user
 
-    return frappe.get_list(
+    return get_paginated_data(
         INSPECTION_DOCTYPE,
-        **apply_pagination({
-            "filters": filters,
-            "fields": [
-                "name",
-                "customer_name",
-                "vehicle_number",
-                "inspection_date",
-                "issue",
-                "spare_parts",
-                "spare_part_quantity",
-                "technician",
-                "mechanic",
-                "labour_hour",
-                "inspected",
-                "creation",
-                "modified",
-            ],
-            "order_by": "modified desc",
-        })
+        page=page,
+        filters=filters,
+        fields=[
+            "name",
+            "customer_name",
+            "vehicle_number",
+            "inspection_date",
+            "issue",
+            "spare_parts",
+            "spare_part_quantity",
+            "technician",
+            "mechanic",
+            "labour_hour",
+            "inspected",
+            "creation",
+            "modified",
+        ],
+        order_by="modified desc"
     )
 
 
-def list_spare_parts() -> list[dict]:
+def list_spare_parts(page=None) -> list[dict]:
     """Return all active spare parts."""
     require_staff()
-    return frappe.get_list(
+    return get_paginated_data(
         SPARE_PARTS_DOCTYPE,
-        **apply_pagination({
-            "fields": ["name", "part_name", "quantity", "cost", "owner", "creation", "modified"],
-            "order_by": "modified desc",
-        })
+        page=page,
+        fields=["name", "part_name", "quantity", "cost", "owner", "creation", "modified"],
+        order_by="modified desc"
     )
 
 
 def list_vehicles() -> list[dict]:
     """Return registered vehicles for the selection dropdown."""
     require_staff()
-    return frappe.get_list(
+    return frappe.get_all(
         VEHICLE_DOCTYPE,
-        **apply_pagination({
-            "fields": ["name", "vehicle_number", "vehicle_brand", "vehicle_model", "owner_name"],
-            "order_by": "modified desc",
-        })
+        fields=["name", "vehicle_number", "vehicle_brand", "vehicle_model", "owner_name"],
+        order_by="modified desc",
+        limit_page_length=500
     )
 
 
@@ -515,7 +512,7 @@ def delete_spare_part(name: str) -> dict:
     return {"message": _("Spare part deleted successfully.")}
 
 
-def list_customer_vehicle_inspections(vehicle_name: str | None = None) -> list[dict]:
+def list_customer_vehicle_inspections(vehicle_name: str | None = None, page=None) -> list[dict]:
     """
     Return inspections for vehicles owned by the logged-in customer.
     """
@@ -529,23 +526,22 @@ def list_customer_vehicle_inspections(vehicle_name: str | None = None) -> list[d
         filters["vehicle_number"] = resolved["name"]
 
     # frappe.get_list automatically applies our vehicle_inspection_query permission condition
-    return frappe.get_list(
+    return get_paginated_data(
         INSPECTION_DOCTYPE,
-        **apply_pagination({
-            "filters": filters,
-            "fields": [
-                "name",
-                "vehicle_number",
-                "customer_name",
-                "inspection_date",
-                "issue",
-                "spare_parts",
-                "spare_part_quantity",
-                "mechanic",
-                "labour_hour",
-                "inspected",
-                "creation",
-            ],
-            "order_by": "inspection_date desc",
-        })
+        page=page,
+        filters=filters,
+        fields=[
+            "name",
+            "vehicle_number",
+            "customer_name",
+            "inspection_date",
+            "issue",
+            "spare_parts",
+            "spare_part_quantity",
+            "mechanic",
+            "labour_hour",
+            "inspected",
+            "creation",
+        ],
+        order_by="inspection_date desc"
     )

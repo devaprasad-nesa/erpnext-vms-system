@@ -4,7 +4,7 @@
 import frappe
 from frappe import _
 from frappe.utils import today, flt
-from vms_user.pagination import apply_pagination
+from vms_user.pagination import apply_pagination, get_paginated_data
 
 
 ACCOUNTANT_ROLE = "vms accountant"
@@ -49,27 +49,26 @@ def check_release_field():
         )
 
 
-def get_released_inspections():
+def get_released_inspections(page=None):
     check_release_field()
 
     filters = {
         INSPECTION_RELEASE_FIELD: 1,
     }
 
-    inspections = frappe.get_all(
+    inspections = get_paginated_data(
         INSPECTION_DOCTYPE,
-        **apply_pagination({
-            "filters": filters,
-            "fields": [
-                "name",
-                "vehicle_number",
-                "customer_name",
-                "spare_parts",
-                "spare_part_quantity",
-                "labour_hour",
-            ],
-            "order_by": "modified desc",
-        })
+        page=page,
+        filters=filters,
+        fields=[
+            "name",
+            "vehicle_number",
+            "customer_name",
+            "spare_parts",
+            "spare_part_quantity",
+            "labour_hour",
+        ],
+        order_by="modified desc"
     )
 
     return inspections
@@ -92,10 +91,19 @@ def get_spare_part_info(part_name):
 
 
 @frappe.whitelist()
-def get_dashboard_data() -> dict:
+def get_dashboard_data(
+    inspection_page: int | str | None = None,
+    invoice_page: int | str | None = None,
+    page: int | str | None = None,
+) -> dict:
     require_role(ACCOUNTANT_ROLE, MANAGER_ROLE, TECHNICIAN_ROLE)
 
-    inspections = get_released_inspections()
+    if inspection_page is None:
+        inspection_page = frappe.form_dict.get("inspection_page") or page or 1
+    if invoice_page is None:
+        invoice_page = frappe.form_dict.get("invoice_page") or page or 1
+
+    inspections = get_released_inspections(page=inspection_page)
 
     inspection_rows = []
 
@@ -118,37 +126,34 @@ def get_dashboard_data() -> dict:
             ),
         })
 
-    invoices = frappe.get_all(
+    invoices = get_paginated_data(
         ACCOUNT_DOCTYPE,
-        **apply_pagination({
-            "fields": [
-                "name",
-                "customer_name",
-                "vehicle_number",
-                "invoice_date",
-                "total_bill",
-                "audited",
-                "payment",
-            ],
-            "order_by": "modified desc",
-        })
+        page=invoice_page,
+        fields=[
+            "name",
+            "customer_name",
+            "vehicle_number",
+            "invoice_date",
+            "total_bill",
+            "audited",
+            "payment",
+        ],
+        order_by="modified desc"
     )
 
     vehicles_raw = frappe.get_all(
         VEHICLE_DOCTYPE,
-        **apply_pagination({
-            "fields": ["name", "vehicle_number", "owner_name", "vehicle_brand"],
-            "order_by": "creation desc",
-        })
+        fields=["name", "vehicle_number", "owner_name", "vehicle_brand"],
+        order_by="creation desc",
+        limit_page_length=500
     )
     vehicles = [dict(v) for v in vehicles_raw]
 
     bookings_raw = frappe.get_all(
         "vms vehicle service registration",
-        **apply_pagination({
-            "fields": ["name", "customer_name", "vehicle", "service_date", "booking_status", "service_slot", "owner"],
-            "order_by": "creation desc",
-        })
+        fields=["name", "customer_name", "vehicle", "service_date", "booking_status", "service_slot", "owner"],
+        order_by="creation desc",
+        limit_page_length=500
     )
     service_bookings = []
     for b in bookings_raw:
@@ -164,10 +169,9 @@ def get_dashboard_data() -> dict:
 
     slots_raw = frappe.get_all(
         "vms service slot",
-        **apply_pagination({
-            "fields": ["name", "start_time", "end_time", "weekday_capacity", "saturday_capacity"],
-            "order_by": "creation desc",
-        })
+        fields=["name", "start_time", "end_time", "weekday_capacity", "saturday_capacity"],
+        order_by="creation desc",
+        limit_page_length=500
     )
     service_slots = []
     for s in slots_raw:
@@ -179,12 +183,17 @@ def get_dashboard_data() -> dict:
             "saturday_limit": s.saturday_capacity,
         })
 
+    pagination_data = getattr(frappe.local, "response", {}).get("pagination", {})
     return {
         "inspections": inspection_rows,
         "invoices": invoices,
         "vehicles": vehicles,
         "service_bookings": service_bookings,
         "service_slots": service_slots,
+        "pagination": {
+            INSPECTION_DOCTYPE: pagination_data.get(INSPECTION_DOCTYPE, {}),
+            ACCOUNT_DOCTYPE: pagination_data.get(ACCOUNT_DOCTYPE, {}),
+        }
     }
 
 
@@ -194,12 +203,10 @@ def get_invoice_form_data() -> dict:
 
     inspections = get_released_inspections()
 
-    customers = frappe.get_all(
+    customers = get_paginated_data(
         "User",
-        **apply_pagination({
-            "filters": {"enabled": 1},
-            "fields": ["name", "full_name"],
-        })
+        filters={"enabled": 1},
+        fields=["name", "full_name"]
     )
 
     return {
@@ -435,7 +442,7 @@ def audit_invoice(invoice_name: str) -> dict:
 
 
 @frappe.whitelist()
-def enable_payment(invoice_name: str) -> dict:
+def toggle_payment(invoice_name: str, payment: int) -> dict:
     require_role(CUSTOMER_ROLE, "System Manager", "Administrator")
 
     doc = frappe.get_doc(ACCOUNT_DOCTYPE, invoice_name)
@@ -446,14 +453,11 @@ def enable_payment(invoice_name: str) -> dict:
     if not is_admin and doc.customer_name != user:
         frappe.throw(_("You can only access your own invoice."), frappe.PermissionError)
 
-    if doc.payment:
-        return {"message": _("Payment already enabled."), "success": True}
-
-    doc.payment = 1
+    doc.payment = 1 if payment else 0
     doc.save()
 
     return {
-        "message": _("Payment enabled successfully."),
+        "message": _("Payment updated successfully."),
         "success": True,
         "invoice": doc.name,
         "payment": doc.payment,
@@ -461,7 +465,7 @@ def enable_payment(invoice_name: str) -> dict:
 
 
 @frappe.whitelist()
-def get_my_invoices(only_audited: int | str | None = None) -> list:
+def get_my_invoices(only_audited: int | str | None = None, page: int | str | None = None) -> list:
     require_role(CUSTOMER_ROLE, "System Manager", "Administrator")
 
     user = frappe.session.user
@@ -474,8 +478,9 @@ def get_my_invoices(only_audited: int | str | None = None) -> list:
     if only_audited and str(only_audited) in ("1", "true", "True"):
         filters["audited"] = 1
 
-    invoices = frappe.get_all(
+    invoices = get_paginated_data(
         ACCOUNT_DOCTYPE,
+        page=page,
         filters=filters,
         fields=[
             "name",
@@ -488,8 +493,7 @@ def get_my_invoices(only_audited: int | str | None = None) -> list:
             "audited",
             "payment",
         ],
-        order_by="invoice_date desc, creation desc",
-        limit_page_length=200,
+        order_by="invoice_date desc, creation desc"
     )
 
     return invoices

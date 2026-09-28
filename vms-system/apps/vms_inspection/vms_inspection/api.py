@@ -8,7 +8,7 @@ import json
 
 import frappe
 from frappe import _
-from vms_user.pagination import apply_pagination
+from vms_user.pagination import apply_pagination, get_paginated_data
 from vms_inspection import services
 
 
@@ -27,48 +27,67 @@ def parse_data(data: dict | str) -> dict:
 
 
 @frappe.whitelist()
-def get_dashboard_data() -> dict:
+def get_dashboard_data(
+    inspection_page: int | str | None = None,
+    spare_part_page: int | str | None = None,
+    page: int | str | None = None,
+) -> dict:
     """Fetch dashboard data for the logged-in technician."""
     services.require_technician()
+
+    if inspection_page is None:
+        inspection_page = frappe.form_dict.get("inspection_page") or page or 1
+    if spare_part_page is None:
+        spare_part_page = frappe.form_dict.get("spare_part_page") or page or 1
 
     mechanic_roles = frappe.db.get_all("Has Role", filters={"role": "vms mechanic"}, fields=["parent"])
     mechanic_names = [m.parent for m in mechanic_roles]
     users = []
     if mechanic_names:
-        users = frappe.get_all("User", **apply_pagination({
-            "filters": {"name": ["in", mechanic_names], "enabled": 1},
-            "fields": ["name", "full_name"],
-            "ignore_permissions": True
-        }))
+        users = frappe.get_all("User",
+            filters={"name": ["in", mechanic_names], "enabled": 1},
+            fields=["name", "full_name"],
+            ignore_permissions=True,
+            limit_page_length=500
+        )
 
     customer_roles = frappe.db.get_all("Has Role", filters={"role": "vms customer"}, fields=["parent"])
     customer_names = [c.parent for c in customer_roles]
     customers = []
     if customer_names:
-        customers = frappe.get_all("User", **apply_pagination({
-            "filters": {"name": ["in", customer_names], "enabled": 1},
-            "fields": ["name", "full_name"],
-            "ignore_permissions": True
-        }))
+        customers = frappe.get_all("User",
+            filters={"name": ["in", customer_names], "enabled": 1},
+            fields=["name", "full_name"],
+            ignore_permissions=True,
+            limit_page_length=500
+        )
+
+    inspections = services.list_inspections(page=inspection_page)
+    spare_parts = services.list_spare_parts(page=spare_part_page)
+    pagination_data = getattr(frappe.local, "response", {}).get("pagination", {})
 
     return {
-        "inspections": services.list_inspections(),
-        "spare_parts": services.list_spare_parts(),
+        "inspections": inspections,
+        "spare_parts": spare_parts,
         "vehicles": services.list_vehicles(),
         "users": users,
         "customers": customers,
+        "pagination": {
+            services.INSPECTION_DOCTYPE: pagination_data.get(services.INSPECTION_DOCTYPE, {}),
+            services.SPARE_PARTS_DOCTYPE: pagination_data.get(services.SPARE_PARTS_DOCTYPE, {}),
+        }
     }
 
 
 @frappe.whitelist()
-def get_inspections() -> list:
-    return services.list_inspections()
+def get_inspections(page: int | str | None = None) -> list:
+    return services.list_inspections(page=page)
 
 
 @frappe.whitelist()
-def get_my_vehicle_inspections(vehicle_name: str | None = None) -> list:
+def get_my_vehicle_inspections(vehicle_name: str | None = None, page: int | str | None = None) -> list:
     """Return inspections for vehicles belonging to the logged-in customer."""
-    return services.list_customer_vehicle_inspections(vehicle_name)
+    return services.list_customer_vehicle_inspections(vehicle_name, page=page)
 
 
 @frappe.whitelist()
@@ -94,8 +113,8 @@ def get_inspection_details(name: str | None = None) -> dict:
 
 
 @frappe.whitelist()
-def get_spare_parts() -> list:
-    return services.list_spare_parts()
+def get_spare_parts(page: int | str | None = None) -> list:
+    return services.list_spare_parts(page=page)
 
 
 @frappe.whitelist()

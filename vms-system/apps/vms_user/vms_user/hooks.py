@@ -73,6 +73,8 @@ web_include_js = "/assets/vms_user/js/customer_login.js"
 home_page = "login"
 
 website_route_rules = [
+    {"from_route": "/user-dashboard", "to_route": "vms_user_dashboard/user_dashboard/customer-home"},
+    {"from_route": "/accounts-dashboard", "to_route": "vms_user_dashboard/accountant_dashboard/account-dashboard"},
     {"from_route": "/customer-dashboard", "to_route": "vms_user_dashboard/user_dashboard/customer-home"},
     {"from_route": "/customer-home", "to_route": "vms_user_dashboard/user_dashboard/customer-home"},
     {"from_route": "/vehicle-register", "to_route": "vms_user_dashboard/user_dashboard/vehicle-register"},

@@ -754,3 +754,66 @@ Form Dict: {'invoice_name': 'INV-00014', 'cmd': 'vms_account.api.audit_invoice'}
 2026-09-26 12:15:10,101 ERROR frappe New Exception collected in error log
 Site: vms.localhost
 Form Dict: {'invoice_name': 'INV-00014', 'total_bill': '999.72', 'invoice_date': '2026-09-25', 'cmd': 'vms_account.api.update_invoice'}
+2026-09-26 12:51:53,881 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.service_registration.get_my_service_registrations'}
+2026-09-26 12:51:53,882 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '1', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-28 10:02:38,063 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_vehicle.service_registration.get_my_service_registrations'}
+2026-09-28 10:02:38,064 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '1', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-28 10:02:41,967 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'only_audited': '0', 'cmd': 'vms_account.api.get_my_invoices'}
+2026-09-28 10:02:45,807 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-28 10:02:55,918 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_account.api.get_dashboard_data'}
+2026-09-28 10:06:54,462 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'vms_account.api.get_dashboard_data'}
+2026-09-28 10:41:11,070 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-28 10:51:30,739 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'inspection_page': '1', 'invoice_page': '1', 'cmd': 'vms_account.api.get_dashboard_data'}
+2026-09-28 10:51:39,486 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'inspection_page': '1', 'invoice_page': '1', 'cmd': 'vms_account.api.get_dashboard_data'}
+2026-09-28 10:59:06,880 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': 'jo55v15fvt', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 10:59:09,892 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': 'jo5rl7o8ds', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 10:59:12,213 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': 'jdidjuap9i', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 10:59:13,980 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': 'jdiknr86i5', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 10:59:20,928 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': '2ap7k2krj5', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 10:59:21,388 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': '2ap7k2krj5', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 10:59:24,640 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': '2ap7k2krj5', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 10:59:25,126 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'name': '2ap7k2krj5', 'cmd': 'vms_inspection.api.delete_inspection'}
+2026-09-28 11:00:38,208 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}
+2026-09-28 11:07:13,408 ERROR frappe New Exception collected in error log
+Site: vms.localhost
+Form Dict: {'cmd': 'frappe.auth.logout'}

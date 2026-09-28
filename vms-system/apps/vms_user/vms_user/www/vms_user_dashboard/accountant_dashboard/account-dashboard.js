@@ -133,11 +133,58 @@ frappe.ready(() => {
             invoices.filter(row => !row.audited).length;
     }
 
+    let currentInspectionPage = 1;
+    let totalInspectionPages = 1;
+    let currentInvoicePage = 1;
+    let totalInvoicePages = 1;
+
+    function updatePaginationControls() {
+        const inspectEl = $("inspection-page-info");
+        const inspectPrev = $("inspection-prev-btn");
+        const inspectNext = $("inspection-next-btn");
+        const showInspectPagination = totalInspectionPages > 1;
+
+        if (inspectPrev) {
+            inspectPrev.style.display = showInspectPagination ? "" : "none";
+            inspectPrev.disabled = currentInspectionPage <= 1;
+        }
+        if (inspectNext) {
+            inspectNext.style.display = showInspectPagination ? "" : "none";
+            inspectNext.disabled = currentInspectionPage >= totalInspectionPages;
+        }
+        if (inspectEl) {
+            inspectEl.style.display = showInspectPagination ? "" : "none";
+            inspectEl.textContent = `Page ${currentInspectionPage} of ${totalInspectionPages}`;
+        }
+
+        const invoiceEl = $("invoice-page-info");
+        const invoicePrev = $("invoice-prev-btn");
+        const invoiceNext = $("invoice-next-btn");
+        const showInvoicePagination = totalInvoicePages > 1;
+
+        if (invoicePrev) {
+            invoicePrev.style.display = showInvoicePagination ? "" : "none";
+            invoicePrev.disabled = currentInvoicePage <= 1;
+        }
+        if (invoiceNext) {
+            invoiceNext.style.display = showInvoicePagination ? "" : "none";
+            invoiceNext.disabled = currentInvoicePage >= totalInvoicePages;
+        }
+        if (invoiceEl) {
+            invoiceEl.style.display = showInvoicePagination ? "" : "none";
+            invoiceEl.textContent = `Page ${currentInvoicePage} of ${totalInvoicePages}`;
+        }
+    }
+
     function loadDashboard() {
         showMessage("Loading dashboard...");
 
         frappe.call({
             method: "vms_account.api.get_dashboard_data",
+            args: {
+                inspection_page: currentInspectionPage,
+                invoice_page: currentInvoicePage
+            },
 
             callback(r) {
                 if (r.exc) {
@@ -148,14 +195,24 @@ frappe.ready(() => {
                 }
 
                 const data = r.message || {};
+                const pagination = data.pagination || r.pagination || {};
 
+                // Handle raw lists and pagination metadata from the response object
                 const inspections = data.inspections || [];
+                const inspectMeta = pagination[window.INSPECTION_DOCTYPE || "vms vehicle inspection"] || {};
+                totalInspectionPages = inspectMeta.total_pages || data._total_pages || r.total_pages || 1;
+                currentInspectionPage = inspectMeta.page || currentInspectionPage;
+                
                 const invoices = data.invoices || [];
+                const invoiceMeta = pagination[window.ACCOUNT_DOCTYPE || "vms accounts"] || {};
+                totalInvoicePages = invoiceMeta.total_pages || data._total_pages || r.total_pages || 1;
+                currentInvoicePage = invoiceMeta.page || currentInvoicePage;
 
                 renderInspections(inspections);
                 renderInvoices(invoices);
                 renderStats(inspections, invoices);
-
+                
+                updatePaginationControls();
                 showMessage("");
             },
 
@@ -166,6 +223,34 @@ frappe.ready(() => {
             }
         });
     }
+
+    $("inspection-prev-btn")?.addEventListener("click", () => {
+        if (currentInspectionPage > 1) {
+            currentInspectionPage--;
+            loadDashboard();
+        }
+    });
+
+    $("inspection-next-btn")?.addEventListener("click", () => {
+        if (currentInspectionPage < totalInspectionPages) {
+            currentInspectionPage++;
+            loadDashboard();
+        }
+    });
+
+    $("invoice-prev-btn")?.addEventListener("click", () => {
+        if (currentInvoicePage > 1) {
+            currentInvoicePage--;
+            loadDashboard();
+        }
+    });
+
+    $("invoice-next-btn")?.addEventListener("click", () => {
+        if (currentInvoicePage < totalInvoicePages) {
+            currentInvoicePage++;
+            loadDashboard();
+        }
+    });
 
     root.addEventListener("click", event => {
         const button = event.target.closest(
@@ -179,20 +264,24 @@ frappe.ready(() => {
 
         if (action === "create") {
             window.location.href =
-                "/vms-account-invoice?inspection=" +
+                "/vms_user_dashboard/accountant_dashboard/account-invoice?inspection=" +
                 encodeURIComponent(id);
         }
 
         if (action === "open") {
             window.location.href =
-                "/vms-account-invoice?invoice=" +
+                "/vms_user_dashboard/accountant_dashboard/account-invoice?invoice=" +
                 encodeURIComponent(id);
         }
     });
 
     $("vms-refresh").addEventListener(
         "click",
-        loadDashboard
+        () => {
+            currentInspectionPage = 1;
+            currentInvoicePage = 1;
+            loadDashboard();
+        }
     );
 
     loadDashboard();
