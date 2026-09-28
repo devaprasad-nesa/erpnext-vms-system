@@ -560,6 +560,14 @@ body .page-header-wrapper {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
+.customer-small-btn:disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+    pointer-events: none !important;
+}
+
 
 /* ================================================================
    FORM

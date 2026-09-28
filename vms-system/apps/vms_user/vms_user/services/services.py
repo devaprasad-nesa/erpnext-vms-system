@@ -39,7 +39,7 @@ import frappe
 
 # _() is Frappe's translation function.
 from frappe import _
-from vms_user.pagination import apply_pagination
+from vms_user.pagination import apply_pagination, get_paginated_data
 
 # Used to securely set a user's password through Frappe.
 from frappe.utils.password import update_password
@@ -633,16 +633,14 @@ def get_assignable_roles() -> list[str]:
             frappe.PermissionError,
         )
 
-    roles = frappe.get_all(
+    roles = get_paginated_data(
         "Role",
-        **apply_pagination({
-            "filters": {
-                "disabled": 0,
-                "name": ["not in", ["Guest", "All"]],
-            },
-            "pluck": "name",
-            "order_by": "name asc",
-        })
+        filters={
+            "disabled": 0,
+            "name": ["not in", ["Guest", "All"]],
+        },
+        pluck="name",
+        order_by="name asc"
     )
 
     return roles

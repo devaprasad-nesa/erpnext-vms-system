@@ -48,6 +48,53 @@ frappe.ready(function () {
 
 
     /* ------------------------------------------------------------
+       Pagination button handlers
+    ------------------------------------------------------------ */
+
+    document.getElementById("booking-prev-btn")?.addEventListener("click", function () {
+        if (currentBookingPage > 1) {
+            currentBookingPage--;
+            loadBookings();
+        }
+    });
+
+    document.getElementById("booking-next-btn")?.addEventListener("click", function () {
+        if (currentBookingPage < totalBookingPages) {
+            currentBookingPage++;
+            loadBookings();
+        }
+    });
+
+    document.getElementById("inspection-prev-btn")?.addEventListener("click", function () {
+        if (currentInspectionPage > 1) {
+            currentInspectionPage--;
+            loadInspections();
+        }
+    });
+
+    document.getElementById("inspection-next-btn")?.addEventListener("click", function () {
+        if (currentInspectionPage < totalInspectionPages) {
+            currentInspectionPage++;
+            loadInspections();
+        }
+    });
+
+    document.getElementById("home-invoice-prev-btn")?.addEventListener("click", function () {
+        if (currentInvoicePage > 1) {
+            currentInvoicePage--;
+            loadHomeInvoices();
+        }
+    });
+
+    document.getElementById("home-invoice-next-btn")?.addEventListener("click", function () {
+        if (currentInvoicePage < totalInvoicePages) {
+            currentInvoicePage++;
+            loadHomeInvoices();
+        }
+    });
+
+
+    /* ------------------------------------------------------------
        Service date change
     ------------------------------------------------------------ */
 
@@ -581,6 +628,95 @@ function loadVehicles() {
 
 
 /* ================================================================
+   PAGINATION STATE & CONTROLS FOR CUSTOMER HOME
+================================================================ */
+
+let currentBookingPage = 1;
+let totalBookingPages = 1;
+let currentInspectionPage = 1;
+let totalInspectionPages = 1;
+let currentInvoicePage = 1;
+let totalInvoicePages = 1;
+
+function updateBookingPagination() {
+    const infoEl = document.getElementById("booking-page-info");
+    const prevBtn = document.getElementById("booking-prev-btn");
+    const nextBtn = document.getElementById("booking-next-btn");
+    const container = infoEl?.closest(".customer-pagination-controls");
+    const showBookingPagination = totalBookingPages > 1;
+
+    if (container) {
+        container.style.display = showBookingPagination ? "flex" : "none";
+    }
+    if (prevBtn) {
+        prevBtn.style.display = showBookingPagination ? "" : "none";
+        prevBtn.disabled = currentBookingPage <= 1;
+    }
+    if (nextBtn) {
+        nextBtn.style.display = showBookingPagination ? "" : "none";
+        nextBtn.disabled = currentBookingPage >= totalBookingPages;
+    }
+    if (infoEl) {
+        infoEl.style.display = showBookingPagination ? "" : "none";
+        infoEl.textContent = `Page ${currentBookingPage} of ${totalBookingPages}`;
+    }
+}
+
+function updateInspectionPagination() {
+    const infoEl = document.getElementById("inspection-page-info");
+    const prevBtn = document.getElementById("inspection-prev-btn");
+    const nextBtn = document.getElementById("inspection-next-btn");
+    const container = infoEl?.closest(".customer-pagination-controls");
+    const showInspectionPagination = totalInspectionPages > 1;
+
+    if (container) {
+        container.style.display = showInspectionPagination ? "flex" : "none";
+    }
+    if (prevBtn) {
+        prevBtn.style.display = showInspectionPagination ? "" : "none";
+        prevBtn.disabled = currentInspectionPage <= 1;
+    }
+    if (nextBtn) {
+        nextBtn.style.display = showInspectionPagination ? "" : "none";
+        nextBtn.disabled = currentInspectionPage >= totalInspectionPages;
+    }
+    if (infoEl) {
+        infoEl.style.display = showInspectionPagination ? "" : "none";
+        infoEl.textContent = `Page ${currentInspectionPage} of ${totalInspectionPages}`;
+    }
+}
+
+function updateInvoicePagination() {
+    const infoEl = document.getElementById("home-invoice-page-info");
+    const prevBtn = document.getElementById("home-invoice-prev-btn");
+    const nextBtn = document.getElementById("home-invoice-next-btn");
+    const container = infoEl?.closest(".customer-pagination-controls");
+    const showInvoicePagination = totalInvoicePages > 1;
+
+    if (container) {
+        container.style.display = showInvoicePagination ? "flex" : "none";
+    }
+    if (prevBtn) {
+        prevBtn.style.display = showInvoicePagination ? "" : "none";
+        prevBtn.disabled = currentInvoicePage <= 1;
+    }
+    if (nextBtn) {
+        nextBtn.style.display = showInvoicePagination ? "" : "none";
+        nextBtn.disabled = currentInvoicePage >= totalInvoicePages;
+    }
+    if (infoEl) {
+        infoEl.style.display = showInvoicePagination ? "" : "none";
+        infoEl.textContent = `Page ${currentInvoicePage} of ${totalInvoicePages}`;
+    }
+}
+
+// Initialize pagination visibility immediately
+updateBookingPagination();
+updateInspectionPagination();
+updateInvoicePagination();
+
+
+/* ================================================================
    LOAD CUSTOMER SERVICE BOOKINGS
 ================================================================ */
 
@@ -591,7 +727,15 @@ function loadBookings() {
         method:
             "vms_vehicle.service_registration.get_my_service_registrations",
 
+        args: {
+            page: currentBookingPage
+        },
+
         callback: function (r) {
+
+            totalBookingPages = r.pagination?.[window.SERVICE_DOCTYPE || "vms vehicle service registration"]?.total_pages || r.total_pages || 1;
+            currentBookingPage = r.pagination?.[window.SERVICE_DOCTYPE || "vms vehicle service registration"]?.page || currentBookingPage;
+            updateBookingPagination();
 
             const bookings =
                 r.message || [];
@@ -731,6 +875,8 @@ function loadBookings() {
         },
 
         error: function () {
+            totalBookingPages = 1;
+            updateBookingPagination();
 
             const tbody =
                 document.getElementById(
@@ -772,7 +918,15 @@ function loadInspections() {
         method:
             "vms_inspection.api.get_my_vehicle_inspections",
 
+        args: {
+            page: currentInspectionPage
+        },
+
         callback: function (r) {
+
+            totalInspectionPages = r.pagination?.[window.INSPECTION_DOCTYPE || "vms vehicle inspection"]?.total_pages || r.total_pages || 1;
+            currentInspectionPage = r.pagination?.[window.INSPECTION_DOCTYPE || "vms vehicle inspection"]?.page || currentInspectionPage;
+            updateInspectionPagination();
 
             const inspections =
                 r.message || [];
@@ -880,6 +1034,8 @@ function loadInspections() {
         },
 
         error: function () {
+            totalInspectionPages = 1;
+            updateInspectionPagination();
 
             const tbody =
                 document.getElementById(
@@ -923,12 +1079,17 @@ function loadHomeInvoices() {
 
         args: {
 
-            only_audited: 1
+            only_audited: 1,
+            page: currentInvoicePage
 
         },
 
 
         callback: function (r) {
+
+            totalInvoicePages = r.pagination?.[window.ACCOUNT_DOCTYPE || "vms accounts"]?.total_pages || r.total_pages || 1;
+            currentInvoicePage = r.pagination?.[window.ACCOUNT_DOCTYPE || "vms accounts"]?.page || currentInvoicePage;
+            updateInvoicePagination();
 
             const invoices =
                 r.message || [];
@@ -1081,6 +1242,8 @@ function loadHomeInvoices() {
 
 
         error: function () {
+            totalInvoicePages = 1;
+            updateInvoicePagination();
 
             const tbody =
                 document.getElementById(

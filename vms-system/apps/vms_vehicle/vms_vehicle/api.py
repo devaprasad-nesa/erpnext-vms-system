@@ -1,7 +1,7 @@
 
 import frappe
 from frappe import _
-from vms_user.pagination import apply_pagination
+from vms_user.pagination import apply_pagination, get_paginated_data
 
 
 
@@ -192,21 +192,19 @@ def get_my_vehicles():
         filters = {}
         or_filters = get_vehicle_owner_filters(user)
 
-    vehicles = frappe.get_all(
+    vehicles = get_paginated_data(
         DOCTYPE,
-        **apply_pagination({
-            "filters": filters,
-            "or_filters": or_filters,
-            "fields": [
-                "name",
-                "vehicle_number",
-                "vehicle_brand",
-                "vehicle_model",
-                "fuel_type",
-                "vehicle_color",
-            ],
-            "order_by": "creation desc"
-        })
+        filters=filters,
+        or_filters=or_filters,
+        fields=[
+            "name",
+            "vehicle_number",
+            "vehicle_brand",
+            "vehicle_model",
+            "fuel_type",
+            "vehicle_color",
+        ],
+        order_by="creation desc"
     )
 
     return vehicles
@@ -428,35 +426,29 @@ def get_technician_inspection_form_meta() -> dict:
     if not is_staff_user(user):
         frappe.throw(_("Permission denied."), frappe.PermissionError)
 
-    slots = frappe.get_all(
+    slots = get_paginated_data(
         "vms service slot",
-        **apply_pagination({
-            "fields": ["name", "slot_name", "start_time", "end_time"],
-            "order_by": "name asc",
-        })
+        fields=["name", "slot_name", "start_time", "end_time"],
+        order_by="name asc"
     )
 
     spare_parts = []
     if frappe.db.exists("DocType", "vms spare parts"):
-        spare_parts = frappe.get_all(
+        spare_parts = get_paginated_data(
             "vms spare parts",
-            **apply_pagination({
-                "fields": ["name", "part_name", "quantity"],
-                "order_by": "part_name asc",
-            })
+            fields=["name", "part_name", "quantity"],
+            order_by="part_name asc"
         )
 
     mechanics = []
     roles = frappe.db.get_all("Has Role", filters={"role": "vms mechanic"}, fields=["parent"])
     if roles:
         mechanic_users = [r.parent for r in roles]
-        mechanics = frappe.get_all(
+        mechanics = get_paginated_data(
             "User",
-            **apply_pagination({
-                "filters": {"name": ["in", mechanic_users], "enabled": 1},
-                "fields": ["name", "full_name"],
-                "ignore_permissions": True,
-            })
+            filters={"name": ["in", mechanic_users], "enabled": 1},
+            fields=["name", "full_name"],
+            ignore_permissions=True
         )
 
     return {

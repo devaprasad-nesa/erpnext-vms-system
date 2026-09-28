@@ -96,6 +96,13 @@
     let currentUser = "";
 
     let initialized = false;
+    
+    let lastSubmittedDataStr = null;
+
+    let currentInspectionPage = 1;
+    let totalInspectionPages = 1;
+    let currentSparePage = 1;
+    let totalSparePages = 1;
 
 
     /* =====================================================
@@ -538,6 +545,15 @@
             );
         }
 
+        if (data?.pagination && data?.message) {
+            data.message._pagination = data.pagination;
+        }
+        if (data?.total_pages && data?.message) {
+            data.message._total_pages = data.total_pages;
+        }
+        if (data?.page && data?.message) {
+            data.message._page = data.page;
+        }
 
         return data?.message;
     }
@@ -913,7 +929,10 @@
             const data =
                 await apiCall(
                     "vms_inspection.api.get_dashboard_data",
-                    {},
+                    {
+                        inspection_page: currentInspectionPage,
+                        spare_part_page: currentSparePage
+                    },
                     "GET"
                 );
 
@@ -936,7 +955,17 @@
 
             inspections =
                 data.inspections || [];
+                
+            const pagination = data.pagination || data._pagination || {};
+            const inspectMeta = pagination[window.INSPECTION_DOCTYPE || "vms vehicle inspection"] || {};
+            totalInspectionPages = inspectMeta.total_pages || data._total_pages || 1;
+            currentInspectionPage = inspectMeta.page || currentInspectionPage;
 
+            const spareMeta = pagination[window.SPARE_PARTS_DOCTYPE || "vms spare parts"] || {};
+            totalSparePages = spareMeta.total_pages || data._total_pages || 1;
+            currentSparePage = spareMeta.page || currentSparePage;
+
+            updatePaginationControls();
 
             populateVehicleDropdown();
 
@@ -985,6 +1014,45 @@
 
             technicianElement.value =
                 currentUser;
+        }
+    }
+
+
+    function updatePaginationControls() {
+        const inspectEl = document.getElementById("inspection-page-info");
+        const inspectPrev = document.getElementById("inspection-prev-btn");
+        const inspectNext = document.getElementById("inspection-next-btn");
+        const showInspectPagination = totalInspectionPages > 1;
+
+        if (inspectPrev) {
+            inspectPrev.style.display = showInspectPagination ? "" : "none";
+            inspectPrev.disabled = currentInspectionPage <= 1;
+        }
+        if (inspectNext) {
+            inspectNext.style.display = showInspectPagination ? "" : "none";
+            inspectNext.disabled = currentInspectionPage >= totalInspectionPages;
+        }
+        if (inspectEl) {
+            inspectEl.style.display = showInspectPagination ? "" : "none";
+            inspectEl.textContent = `Page ${currentInspectionPage} of ${totalInspectionPages}`;
+        }
+
+        const spareEl = document.getElementById("spare-part-page-info");
+        const sparePrev = document.getElementById("spare-part-prev-btn");
+        const spareNext = document.getElementById("spare-part-next-btn");
+        const showSparePagination = totalSparePages > 1;
+
+        if (sparePrev) {
+            sparePrev.style.display = showSparePagination ? "" : "none";
+            sparePrev.disabled = currentSparePage <= 1;
+        }
+        if (spareNext) {
+            spareNext.style.display = showSparePagination ? "" : "none";
+            spareNext.disabled = currentSparePage >= totalSparePages;
+        }
+        if (spareEl) {
+            spareEl.style.display = showSparePagination ? "" : "none";
+            spareEl.textContent = `Page ${currentSparePage} of ${totalSparePages}`;
         }
     }
 
@@ -1542,10 +1610,16 @@
        SAVE INSPECTION
        ===================================================== */
 
+    let isSavingInspection = false;
+
     async function saveInspection(event) {
 
         event.preventDefault();
 
+        if (isSavingInspection) {
+            return;
+        }
+        isSavingInspection = true;
 
         const button =
             event.submitter ||
@@ -1574,6 +1648,13 @@
 
                 throw new Error(
                     "Please select a vehicle."
+                );
+            }
+            
+            const currentDataStr = JSON.stringify(data);
+            if (lastSubmittedDataStr === currentDataStr) {
+                throw new Error(
+                    "You have already submitted an inspection with these exact details."
                 );
             }
 
@@ -1629,8 +1710,9 @@
             $("#vms-inspection-form")
                 .hidden = true;
 
-
             resetInspectionForm();
+            
+            lastSubmittedDataStr = currentDataStr;
 
 
             showMessage(
@@ -1660,6 +1742,8 @@
 
 
         } finally {
+
+            isSavingInspection = false;
 
             setLoading(
                 button,
@@ -2077,8 +2161,55 @@
 
             refreshSparePartsButton.addEventListener(
                 "click",
-                loadSpareParts
+                () => {
+                    currentSparePage = 1;
+                    loadDashboard();
+                }
             );
+        }
+
+
+        /* -------------------------------------------------
+           PAGINATION BUTTONS
+           ------------------------------------------------- */
+        const inspectPrevBtn = $("#inspection-prev-btn");
+        if (inspectPrevBtn) {
+            inspectPrevBtn.addEventListener("click", () => {
+                if (currentInspectionPage > 1) {
+                    currentInspectionPage--;
+                    loadDashboard();
+                }
+            });
+        }
+
+        const inspectNextBtn = $("#inspection-next-btn");
+        if (inspectNextBtn) {
+            inspectNextBtn.addEventListener("click", () => {
+                if (currentInspectionPage < totalInspectionPages) {
+                    currentInspectionPage++;
+                    loadDashboard();
+                }
+            });
+        }
+
+        const sparePrevBtn = $("#spare-part-prev-btn");
+        if (sparePrevBtn) {
+            sparePrevBtn.addEventListener("click", () => {
+                if (currentSparePage > 1) {
+                    currentSparePage--;
+                    loadDashboard();
+                }
+            });
+        }
+
+        const spareNextBtn = $("#spare-part-next-btn");
+        if (spareNextBtn) {
+            spareNextBtn.addEventListener("click", () => {
+                if (currentSparePage < totalSparePages) {
+                    currentSparePage++;
+                    loadDashboard();
+                }
+            });
         }
 
 
@@ -2141,9 +2272,10 @@
 
     async function initializeDashboard() {
 
-        if (initialized) {
+        if (initialized || window.__vms_technician_dashboard_initialized) {
             return;
         }
+        window.__vms_technician_dashboard_initialized = true;
 
 
         const root =

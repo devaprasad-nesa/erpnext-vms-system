@@ -566,15 +566,18 @@ def _format_service_record(r: dict) -> dict:
 
 
 @frappe.whitelist()
-def get_my_service_registrations() -> list[dict]:
+def get_my_service_registrations(page: int | str | None = None) -> list[dict]:
     """
     Return service requests for the logged-in customer, or all requests for staff.
     """
+    from vms_user.pagination import get_paginated_data
+
     user = get_logged_in_customer()
 
     if is_staff_user(user):
-        raw_list = frappe.get_list(
+        raw_list = get_paginated_data(
             SERVICE_DOCTYPE,
+            page=page,
             fields=[
                 "name",
                 SERVICE_CUSTOMER_FIELD,
@@ -586,14 +589,14 @@ def get_my_service_registrations() -> list[dict]:
                 "creation",
             ],
             order_by="creation desc",
-            limit_page_length=500,
         )
         return [_format_service_record(r) for r in raw_list]
 
     allowed_identities = get_user_allowed_identities(user)
 
-    raw_list = frappe.get_all(
+    raw_list = get_paginated_data(
         SERVICE_DOCTYPE,
+        page=page,
         or_filters=[
             {SERVICE_CUSTOMER_FIELD: ["in", allowed_identities]},
             {SERVICE_USER_FIELD: ["in", allowed_identities]},
@@ -609,7 +612,6 @@ def get_my_service_registrations() -> list[dict]:
             "creation",
         ],
         order_by="creation desc",
-        limit_page_length=200,
     )
     return [_format_service_record(r) for r in raw_list]
 
