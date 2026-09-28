@@ -84,7 +84,8 @@ def get_item_details(item_code: str) -> dict:
     if not item:
         frappe.throw(_("Item '{0}' not found.").format(item_code))
 
-    total_qty = flt(frappe.db.get_value("Bin", {"item_code": item_code}, "sum(actual_qty)") or 0.0)
+    res = frappe.db.sql("SELECT SUM(actual_qty) FROM `tabBin` WHERE item_code = %s", (item_code,))
+    total_qty = flt(res[0][0]) if res and res[0][0] is not None else 0.0
     uom = item.get("stock_uom") or "Nos"
     item["quantity"] = f"{total_qty} {uom}".strip()
     item["cost"] = flt(item.get("standard_rate") or item.get("valuation_rate") or 0.0)

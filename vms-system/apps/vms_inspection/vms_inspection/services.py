@@ -205,7 +205,8 @@ def parse_inspection_spare_parts(raw_parts) -> list[dict]:
                 cost = flt(item_master.standard_rate or item_master.valuation_rate or 0.0)
 
             # Check stock in Bin
-            actual_qty = flt(frappe.db.get_value("Bin", {"item_code": item_code}, "sum(actual_qty)") or 0.0)
+            res = frappe.db.sql("SELECT SUM(actual_qty) FROM `tabBin` WHERE item_code = %s", (item_code,))
+            actual_qty = flt(res[0][0]) if res and res[0][0] is not None else 0.0
             uom = item_master.stock_uom or "Nos"
             available_stock_str = f"{actual_qty} {uom}"
 
