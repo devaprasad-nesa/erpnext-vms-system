@@ -8,6 +8,7 @@ import json
 
 import frappe
 from frappe import _
+from frappe.utils import flt, cint
 from vms_user.pagination import apply_pagination, get_paginated_data
 from vms_inspection import services
 
@@ -97,14 +98,31 @@ def get_inspection_details(name: str | None = None) -> dict:
     if not name:
         frappe.throw(_("Inspection name is required."))
     doc = services.get_inspection(name)
+    
+    spare_parts_list = []
+    total_parts_cost = 0.0
+    for row in (doc.get("spare_parts") or []):
+        row_qty = flt(row.qty or 1)
+        row_cost = flt(row.cost or 0)
+        row_amount = flt(row.amount or (row_qty * row_cost))
+        total_parts_cost += row_amount
+        spare_parts_list.append({
+            "name": row.name,
+            "part_name": row.part_name,
+            "qty": row_qty,
+            "cost": row_cost,
+            "amount": row_amount,
+            "available_qty": row.available_qty or "",
+        })
+
     return {
         "name": doc.name,
         "vehicle_number": doc.vehicle_number,
         "customer_name": doc.customer_name,
         "inspection_date": str(doc.inspection_date),
         "issue": doc.issue,
-        "spare_parts": doc.spare_parts,
-        "spare_part_quantity": doc.spare_part_quantity,
+        "spare_parts": spare_parts_list,
+        "total_parts_cost": round(total_parts_cost, 2),
         "technician": doc.technician,
         "mechanic": doc.mechanic,
         "labour_hour": doc.labour_hour,
@@ -199,3 +217,11 @@ def sync_technician_dashboard():
     doc.save(ignore_permissions=True)
     frappe.db.commit()
     return "synced"
+
+
+def reload_inspection_doctypes():
+    frappe.reload_doc("vms_inspection", "doctype", "vms_spare_part", force=True)
+    frappe.reload_doc("vms_inspection", "doctype", "vms_vehicle_inspection", force=True)
+    frappe.reload_doc("vms_inspection", "doctype", "vms_spare_parts", force=True)
+    frappe.db.commit()
+    return "reloaded"

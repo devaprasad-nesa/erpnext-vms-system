@@ -1,26 +1,20 @@
 # Copyright (c) 2026, vms developer nesa and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
+from frappe import _
 from frappe.model.document import Document
 
 
 class VehicleModel(Document):
-	# begin: auto-generated types
-	# This code is auto-generated. Do not modify anything in this block.
+    def validate(self):
+        if self.model_name:
+            self.model_name = self.model_name.strip()
+        if not self.model_name:
+            frappe.throw(_("Model Name is required."))
+        if not self.vehicle_brand:
+            frappe.throw(_("Vehicle Brand is required."))
 
-	from typing import TYPE_CHECKING
-
-	if TYPE_CHECKING:
-		from frappe.types import DF
-
-		fuel_type: DF.Data
-		model_name: DF.Data
-		parent: DF.Data
-		parentfield: DF.Data
-		parenttype: DF.Data
-	# end: auto-generated types
-	def self_name(self):
-		self.name = self.model_name
-
-	_DOCTYPE_NAME = "Vehicle Model"
+        # Verify that vehicle_brand exists
+        if not frappe.db.exists("Vehicle Brand", self.vehicle_brand):
+            frappe.throw(_("Vehicle Brand '{0}' does not exist.").format(self.vehicle_brand))

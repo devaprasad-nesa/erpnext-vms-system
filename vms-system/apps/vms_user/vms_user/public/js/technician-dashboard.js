@@ -79,15 +79,13 @@
     };
 
 
-    /* =====================================================
-       GLOBAL STATE
-       ===================================================== */
-
     let inspections = [];
 
     let vehicles = [];
 
     let spareParts = [];
+
+    let currentInspectionSpareParts = [];
 
     let users = [];
 
@@ -853,37 +851,186 @@
 
 
     /* =====================================================
-       SPARE PART DROPDOWNS
+       SPARE PART PICKER & CHILD TABLE MANAGEMENT
        ===================================================== */
 
     function populateSparePartDropdowns() {
-
         fillDropdown(
-
-            "#inspection-spare-parts",
-
+            "#picker-spare-part",
             spareParts,
-
-            "Select spare part",
-
-            part =>
-                part.part_name
-                    ? `${part.part_name} (${part.name})`
-                    : part.name
+            "-- Choose Spare Part from Master --",
+            part => {
+                const stock = part.quantity ? ` | Stock: ${part.quantity}` : "";
+                const cost = part.cost ? ` | ₹${Number(part.cost).toFixed(2)}` : "";
+                const name = part.part_name || part.name;
+                return `${name} (${part.name})${cost}${stock}`;
+            },
+            part => part.name
         );
+    }
 
+    function renderSelectedSpareParts() {
+        const tbody = $("#vms-selected-spare-table");
+        const totalEl = $("#vms-spare-total-amount");
+        if (!tbody) {
+            return;
+        }
 
-        fillDropdown(
+        if (!currentInspectionSpareParts || currentInspectionSpareParts.length === 0) {
+            tbody.innerHTML = `
+                <tr class="vms-empty-row">
+                    <td colspan="6" class="vms-empty-muted">
+                        No spare parts selected. Choose a part above and click "+ Add Part".
+                    </td>
+                </tr>
+            `;
+            if (totalEl) {
+                totalEl.textContent = "₹ 0.00";
+            }
+            return;
+        }
 
-            "#inspection-spare-quantity",
+        let total = 0;
+        tbody.innerHTML = currentInspectionSpareParts.map((item, idx) => {
+            const cost = Number(item.cost || 0);
+            const qty = Number(item.qty || 1);
+            const amount = Number((cost * qty).toFixed(2));
+            total += amount;
 
-            spareParts,
+            return `
+                <tr>
+                    <td><strong>${escapeHTML(item.part_name || item.name)}</strong></td>
+                    <td>${escapeHTML(item.available_qty || item.quantity || "-")}</td>
+                    <td>₹ ${cost.toFixed(2)}</td>
+                    <td>
+                        <input type="number"
+                            class="vms-qty-input"
+                            data-index="${idx}"
+                            min="0.01"
+                            step="any"
+                            value="${qty}">
+                    </td>
+                    <td><strong>₹ ${amount.toFixed(2)}</strong></td>
+                    <td style="text-align: center;">
+                        <button type="button"
+                            class="vms-btn vms-btn-danger vms-remove-btn"
+                            data-action="remove-spare-part"
+                            data-index="${idx}"
+                            title="Remove part">
+                            🗑️
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }).join("");
 
-            "Select quantity record",
+        if (totalEl) {
+            totalEl.textContent = `₹ ${total.toFixed(2)}`;
+        }
+    }
 
-            part =>
-                `${part.name} — Quantity: ${part.quantity ?? "-"}`
+    function addSparePartToInspection() {
+        hideMessage();
+        const select = $("#picker-spare-part");
+        const qtyInput = $("#picker-spare-qty");
+        if (!select || !qtyInput) {
+            return;
+        }
+
+        const partId = (select.value || "").trim();
+        if (!partId) {
+            showMessage("Please choose a spare part from the dropdown.", "error");
+            return;
+        }
+
+        const qty = Number(qtyInput.value || 1);
+        if (isNaN(qty) || qty <= 0) {
+            showMessage("Quantity must be greater than 0.", "error");
+            return;
+        }
+
+        const master = spareParts.find(p => p.name === partId || p.part_name === partId);
+        if (!master) {
+            showMessage("Selected spare part was not found.", "error");
+            return;
+        }
+
+        const partName = master.part_name || master.name;
+
+        // Duplicate prevention: cannot add the same part twice
+        const existingIdx = currentInspectionSpareParts.findIndex(
+            p => (p.part_name && p.part_name.toLowerCase() === partName.toLowerCase()) ||
+                 (p.name && p.name === master.name)
         );
+        if (existingIdx !== -1) {
+            showMessage(`Spare part "${partName}" is already added. You can update its quantity in the table.`, "error");
+            return;
+        }
+
+        // Validate stock if numeric quantity limit exists
+        const availStr = String(master.quantity || "");
+        if (availStr) {
+            const stockNum = parseFloat(availStr.split(" ")[0]);
+            if (!isNaN(stockNum) && stockNum > 0 && qty > stockNum) {
+                showMessage(`Cannot add ${qty} units. Available stock for "${partName}" is ${stockNum}.`, "error");
+                return;
+            }
+        }
+
+        const cost = Number(master.cost || 0);
+        const amount = Number((cost * qty).toFixed(2));
+
+        currentInspectionSpareParts.push({
+            name: master.name,
+            part_name: partName,
+            available_qty: master.quantity || "",
+            cost: cost,
+            qty: qty,
+            amount: amount
+        });
+
+        renderSelectedSpareParts();
+        select.value = "";
+        qtyInput.value = "1";
+    }
+
+    function updateSparePartQty(index, newQtyStr) {
+        hideMessage();
+        const idx = Number(index);
+        if (isNaN(idx) || idx < 0 || idx >= currentInspectionSpareParts.length) {
+            return;
+        }
+
+        const item = currentInspectionSpareParts[idx];
+        const qty = Number(newQtyStr);
+        if (isNaN(qty) || qty <= 0) {
+            showMessage("Quantity must be greater than 0.", "error");
+            renderSelectedSpareParts();
+            return;
+        }
+
+        const availStr = String(item.available_qty || "");
+        if (availStr) {
+            const stockNum = parseFloat(availStr.split(" ")[0]);
+            if (!isNaN(stockNum) && stockNum > 0 && qty > stockNum) {
+                showMessage(`Quantity (${qty}) exceeds available stock (${stockNum}) for "${item.part_name}".`, "error");
+                renderSelectedSpareParts();
+                return;
+            }
+        }
+
+        item.qty = qty;
+        item.amount = Number(((item.cost || 0) * qty).toFixed(2));
+        renderSelectedSpareParts();
+    }
+
+    function removeSparePartFromInspection(index) {
+        const idx = Number(index);
+        if (isNaN(idx) || idx < 0 || idx >= currentInspectionSpareParts.length) {
+            return;
+        }
+        currentInspectionSpareParts.splice(idx, 1);
+        renderSelectedSpareParts();
     }
 
 
@@ -1079,7 +1226,7 @@
                 <tr>
 
                     <td
-                        colspan="9"
+                        colspan="10"
                         class="vms-empty"
                     >
                         No inspection records found.
@@ -1106,6 +1253,16 @@
                             )
                         );
 
+                    const partsSummary = item.spare_parts_summary && item.spare_parts_summary !== "-"
+                        ? item.spare_parts_summary
+                        : (Array.isArray(item.spare_parts) && item.spare_parts.length
+                            ? item.spare_parts.map(p => `${escapeHTML(p.part_name)} (${p.qty})`).join(", ")
+                            : "-");
+
+                    const totalCost = Number(item.total_parts_cost || 0);
+                    const totalCostStr = totalCost > 0
+                        ? `<br><small style="color: var(--vms-primary-dark); font-weight:600;">₹ ${totalCost.toFixed(2)}</small>`
+                        : "";
 
                     return `
 
@@ -1149,6 +1306,11 @@
                         FIELD.issue
                         ] || "-"
                     )}
+                            </td>
+
+
+                            <td>
+                                ${partsSummary}${totalCostStr}
                             </td>
 
 
@@ -1395,6 +1557,18 @@
         $("#inspection-inspected").checked =
             false;
 
+        currentInspectionSpareParts = [];
+        renderSelectedSpareParts();
+
+        const pSelect = $("#picker-spare-part");
+        if (pSelect) {
+            pSelect.value = "";
+        }
+        const pQty = $("#picker-spare-qty");
+        if (pQty) {
+            pQty.value = "1";
+        }
+
 
         $("#vms-inspection-form-title")
             .textContent =
@@ -1483,14 +1657,6 @@
                 item[FIELD.issue] || "";
 
 
-            $("#inspection-spare-parts").value =
-                item[FIELD.spareParts] || "";
-
-
-            $("#inspection-spare-quantity").value =
-                item[FIELD.spareQuantity] || "";
-
-
             $("#inspection-mechanic").value =
                 item[FIELD.mechanic] || "";
 
@@ -1505,6 +1671,17 @@
                         item[FIELD.inspected]
                     )
                 );
+
+            // Populate child spare parts table
+            currentInspectionSpareParts = (item.spare_parts || []).map(p => ({
+                name: p.name || "",
+                part_name: p.part_name || "",
+                available_qty: p.available_qty || "",
+                cost: Number(p.cost || 0),
+                qty: Number(p.qty || 1),
+                amount: Number(p.amount || ((p.cost || 0) * (p.qty || 1)))
+            }));
+            renderSelectedSpareParts();
 
 
             $("#vms-inspection-form-title")
@@ -1567,14 +1744,8 @@
                 "General Inspection / Routine Checkup",
 
 
-            [FIELD.spareParts]:
-                $("#inspection-spare-parts")
-                    .value || null,
-
-
-            [FIELD.spareQuantity]:
-                $("#inspection-spare-quantity")
-                    .value || null,
+            spare_parts:
+                currentInspectionSpareParts,
 
 
             /*
@@ -2104,6 +2275,53 @@
                         toggleInspectionStatus(
                             name,
                             button.dataset.status
+                        );
+                    }
+                }
+            );
+        }
+
+
+        /* -------------------------------------------------
+           SPARE PART PICKER & CHILD TABLE ACTIONS
+           ------------------------------------------------- */
+
+        const addSparePartBtn =
+            $("#btn-add-spare-part");
+
+        if (addSparePartBtn) {
+            addSparePartBtn.addEventListener(
+                "click",
+                addSparePartToInspection
+            );
+        }
+
+        const selectedSpareTable =
+            $("#vms-selected-spare-table");
+
+        if (selectedSpareTable) {
+            selectedSpareTable.addEventListener(
+                "change",
+                event => {
+                    if (event.target.classList.contains("vms-qty-input")) {
+                        updateSparePartQty(
+                            event.target.dataset.index,
+                            event.target.value
+                        );
+                    }
+                }
+            );
+
+            selectedSpareTable.addEventListener(
+                "click",
+                event => {
+                    const removeBtn =
+                        event.target.closest(
+                            '[data-action="remove-spare-part"]'
+                        );
+                    if (removeBtn) {
+                        removeSparePartFromInspection(
+                            removeBtn.dataset.index
                         );
                     }
                 }

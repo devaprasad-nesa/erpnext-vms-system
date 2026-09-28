@@ -38,22 +38,29 @@
   {
    "fieldname": "vehicle_number",
    "fieldtype": "Data",
-   "label": "Vehicle NUmber"
+   "label": "Vehicle Number",
+   "reqd": 1
   },
   {
    "fieldname": "vehicle_brand",
-   "fieldtype": "Data",
-   "label": "Vehicle Brand"
+   "fieldtype": "Link",
+   "label": "Vehicle Brand",
+   "options": "Vehicle Brand",
+   "reqd": 1
   },
   {
    "fieldname": "vehicle_model",
-   "fieldtype": "Data",
-   "label": "Vehicle Model"
+   "fieldtype": "Link",
+   "label": "Vehicle Model",
+   "options": "Vehicle Model",
+   "reqd": 1
   },
   {
    "fieldname": "fuel_type",
-   "fieldtype": "Data",
-   "label": "Fuel Type"
+   "fieldtype": "Link",
+   "label": "Fuel Type",
+   "options": "Vehicle Fuel Type",
+   "reqd": 1
   },
   {
    "fieldname": "vehicle_color",
@@ -68,7 +75,7 @@
   {
    "fieldname": "engine_number",
    "fieldtype": "Data",
-   "label": "Engine NUmber"
+   "label": "Engine Number"
   },
   {
    "fieldname": "registration_date",
@@ -92,7 +99,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-25 14:39:00.910586",
+ "modified": "2026-09-28 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vms Vehicle",
  "name": "vms vehicle registration",
@@ -110,6 +117,24 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "Customer",
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "vms customer",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "All"
   }
  ],
  "row_format": "Dynamic",

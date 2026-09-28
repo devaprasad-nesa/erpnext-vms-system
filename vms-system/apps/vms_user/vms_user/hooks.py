@@ -78,6 +78,8 @@ website_route_rules = [
     {"from_route": "/customer-dashboard", "to_route": "vms_user_dashboard/user_dashboard/customer-home"},
     {"from_route": "/customer-home", "to_route": "vms_user_dashboard/user_dashboard/customer-home"},
     {"from_route": "/vehicle-register", "to_route": "vms_user_dashboard/user_dashboard/vehicle-register"},
+    {"from_route": "/vehicle-masters", "to_route": "vehicle-masters"},
+    {"from_route": "/admin/vehicle-masters", "to_route": "vehicle-masters"},
     {"from_route": "/my-vehicles", "to_route": "vms_user_dashboard/user_dashboard/my-vehicles"},
     {"from_route": "/customer-vehicles", "to_route": "vms_user_dashboard/user_dashboard/my-vehicles"},
     {"from_route": "/technician-dashboard", "to_route": "vms_user_dashboard/technician_dashboard/technician-dashboard"},

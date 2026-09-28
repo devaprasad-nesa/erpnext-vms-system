@@ -40,7 +40,7 @@ class vmsaccounts(Document):
 		inspection = frappe.db.get_value(
 			"vms vehicle inspection",
 			self.vehicle_inspection,
-			["vehicle_number", "customer_name", "spare_parts", "spare_part_quantity", "labour_hour"],
+			["vehicle_number", "customer_name", "labour_hour"],
 			as_dict=True,
 		)
 		if not inspection:
@@ -52,15 +52,27 @@ class vmsaccounts(Document):
 		if not self.customer_name:
 			self.customer_name = inspection.customer_name
 
-		if not self.vehicle_spare_parts and inspection.spare_parts:
-			self.vehicle_spare_parts = inspection.spare_parts
-
 	def calculate_total_bill(self):
 		spare_parts_cost = 0.0
 		labour_cost = 0.0
 
-		# 1. Calculate spare parts cost
-		if self.vehicle_spare_parts:
+		# 1. Calculate spare parts cost from inspection child table or linked master
+		if self.vehicle_inspection:
+			child_parts = frappe.db.sql(
+				"""
+				SELECT SUM(amount) as total_amt, GROUP_CONCAT(part_name SEPARATOR ', ') as parts_list
+				FROM `tabvms spare part`
+				WHERE parent = %s AND parenttype = 'vms vehicle inspection' AND parentfield = 'spare_parts'
+				""",
+				(self.vehicle_inspection,),
+				as_dict=True
+			)
+			if child_parts and child_parts[0].get("total_amt") is not None:
+				spare_parts_cost = flt(child_parts[0]["total_amt"])
+				if child_parts[0].get("parts_list") and not self.vehicle_spare_parts:
+					self.vehicle_spare_parts = child_parts[0]["parts_list"][:140]
+
+		if spare_parts_cost == 0.0 and self.vehicle_spare_parts:
 			part_info = frappe.db.get_value(
 				"vms spare parts",
 				self.vehicle_spare_parts,
@@ -69,7 +81,6 @@ class vmsaccounts(Document):
 			)
 			if part_info:
 				unit_cost = flt(part_info.cost)
-				# Check if inspection specified an explicit quantity
 				qty = 1.0
 				if self.vehicle_inspection:
 					insp_qty = frappe.db.get_value("vms vehicle inspection", self.vehicle_inspection, "spare_part_quantity")

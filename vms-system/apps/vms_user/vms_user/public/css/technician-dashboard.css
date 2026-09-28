@@ -1553,3 +1553,134 @@ body .web-page-content {
     }
 
 }
+
+/* =========================================================
+   SPARE PARTS CHILD TABLE & PICKER SECTION
+   ========================================================= */
+
+#vms-technician-dashboard .vms-spare-parts-section {
+    background: #f8faf9;
+    border: 1px solid var(--vms-border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#vms-technician-dashboard .vms-section-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--vms-primary-dark);
+}
+
+#vms-technician-dashboard .vms-helper-text {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: var(--vms-text-secondary);
+}
+
+#vms-technician-dashboard .vms-spare-picker-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 140px auto;
+    gap: 14px;
+    align-items: flex-end;
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--vms-border-dark);
+}
+
+@media (max-width: 640px) {
+    #vms-technician-dashboard .vms-spare-picker-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+#vms-technician-dashboard .vms-picker-col-part label,
+#vms-technician-dashboard .vms-picker-col-qty label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--vms-text);
+    margin-bottom: 5px;
+    display: block;
+}
+
+#vms-technician-dashboard .vms-add-part-btn {
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    padding: 0 18px;
+}
+
+#vms-technician-dashboard .vms-spare-table-card {
+    background: #ffffff;
+    border: 1px solid var(--vms-border-dark);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#vms-technician-dashboard .vms-spare-child-table {
+    margin-bottom: 0;
+}
+
+#vms-technician-dashboard .vms-spare-child-table th {
+    background: #f1f5f3;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--vms-text);
+    padding: 10px 14px;
+}
+
+#vms-technician-dashboard .vms-spare-child-table td {
+    padding: 10px 14px;
+    vertical-align: middle;
+    font-size: 13.5px;
+}
+
+#vms-technician-dashboard .vms-qty-input {
+    width: 90px !important;
+    min-height: 34px !important;
+    padding: 4px 8px !important;
+    text-align: center;
+    border: 1px solid var(--vms-border-dark);
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+#vms-technician-dashboard .vms-remove-btn {
+    padding: 4px 10px;
+    font-size: 12.5px;
+    line-height: 1;
+    border-radius: 6px;
+}
+
+#vms-technician-dashboard .vms-empty-muted {
+    text-align: center;
+    color: var(--vms-muted);
+    font-style: italic;
+    padding: 24px 16px !important;
+}
+
+#vms-technician-dashboard .vms-spare-total-row td {
+    background: #f8faf9;
+    border-top: 2px solid var(--vms-border);
+    font-size: 14px;
+}
+
+#vms-technician-dashboard .vms-badge-part {
+    display: inline-block;
+    padding: 3px 8px;
+    margin: 2px 3px 2px 0;
+    border-radius: 5px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #bae6fd;
+}

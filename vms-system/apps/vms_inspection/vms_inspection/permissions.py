@@ -47,12 +47,16 @@ def vehicle_inspection_query(user=None):
     if _is_staff_user(user):
         return ""
 
-    escaped_user = frappe.db.escape(user)
+    identities = _get_identities(user)
+    escaped_identities = ", ".join(frappe.db.escape(i) for i in identities if i)
+    if not escaped_identities:
+        return "1=0"
+
     return f"""
         (`tabvms vehicle inspection`.`vehicle_number` IN (
             SELECT `name` FROM `tabvms vehicle registration`
-            WHERE `owner_name` = {escaped_user} OR `owner_user` = {escaped_user}
-        ) OR `tabvms vehicle inspection`.`customer_name` = {escaped_user})
+            WHERE `owner_name` IN ({escaped_identities}) OR `owner_user` IN ({escaped_identities})
+        ) OR `tabvms vehicle inspection`.`customer_name` IN ({escaped_identities}))
     """
 
 
@@ -89,6 +93,16 @@ def vehicle_inspection_has_permission(doc, user=None, permission_type=None):
             ["owner_name", "owner_user"],
             as_dict=True,
         )
+        if not vehicle_owner:
+            alt_name = frappe.db.get_value(
+                "vms vehicle registration",
+                {"vehicle_number": str(vehicle_name).strip().upper()},
+                ["owner_name", "owner_user"],
+                as_dict=True,
+            )
+            if alt_name:
+                vehicle_owner = alt_name
+
         if vehicle_owner:
             if vehicle_owner.get("owner_name") in allowed_values or vehicle_owner.get("owner_user") in allowed_values:
                 return True

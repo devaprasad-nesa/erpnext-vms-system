@@ -1,0 +1,257 @@
+{% extends "templates/web.html" %}
+
+{% block title %}
+Vehicle Master Data Management | VMS Admin
+{% endblock %}
+
+{% block head_include %}
+<link rel="stylesheet" href="/assets/vms_vehicle/css/vehicle-masters.css">
+{% endblock %}
+
+{% block page_content %}
+<div id="vms-admin-masters-page">
+
+    <div class="masters-container">
+
+        <!-- Page Header -->
+        <header class="masters-header">
+            <div class="masters-title">
+                <span class="admin-badge">ADMINISTRATION</span>
+                <h1>Vehicle Master Data Management</h1>
+                <p class="masters-subtitle">Dynamically configure Brands, Models, and supported Fuel Types for customer vehicle registrations.</p>
+            </div>
+
+            <div>
+                <a href="/vehicle-register" class="btn-secondary" style="text-decoration:none; display:inline-block; margin-right:8px;">Customer View</a>
+                <a href="/customer-home" class="btn-secondary" style="text-decoration:none; display:inline-block;">Dashboard</a>
+            </div>
+        </header>
+
+        <div id="toast-container"></div>
+
+        <!-- Master Tabs -->
+        <nav class="masters-tabs" role="tablist">
+            <button class="tab-btn active" id="tab-brands-btn" onclick="switchMasterTab('brands')">
+                <span>🏷️ Vehicle Brands</span>
+                <span class="tab-count" id="brand-count">0</span>
+            </button>
+            <button class="tab-btn" id="tab-models-btn" onclick="switchMasterTab('models')">
+                <span>🚗 Vehicle Models</span>
+                <span class="tab-count" id="model-count">0</span>
+            </button>
+            <button class="tab-btn" id="tab-fuels-btn" onclick="switchMasterTab('fuels')">
+                <span>⛽ Fuel Types</span>
+                <span class="tab-count" id="fuel-count">0</span>
+            </button>
+        </nav>
+
+        <!-- ====================================================
+             1. BRANDS TAB SECTION
+             ==================================================== -->
+        <section id="section-brands" class="master-section">
+            <div class="section-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-brands" class="search-input" placeholder="Search brands..." oninput="filterBrands()">
+                </div>
+                <button class="btn-primary-action" onclick="openAddBrandModal()">
+                    <span>➕ Add Brand</span>
+                </button>
+            </div>
+
+            <div class="table-card">
+                <table class="data-table" id="brands-table">
+                    <thead>
+                        <tr>
+                            <th>Brand Name</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="brands-table-body">
+                        <tr><td colspan="4" class="empty-state">Loading vehicle brands...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ====================================================
+             2. MODELS TAB SECTION
+             ==================================================== -->
+        <section id="section-models" class="master-section" style="display:none;">
+            <div class="section-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-models" class="search-input" placeholder="Search models..." oninput="filterModels()">
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <select id="filter-model-brand" class="form-control-admin" style="width:auto;" onchange="filterModels()">
+                        <option value="">All Brands</option>
+                    </select>
+                    <button class="btn-primary-action" onclick="openAddModelModal()">
+                        <span>➕ Add Model</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <table class="data-table" id="models-table">
+                    <thead>
+                        <tr>
+                            <th>Model Name</th>
+                            <th>Brand</th>
+                            <th>Supported Fuel Types</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="models-table-body">
+                        <tr><td colspan="5" class="empty-state">Loading vehicle models...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ====================================================
+             3. FUEL TYPES TAB SECTION
+             ==================================================== -->
+        <section id="section-fuels" class="master-section" style="display:none;">
+            <div class="section-controls">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-fuels" class="search-input" placeholder="Search fuel types..." oninput="filterFuels()">
+                </div>
+                <button class="btn-primary-action" onclick="openAddFuelModal()">
+                    <span>➕ Add Fuel Type</span>
+                </button>
+            </div>
+
+            <div class="table-card">
+                <table class="data-table" id="fuels-table">
+                    <thead>
+                        <tr>
+                            <th>Fuel Type</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th style="text-align:right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fuels-table-body">
+                        <tr><td colspan="4" class="empty-state">Loading fuel types...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ====================================================
+         MODALS
+         ==================================================== -->
+
+    <!-- Brand Modal -->
+    <div id="brand-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="brand-modal-title">Add Vehicle Brand</h3>
+                <button class="modal-close" onclick="closeModal('brand-modal')">&times;</button>
+            </div>
+            <form id="brand-form" onsubmit="saveBrand(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="brand-original-name" value="">
+                    <div class="form-group-admin">
+                        <label for="brand-name-input">Brand Name <span>*</span></label>
+                        <input type="text" id="brand-name-input" class="form-control-admin" required placeholder="e.g. BMW">
+                    </div>
+                    <div class="form-group-admin">
+                        <label for="brand-desc-input">Description</label>
+                        <input type="text" id="brand-desc-input" class="form-control-admin" placeholder="Optional notes">
+                    </div>
+                    <div class="form-group-admin" style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" id="brand-enabled-input" checked>
+                        <label for="brand-enabled-input" style="margin:0; cursor:pointer;">Enabled</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('brand-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary-action" id="brand-submit-btn">Save Brand</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Model Modal -->
+    <div id="model-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="model-modal-title">Add Vehicle Model</h3>
+                <button class="modal-close" onclick="closeModal('model-modal')">&times;</button>
+            </div>
+            <form id="model-form" onsubmit="saveModel(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="model-original-name" value="">
+                    <div class="form-group-admin">
+                        <label for="model-name-input">Model Name <span>*</span></label>
+                        <input type="text" id="model-name-input" class="form-control-admin" required placeholder="e.g. M3">
+                    </div>
+                    <div class="form-group-admin">
+                        <label for="model-brand-select">Vehicle Brand <span>*</span></label>
+                        <select id="model-brand-select" class="form-control-admin" required>
+                            <option value="">Select Brand</option>
+                        </select>
+                    </div>
+                    <div class="form-group-admin">
+                        <label>Supported Fuel Types <span>*</span></label>
+                        <div class="fuel-checkbox-grid" id="model-fuels-checkboxes">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                    <div class="form-group-admin" style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" id="model-enabled-input" checked>
+                        <label for="model-enabled-input" style="margin:0; cursor:pointer;">Enabled</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('model-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary-action" id="model-submit-btn">Save Model</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Fuel Type Modal -->
+    <div id="fuel-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="fuel-modal-title">Add Fuel Type</h3>
+                <button class="modal-close" onclick="closeModal('fuel-modal')">&times;</button>
+            </div>
+            <form id="fuel-form" onsubmit="saveFuel(event)">
+                <div class="modal-body">
+                    <input type="hidden" id="fuel-original-name" value="">
+                    <div class="form-group-admin">
+                        <label for="fuel-name-input">Fuel Type <span>*</span></label>
+                        <input type="text" id="fuel-name-input" class="form-control-admin" required placeholder="e.g. Hydrogen">
+                    </div>
+                    <div class="form-group-admin">
+                        <label for="fuel-desc-input">Description</label>
+                        <input type="text" id="fuel-desc-input" class="form-control-admin" placeholder="Optional notes">
+                    </div>
+                    <div class="form-group-admin" style="display:flex; align-items:center; gap:8px;">
+                        <input type="checkbox" id="fuel-enabled-input" checked>
+                        <label for="fuel-enabled-input" style="margin:0; cursor:pointer;">Enabled</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('fuel-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary-action" id="fuel-submit-btn">Save Fuel Type</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="/assets/vms_vehicle/js/vehicle-masters.js"></script>
+{% endblock %}

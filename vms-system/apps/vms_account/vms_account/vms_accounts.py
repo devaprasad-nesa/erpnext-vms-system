@@ -131,14 +131,30 @@ class vmsaccounts(Document):
 
     def calculate_total_bill(self):
         """
-        Uses the existing spare_parts_amount and total_bill
-        fields. No additional DocType fields are required.
+        Calculates spare_parts_amount from inspection's vms spare part child table
+        and adds labour hours calculation.
         """
-
         parts_cost = 0.0
         labour_cost = 0.0
 
-        if self.vehicle_spare_parts:
+        if self.vehicle_inspection:
+            # Sum all spare parts from the child table
+            child_parts = frappe.db.sql(
+                """
+                SELECT qty, cost, amount
+                FROM `tabvms spare part`
+                WHERE parent = %s AND parenttype = 'vms vehicle inspection'
+                """,
+                (self.vehicle_inspection,),
+                as_dict=True
+            )
+            if child_parts:
+                for cp in child_parts:
+                    row_amount = flt(cp.amount) or (flt(cp.qty) * flt(cp.cost))
+                    parts_cost += row_amount
+
+        # Fallback to single spare part if no child table rows found
+        if parts_cost == 0.0 and self.vehicle_spare_parts:
             part = frappe.db.get_value(
                 "vms spare parts",
                 self.vehicle_spare_parts,
@@ -161,7 +177,10 @@ class vmsaccounts(Document):
                 )
 
                 if inspection_quantity:
-                    quantity = flt(inspection_quantity)
+                    try:
+                        quantity = flt(inspection_quantity)
+                    except Exception:
+                        quantity = 1.0
 
             if quantity < 0:
                 frappe.throw(

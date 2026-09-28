@@ -367,7 +367,8 @@ def get_vehicle_inspections():
         ]:
             continue
 
-        fields.append(field.fieldname)
+        if field.fieldtype not in ["Table"]:
+            fields.append(field.fieldname)
 
     records = frappe.get_all(
         INSPECTION_DOCTYPE,
@@ -378,6 +379,27 @@ def get_vehicle_inspections():
         order_by="creation desc",
         limit_page_length=500,
     )
+
+    if records:
+        inspection_names = [r["name"] for r in records]
+        child_parts = frappe.db.sql(
+            """
+            SELECT parent, part_name, qty, cost, amount
+            FROM `tabvms spare part`
+            WHERE parent IN %s AND parenttype = 'vms vehicle inspection' AND parentfield = 'spare_parts'
+            ORDER BY idx ASC, creation ASC
+            """,
+            (tuple(inspection_names),),
+            as_dict=True
+        )
+        parts_by_parent = {}
+        for cp in child_parts:
+            parts_by_parent.setdefault(cp.parent, []).append(cp)
+
+        for r in records:
+            p_list = parts_by_parent.get(r["name"], [])
+            r["spare_parts"] = ", ".join(f"{p['part_name']} ({p['qty']})" for p in p_list) if p_list else "-"
+            r["spare_parts_list"] = p_list
 
     return {
         "error": False,

@@ -11,6 +11,7 @@ from vms_user.pagination import apply_pagination, get_paginated_data
 
 INSPECTION_DOCTYPE = "vms vehicle inspection"
 SPARE_PARTS_DOCTYPE = "vms spare parts"
+CHILD_SPARE_PART_DOCTYPE = "vms spare part"
 VEHICLE_DOCTYPE = "vms vehicle registration"
 SERVICE_DOCTYPE = "vms vehicle service registration"
 
@@ -58,8 +59,31 @@ def require_staff():
 
 
 def require_technician():
-    """Compatibility wrapper for technician-only functions."""
-    return require_staff()
+    """Ensure user is an authorized VMS technician, manager, or administrator."""
+    user = getattr(frappe.session, "user", None)
+    if not user or user == "Guest":
+        frappe.throw(
+            _("Please log in to continue."),
+            frappe.PermissionError,
+        )
+
+    if user == "Administrator":
+        return user
+
+    roles = {r.strip().lower() for r in frappe.get_roles(user)}
+    allowed = {
+        "vms technician",
+        "technician",
+        "vms manager",
+        "system manager",
+    }
+    if not roles.intersection(allowed):
+        frappe.throw(
+            _("Only authorized technicians can manage vehicle inspections and spare parts."),
+            frappe.PermissionError,
+        )
+
+    return user
 
 
 def check_doctype_permission(doctype: str, permission_type: str):
@@ -109,45 +133,106 @@ def resolve_vehicle_record(vehicle_input: str) -> dict:
     return vehicle
 
 
-def resolve_spare_part(spare_part_val: str | None) -> tuple[str | None, str | None]:
+def parse_inspection_spare_parts(raw_parts) -> list[dict]:
     """
-    Optimized single-query resolution of spare part name and available quantity.
+    Parse and validate spare parts list for the child table `vms spare part`.
+    Ensures:
+    - Parts reference existing master records in `vms spare parts`
+    - No duplicate rows in the inspection
+    - Qty used > 0
+    - Available stock limits enforced
+    - Amount = Qty * Cost auto-calculated
     """
-    if not spare_part_val:
-        return None, None
+    if not raw_parts:
+        return []
 
-    val = str(spare_part_val).strip()
-    if not val:
-        return None, None
+    if isinstance(raw_parts, str):
+        try:
+            import json
+            raw_parts = json.loads(raw_parts)
+        except Exception:
+            raw_parts = [{"part_name": raw_parts.strip(), "qty": 1}]
 
-    # Single parameterized query matching either primary docname or part_name
-    part = frappe.db.sql(
-        f"""
-        SELECT name, quantity, part_name, cost
-        FROM `tab{SPARE_PARTS_DOCTYPE}`
-        WHERE name = %s OR LOWER(part_name) = LOWER(%s)
-        LIMIT 1
-        """,
-        (val, val),
-        as_dict=True,
-    )
+    if isinstance(raw_parts, dict):
+        raw_parts = [raw_parts]
 
-    if part:
-        return part[0].name, str(part[0].quantity or "1")
+    if not isinstance(raw_parts, list):
+        return []
 
-    # If part is not found, create new spare part record safely
-    try:
-        new_doc = frappe.get_doc({
-            "doctype": SPARE_PARTS_DOCTYPE,
-            "part_name": val,
-            "quantity": "1",
-            "cost": 0.0,
+    parsed_rows = []
+    seen_parts = set()
+
+    for item in raw_parts:
+        if isinstance(item, str):
+            item = {"part_name": item.strip(), "qty": 1}
+        elif not isinstance(item, dict):
+            continue
+
+        part_input = (item.get("part_name") or item.get("name") or item.get("spare_part") or "").strip()
+        if not part_input:
+            continue
+
+        norm_name = part_input.lower()
+        if norm_name in seen_parts:
+            # Avoid duplicate rows in child table
+            continue
+        seen_parts.add(norm_name)
+
+        # Look up in master `vms spare parts` table
+        master = frappe.db.sql(
+            f"""
+            SELECT name, part_name, quantity, cost
+            FROM `tab{SPARE_PARTS_DOCTYPE}`
+            WHERE name = %s OR LOWER(part_name) = LOWER(%s)
+            LIMIT 1
+            """,
+            (part_input, part_input),
+            as_dict=True
+        )
+
+        part_name = part_input
+        cost = flt(item.get("cost") or 0)
+        available_stock_str = str(item.get("available_qty") or item.get("quantity") or "").strip()
+
+        if master:
+            mp = master[0]
+            part_name = mp.part_name or mp.name
+            if not cost and flt(mp.cost):
+                cost = flt(mp.cost)
+            if not available_stock_str and mp.quantity:
+                available_stock_str = str(mp.quantity).strip()
+
+        qty = flt(item.get("qty") or item.get("quantity") or 1)
+        if qty <= 0:
+            frappe.throw(_("Quantity used for spare part '{0}' must be greater than 0.").format(part_name))
+
+        # Check stock limits if numeric available stock exists
+        stock_num = None
+        if available_stock_str:
+            try:
+                stock_num = flt(available_stock_str.split()[0])
+            except Exception:
+                stock_num = None
+
+        if stock_num is not None and stock_num > 0 and qty > stock_num:
+            frappe.throw(
+                _("Quantity used ({0}) for spare part '{1}' cannot exceed available stock ({2}).").format(
+                    qty, part_name, stock_num
+                )
+            )
+
+        amount = round(qty * cost, 2)
+
+        parsed_rows.append({
+            "doctype": CHILD_SPARE_PART_DOCTYPE,
+            "part_name": part_name,
+            "qty": qty,
+            "cost": cost,
+            "amount": amount,
+            "available_qty": available_stock_str,
         })
-        new_doc.flags.ignore_permissions = True
-        new_doc.insert()
-        return new_doc.name, "1"
-    except Exception:
-        return None, None
+
+    return parsed_rows
 
 
 # =========================================================
@@ -177,9 +262,7 @@ def validate_inspection_data(data: dict) -> dict:
 
     inspected = 1 if data.get("inspected") else 0
 
-    spare_part_name, spare_part_qty = resolve_spare_part(data.get("spare_parts"))
-    if data.get("spare_part_quantity"):
-        spare_part_qty = str(data.get("spare_part_quantity")).strip()
+    spare_parts_rows = parse_inspection_spare_parts(data.get("spare_parts") or data.get("vms_spare_parts"))
 
     customer_name = data.get("customer_name") or vehicle.get("owner_name") or vehicle.get("owner_user")
     mechanic = str(data.get("mechanic") or "").strip() or None
@@ -189,8 +272,7 @@ def validate_inspection_data(data: dict) -> dict:
         "customer_name": customer_name,
         "inspection_date": inspection_date,
         "issue": issue,
-        "spare_parts": spare_part_name,
-        "spare_part_quantity": spare_part_qty,
+        "spare_parts": spare_parts_rows,
         "mechanic": mechanic,
         "labour_hour": labour_hour,
         "inspected": inspected,
@@ -290,17 +372,33 @@ def sync_service_status_on_inspection(vehicle_docname: str, inspection_date, ins
 # =========================================================
 
 def list_inspections(page=None) -> list[dict]:
-    """Return inspections visible to the logged-in user."""
+    """Return inspections visible to the logged-in user with child spare_parts."""
     user = getattr(frappe.session, "user", None) or "Guest"
     if user == "Guest":
         return []
 
-    filters = {}
     roles = {r.strip().lower() for r in frappe.get_roles(user)}
+    is_staff = bool(
+        user == "Administrator"
+        or roles.intersection({
+            "system manager",
+            "administrator",
+            "vms manager",
+            "vms technician",
+            "vms mechanic",
+            "technician",
+            "vms accountant",
+        })
+    )
+
+    if not is_staff:
+        return list_customer_vehicle_inspections(page=page)
+
+    filters = {}
     if "vms technician" in roles and "vms manager" not in roles and "system manager" not in roles and "administrator" != user.lower():
         filters["technician"] = user
 
-    return get_paginated_data(
+    inspections = get_paginated_data(
         INSPECTION_DOCTYPE,
         page=page,
         filters=filters,
@@ -310,8 +408,6 @@ def list_inspections(page=None) -> list[dict]:
             "vehicle_number",
             "inspection_date",
             "issue",
-            "spare_parts",
-            "spare_part_quantity",
             "technician",
             "mechanic",
             "labour_hour",
@@ -322,9 +418,43 @@ def list_inspections(page=None) -> list[dict]:
         order_by="modified desc"
     )
 
+    if inspections:
+        inspection_names = [i["name"] for i in inspections]
+        child_rows = frappe.db.sql(
+            """
+            SELECT parent, name, part_name, qty, cost, amount, available_qty
+            FROM `tabvms spare part`
+            WHERE parent IN %s AND parenttype = 'vms vehicle inspection' AND parentfield = 'spare_parts'
+            ORDER BY idx ASC, creation ASC
+            """,
+            (tuple(inspection_names),),
+            as_dict=True
+        )
+        parts_by_parent = {}
+        for cr in child_rows:
+            p = cr.parent
+            if p not in parts_by_parent:
+                parts_by_parent[p] = []
+            parts_by_parent[p].append({
+                "name": cr.name,
+                "part_name": cr.part_name,
+                "qty": flt(cr.qty),
+                "cost": flt(cr.cost),
+                "amount": flt(cr.amount or (flt(cr.qty) * flt(cr.cost))),
+                "available_qty": cr.available_qty or "",
+            })
+
+        for i in inspections:
+            p_list = parts_by_parent.get(i["name"], [])
+            i["spare_parts"] = p_list
+            i["total_parts_cost"] = round(sum(flt(x["amount"]) for x in p_list), 2)
+            i["spare_parts_summary"] = ", ".join(f"{x['part_name']} ({x['qty']})" for x in p_list) if p_list else "-"
+
+    return inspections
+
 
 def list_spare_parts(page=None) -> list[dict]:
-    """Return all active spare parts."""
+    """Return all active master spare parts from vms spare parts."""
     require_staff()
     return get_paginated_data(
         SPARE_PARTS_DOCTYPE,
@@ -354,7 +484,7 @@ def get_inspection(name: str):
     doc = frappe.get_doc(INSPECTION_DOCTYPE, name)
 
     roles = {r.strip().lower() for r in frappe.get_roles(user)}
-    is_staff = bool("administrator" == user.lower() or roles.intersection({"system manager", "vms manager", "vms technician", "vms mechanic", "vms accountant"}))
+    is_staff = bool("administrator" == user.lower() or roles.intersection({"system manager", "vms manager", "vms technician", "vms mechanic", "vms accountant", "technician"}))
 
     if is_staff:
         return doc
@@ -370,6 +500,16 @@ def get_inspection(name: str):
         ["owner_name", "owner_user"],
         as_dict=True,
     )
+    if not vehicle_owner and doc.vehicle_number:
+        alt_name = frappe.db.get_value(
+            VEHICLE_DOCTYPE,
+            {"vehicle_number": str(doc.vehicle_number).strip().upper()},
+            ["owner_name", "owner_user"],
+            as_dict=True,
+        )
+        if alt_name:
+            vehicle_owner = alt_name
+
     if vehicle_owner and (vehicle_owner.get("owner_name") in allowed_identities or vehicle_owner.get("owner_user") in allowed_identities):
         return doc
 
@@ -377,11 +517,12 @@ def get_inspection(name: str):
 
 
 def create_inspection(data: dict) -> dict:
-    """Create a new vehicle inspection."""
+    """Create a new vehicle inspection with child spare_parts table."""
     user = require_technician()
     check_doctype_permission(INSPECTION_DOCTYPE, "create")
 
     values = validate_inspection_data(data)
+    spare_parts_rows = values.pop("spare_parts", [])
 
     # Prevent duplicate submissions with the same data
     if frappe.db.exists(
@@ -400,6 +541,10 @@ def create_inspection(data: dict) -> dict:
         **values,
         "technician": user,
     })
+
+    for row in spare_parts_rows:
+        doc.append("spare_parts", row)
+
     doc.insert()
 
     sync_service_status_on_inspection(
@@ -416,7 +561,7 @@ def create_inspection(data: dict) -> dict:
 
 
 def update_inspection(name: str, data: dict) -> dict:
-    """Update an existing inspection."""
+    """Update an existing inspection and its child spare_parts table."""
     user = require_technician()
     check_doctype_permission(INSPECTION_DOCTYPE, "write")
 
@@ -425,23 +570,29 @@ def update_inspection(name: str, data: dict) -> dict:
     if doc.technician != user and "vms manager" not in roles and "system manager" not in roles and "administrator" != user.lower():
         frappe.throw(_("You cannot update another technician's inspection."), frappe.PermissionError)
 
-    # Allow partial updates by merging with existing doc values
-    merged_data = {
-        "vehicle_number": doc.vehicle_number,
-        "customer_name": doc.customer_name,
-        "inspection_date": str(doc.inspection_date),
-        "issue": doc.issue,
-        "spare_parts": doc.spare_parts,
-        "spare_part_quantity": doc.spare_part_quantity,
-        "mechanic": doc.mechanic,
-        "labour_hour": doc.labour_hour,
-        "inspected": doc.inspected,
-    }
-    merged_data.update(data)
-    values = validate_inspection_data(merged_data)
+    # If data has spare_parts, parse and replace child table
+    if "spare_parts" in data or "vms_spare_parts" in data:
+        raw_parts = data.get("spare_parts") if "spare_parts" in data else data.get("vms_spare_parts")
+        parsed_rows = parse_inspection_spare_parts(raw_parts)
+        doc.set("spare_parts", [])
+        for row in parsed_rows:
+            doc.append("spare_parts", row)
 
-    for field, value in values.items():
-        doc.set(field, value)
+    if "vehicle_number" in data and data["vehicle_number"]:
+        veh = resolve_vehicle_record(data["vehicle_number"])
+        doc.vehicle_number = veh["name"]
+    if "customer_name" in data and data["customer_name"]:
+        doc.customer_name = data["customer_name"]
+    if "inspection_date" in data and data["inspection_date"]:
+        doc.inspection_date = getdate(data["inspection_date"])
+    if "issue" in data:
+        doc.issue = str(data["issue"] or "").strip() or "General Inspection / Routine Checkup"
+    if "mechanic" in data:
+        doc.mechanic = str(data["mechanic"] or "").strip() or None
+    if "labour_hour" in data:
+        doc.labour_hour = flt(data["labour_hour"])
+    if "inspected" in data:
+        doc.inspected = 1 if data["inspected"] else 0
 
     doc.save()
 
@@ -474,7 +625,7 @@ def delete_inspection(name: str) -> dict:
 
 
 def create_spare_part(data: dict) -> dict:
-    """Create a new spare part."""
+    """Create a new master spare part in vms spare parts."""
     require_staff()
     check_doctype_permission(SPARE_PARTS_DOCTYPE, "create")
 
@@ -490,7 +641,7 @@ def create_spare_part(data: dict) -> dict:
 
 
 def update_spare_part(name: str, data: dict) -> dict:
-    """Update an existing spare part."""
+    """Update an existing master spare part."""
     require_staff()
     check_doctype_permission(SPARE_PARTS_DOCTYPE, "write")
 
@@ -504,7 +655,7 @@ def update_spare_part(name: str, data: dict) -> dict:
 
 
 def delete_spare_part(name: str) -> dict:
-    """Delete a spare part."""
+    """Delete a master spare part."""
     require_staff()
     check_doctype_permission(SPARE_PARTS_DOCTYPE, "delete")
 
@@ -520,24 +671,61 @@ def list_customer_vehicle_inspections(vehicle_name: str | None = None, page=None
     if not user or user == "Guest":
         frappe.throw(_("Please log in."), frappe.PermissionError)
 
-    filters = {}
-    if vehicle_name:
-        resolved = resolve_vehicle_record(vehicle_name)
-        filters["vehicle_number"] = resolved["name"]
+    roles = {r.strip().lower() for r in frappe.get_roles(user)}
+    is_staff = bool(
+        user == "Administrator"
+        or roles.intersection({
+            "system manager",
+            "administrator",
+            "vms manager",
+            "vms technician",
+            "vms mechanic",
+            "technician",
+            "vms accountant",
+        })
+    )
 
-    # frappe.get_list automatically applies our vehicle_inspection_query permission condition
-    return get_paginated_data(
+    filters = {}
+    or_filters = None
+
+    if not is_staff:
+        identities = _get_user_identities(user)
+        owned_vehicle_names = frappe.get_all(
+            VEHICLE_DOCTYPE,
+            or_filters=[
+                {"owner_name": ["in", identities]},
+                {"owner_user": ["in", identities]},
+            ],
+            pluck="name",
+            limit_page_length=1000,
+        )
+
+        if vehicle_name:
+            resolved = resolve_vehicle_record(vehicle_name)
+            if resolved["name"] not in owned_vehicle_names:
+                frappe.throw(_("You can only view inspections for your own vehicles."), frappe.PermissionError)
+            filters["vehicle_number"] = resolved["name"]
+        else:
+            or_conditions = [{"customer_name": ["in", identities]}]
+            if owned_vehicle_names:
+                or_conditions.append({"vehicle_number": ["in", owned_vehicle_names]})
+            or_filters = or_conditions
+    else:
+        if vehicle_name:
+            resolved = resolve_vehicle_record(vehicle_name)
+            filters["vehicle_number"] = resolved["name"]
+
+    inspections = get_paginated_data(
         INSPECTION_DOCTYPE,
         page=page,
         filters=filters,
+        or_filters=or_filters,
         fields=[
             "name",
             "vehicle_number",
             "customer_name",
             "inspection_date",
             "issue",
-            "spare_parts",
-            "spare_part_quantity",
             "mechanic",
             "labour_hour",
             "inspected",
@@ -545,3 +733,37 @@ def list_customer_vehicle_inspections(vehicle_name: str | None = None, page=None
         ],
         order_by="inspection_date desc"
     )
+
+    if inspections:
+        inspection_names = [i["name"] for i in inspections]
+        child_rows = frappe.db.sql(
+            """
+            SELECT parent, name, part_name, qty, cost, amount, available_qty
+            FROM `tabvms spare part`
+            WHERE parent IN %s AND parenttype = 'vms vehicle inspection' AND parentfield = 'spare_parts'
+            ORDER BY idx ASC, creation ASC
+            """,
+            (tuple(inspection_names),),
+            as_dict=True
+        )
+        parts_by_parent = {}
+        for cr in child_rows:
+            p = cr.parent
+            if p not in parts_by_parent:
+                parts_by_parent[p] = []
+            parts_by_parent[p].append({
+                "name": cr.name,
+                "part_name": cr.part_name,
+                "qty": flt(cr.qty),
+                "cost": flt(cr.cost),
+                "amount": flt(cr.amount or (flt(cr.qty) * flt(cr.cost))),
+                "available_qty": cr.available_qty or "",
+            })
+
+        for i in inspections:
+            p_list = parts_by_parent.get(i["name"], [])
+            i["spare_parts"] = p_list
+            i["total_parts_cost"] = round(sum(flt(x["amount"]) for x in p_list), 2)
+            i["spare_parts_summary"] = ", ".join(f"{x['part_name']} ({x['qty']})" for x in p_list) if p_list else "-"
+
+    return inspections

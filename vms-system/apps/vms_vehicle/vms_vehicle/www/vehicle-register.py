@@ -2,12 +2,24 @@ import frappe
 
 
 def get_context(context):
+    """
+    Context for Vehicle Registration page.
+    """
     if frappe.session.user == "Guest":
-        frappe.local.flags.redirect_location = "/vms-login"
+        frappe.local.flags.redirect_location = "/login"
         raise frappe.Redirect
 
     context.no_cache = 1
+    context.show_sidebar = False
+    context.full_width = 1
     context.title = "Register Vehicle | VMS Customer Portal"
     context.user = frappe.session.user
+
+    # Pre-populate brands from vms brand for instant server rendering
+    try:
+        from vms_vehicle.api import get_vehicle_brands
+        context.vehicle_brands = get_vehicle_brands()
+    except Exception:
+        context.vehicle_brands = []
 
     return context

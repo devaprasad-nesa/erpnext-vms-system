@@ -2,40 +2,45 @@
  "actions": [],
  "allow_bulk_edit": 1,
  "allow_rename": 1,
- "autoname": "brand_name+model_name",
- "creation": "2026-09-25 12:06:19.761241",
+ "autoname": "field:brand_name",
+ "creation": "2026-09-28 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "section_break_dcmp",
   "brand_name",
-  "model_name"
+  "enabled",
+  "description"
  ],
  "fields": [
   {
-   "fieldname": "section_break_dcmp",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "brand_name",
    "fieldtype": "Data",
-   "label": "Brand Name"
+   "in_list_view": 1,
+   "label": "Brand Name",
+   "reqd": 1,
+   "unique": 1
   },
   {
-   "fieldname": "model_name",
-   "fieldtype": "Table",
-   "label": "Model Name",
-   "options": "Vehicle Model"
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-25 12:10:31.604643",
+ "modified": "2026-09-28 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vms Vehicle",
  "name": "Vehicle Brand",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -49,11 +54,16 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "read": 1,
+   "role": "All"
   }
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "sort_field": "creation",
- "sort_order": "DESC",
- "states": []
+ "sort_field": "brand_name",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "brand_name"
 }

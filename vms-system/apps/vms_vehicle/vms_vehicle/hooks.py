@@ -77,6 +77,11 @@ role_home_page = {
 	"Customer": "customer-home"
 }
 
+website_route_rules = [
+    {"from_route": "/vehicle-masters", "to_route": "vehicle-masters"},
+    {"from_route": "/admin/vehicle-masters", "to_route": "vehicle-masters"},
+]
+
 # Setup Wizard
 # ------------
 
