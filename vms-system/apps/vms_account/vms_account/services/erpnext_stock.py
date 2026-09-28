@@ -26,12 +26,12 @@ def get_item_stock_availability(item_code: str, warehouse: str = None) -> dict:
     if not item_code:
         frappe.throw(_("Item code is required."))
 
-    filters = {"item_code": item_code}
     if warehouse:
-        filters["warehouse"] = warehouse
-
-    actual_qty = flt(frappe.db.get_value("Bin", filters, "sum(actual_qty)") or 0.0)
-    reserved_qty = flt(frappe.db.get_value("Bin", filters, "sum(reserved_qty)") or 0.0)
+        res = frappe.db.sql("SELECT SUM(actual_qty), SUM(reserved_qty) FROM `tabBin` WHERE item_code = %s AND warehouse = %s", (item_code, warehouse))
+    else:
+        res = frappe.db.sql("SELECT SUM(actual_qty), SUM(reserved_qty) FROM `tabBin` WHERE item_code = %s", (item_code,))
+    actual_qty = flt(res[0][0]) if res and res[0][0] is not None else 0.0
+    reserved_qty = flt(res[0][1]) if res and res[0][1] is not None else 0.0
 
     stock_uom = frappe.db.get_value("Item", item_code, "stock_uom") or "Nos"
 

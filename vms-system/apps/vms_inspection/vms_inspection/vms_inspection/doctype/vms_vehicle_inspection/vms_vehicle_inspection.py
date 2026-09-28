@@ -116,7 +116,8 @@ class vmsvehicleinspection(Document):
 				row.cost = flt(item.standard_rate or item.valuation_rate or 0.0)
 
 			# Validate stock availability in Bin
-			actual_qty = flt(frappe.db.get_value("Bin", {"item_code": item.name}, "sum(actual_qty)") or 0.0)
+			res = frappe.db.sql("SELECT SUM(actual_qty) FROM `tabBin` WHERE item_code = %s", (item.name,))
+			actual_qty = flt(res[0][0]) if res and res[0][0] is not None else 0.0
 			uom = item.stock_uom or "Nos"
 			row.available_qty = f"{actual_qty} {uom}"
 

@@ -392,3 +392,22 @@ ALTER TABLE `tabvms spare part` ADD COLUMN `amount` decimal(21,9) NOT NULL DEFAU
 2026-09-28 17:07:35,774 WARNING database DDL Query made to DB:
 ALTER TABLE `tabvms spare part` MODIFY `cost` decimal(21,9) NOT NULL DEFAULT 0.0, MODIFY `qty` decimal(21,9) NOT NULL DEFAULT 0.0
 2026-09-28 17:11:30,709 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 18:03:17,830 WARNING database DDL Query made to DB:
+ALTER TABLE `tabSubscription` DROP COLUMN `start_date`, DROP COLUMN `end_date`, DROP COLUMN `status`
+2026-09-28 18:03:19,059 WARNING database DDL Query made to DB:
+ALTER TABLE `tabStock Entry Detail` ADD COLUMN `gst_hsn_code` varchar(140)
+2026-09-28 18:03:28,704 WARNING database DDL Query made to DB:
+ALTER TABLE `tabFinance Book` ADD COLUMN `for_income_tax` tinyint(4) NOT NULL DEFAULT 0
+2026-09-28 18:03:37,300 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms spare part` ADD COLUMN `item_code` varchar(140), ADD COLUMN `warehouse` varchar(140)
+2026-09-28 18:03:38,507 WARNING database DDL Query made to DB:
+ALTER TABLE `tabCompany` ADD COLUMN `basic_component` varchar(140), ADD COLUMN `hra_component` varchar(140), ADD COLUMN `arrear_component` varchar(140), ADD COLUMN `company_80g_number` varchar(140), ADD COLUMN `with_effect_from` date, ADD COLUMN `pan_details` varchar(140)
+2026-09-28 18:03:40,460 WARNING database DDL Query made to DB:
+truncate `tabAccount Closing Balance`
+2026-09-28 18:03:42,049 WARNING database DDL Query made to DB:
+ALTER TABLE `tabAddress` ADD COLUMN `tax_category` varchar(140), ADD COLUMN `is_your_company_address` tinyint(4) NOT NULL DEFAULT 0
+2026-09-28 18:03:42,131 WARNING database DDL Query made to DB:
+ALTER TABLE `tabContact` ADD COLUMN `is_billing_contact` tinyint(4) NOT NULL DEFAULT 0
+2026-09-28 18:03:43,724 WARNING database DDL Query made to DB:
+ALTER TABLE `tabBackground Task`
+				ADD INDEX IF NOT EXISTS `automation_run_lookup`(task_name, method, creation)

@@ -11,7 +11,7 @@ from vms_user.pagination import get_paginated_data
 def get_customers(page=None, search=None):
     """Return ERPNext Customer list."""
     require_staff()
-    filters = {"disabled": 0}
+    filters = [["Customer", "disabled", "!=", 1]]
 
     if search:
         search_str = str(search).strip()
@@ -75,3 +75,33 @@ def get_customer_outstanding(customer_name: str) -> dict:
         "outstanding_amount": round(total_out, 2),
         "unpaid_invoices_count": count,
     }
+
+
+def create_or_update_customer(customer_name: str, customer_type: str = "Individual", custom_vms_user: str | None = None) -> dict:
+    """Create or update an ERPNext Customer record."""
+    require_staff()
+    if not customer_name:
+        frappe.throw(_("Customer name is required."))
+
+    c_name = customer_name.strip()
+    existing = frappe.db.get_value("Customer", {"customer_name": c_name}, "name")
+    if existing:
+        cust = frappe.get_doc("Customer", existing)
+        if custom_vms_user and hasattr(cust, "custom_vms_user"):
+            cust.custom_vms_user = custom_vms_user
+            cust.save(ignore_permissions=True)
+        return {"success": True, "name": cust.name, "customer_name": cust.customer_name}
+
+    cust = frappe.get_doc({
+        "doctype": "Customer",
+        "customer_name": c_name,
+        "customer_type": customer_type,
+        "customer_group": "All Customer Groups",
+        "territory": "All Territories",
+    })
+    if custom_vms_user and hasattr(cust, "custom_vms_user"):
+        cust.custom_vms_user = custom_vms_user
+
+    cust.insert(ignore_permissions=True, ignore_mandatory=True)
+    return {"success": True, "name": cust.name, "customer_name": cust.customer_name}
+
