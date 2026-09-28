@@ -26,6 +26,17 @@ class vmssparepart(Document):
 	# end: auto-generated types
 
 	def validate(self):
+		if not self.item_code and self.part_name:
+			self.item_code = self.part_name
+
+		if self.item_code and frappe.db.exists("Item", self.item_code):
+			item_data = frappe.db.get_value("Item", self.item_code, ["item_name", "standard_rate"], as_dict=True)
+			if item_data:
+				if not self.part_name:
+					self.part_name = item_data.item_name or self.item_code
+				if not flt(self.cost):
+					self.cost = flt(item_data.standard_rate)
+
 		self.qty = flt(self.qty)
 		self.cost = flt(self.cost)
 		self.amount = round(self.qty * self.cost, 2)

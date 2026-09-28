@@ -74,60 +74,61 @@ class vmsvehicleinspection(Document):
 
 	def validate_spare_parts(self):
 		"""
-		Validate child spare_parts table:
-		- Prevent duplicate spare parts
+		Validate child spare_parts table against ERPNext Item master and Stock Ledger:
+		- Verify Item exists and is enabled
+		- Prevent duplicate Item selections
 		- Ensure Qty Used > 0
-		- Validate against available stock where applicable
-		- Compute row amount (Qty * Cost)
+		- Validate against available stock in Bin
+		- Auto-populate rate/cost and calculate row amount
 		"""
-		seen_parts = set()
+		seen_items = set()
 		for row in self.get("spare_parts") or []:
-			part_name = (row.part_name or "").strip()
-			if not part_name:
-				frappe.throw(_("Spare part name is required."))
+			code = (row.item_code or row.part_name or "").strip()
+			if not code:
+				frappe.throw(_("Item code or spare part name is required."))
 
-			norm_part = part_name.lower()
-			if norm_part in seen_parts:
-				frappe.throw(_("Duplicate spare part '{0}' in inspection.").format(part_name))
-			seen_parts.add(norm_part)
+			# Resolve Item Code
+			item = frappe.db.get_value("Item", code, ["name", "item_name", "standard_rate", "valuation_rate", "disabled", "stock_uom"], as_dict=True)
+			if not item:
+				item_by_name = frappe.db.get_value("Item", {"item_name": code}, ["name", "item_name", "standard_rate", "valuation_rate", "disabled", "stock_uom"], as_dict=True)
+				if item_by_name:
+					item = item_by_name
+
+			if not item:
+				frappe.throw(_("Spare part Item '{0}' does not exist in ERPNext Item master.").format(code))
+
+			if item.disabled:
+				frappe.throw(_("Spare part Item '{0}' is disabled.").format(item.name))
+
+			row.item_code = item.name
+			row.part_name = item.item_name or item.name
+
+			norm_code = item.name.lower()
+			if norm_code in seen_items:
+				frappe.throw(_("Duplicate spare part Item '{0}' in inspection.").format(row.part_name))
+			seen_items.add(norm_code)
 
 			qty = flt(row.qty)
 			if qty <= 0:
-				frappe.throw(_("Quantity used for spare part '{0}' must be greater than 0.").format(part_name))
+				frappe.throw(_("Quantity used for spare part '{0}' must be greater than 0.").format(row.part_name))
 
-			# Fetch master details to check stock and cost
-			master_part = frappe.db.sql(
-				"""
-				SELECT name, part_name, quantity, cost
-				FROM `tabvms spare parts`
-				WHERE name = %s OR LOWER(part_name) = LOWER(%s)
-				LIMIT 1
-				""",
-				(part_name, part_name),
-				as_dict=True
-			)
-			if master_part:
-				mp = master_part[0]
-				if not flt(row.cost) and flt(mp.cost):
-					row.cost = flt(mp.cost)
+			if not flt(row.cost):
+				row.cost = flt(item.standard_rate or item.valuation_rate or 0.0)
 
-				raw_stock = str(mp.quantity or "").strip()
-				row.available_qty = raw_stock
-				stock_num = None
-				try:
-					stock_num = flt(raw_stock.split()[0]) if raw_stock else None
-				except Exception:
-					stock_num = None
+			# Validate stock availability in Bin
+			actual_qty = flt(frappe.db.get_value("Bin", {"item_code": item.name}, "sum(actual_qty)") or 0.0)
+			uom = item.stock_uom or "Nos"
+			row.available_qty = f"{actual_qty} {uom}"
 
-				if stock_num is not None and stock_num > 0 and qty > stock_num:
-					frappe.throw(
-						_("Quantity used ({0}) for spare part '{1}' cannot exceed available stock ({2}).").format(
-							qty, part_name, stock_num
-						)
+			if actual_qty > 0 and qty > actual_qty:
+				frappe.throw(
+					_("Quantity used ({0}) for spare part '{1}' cannot exceed available stock ({2} {3}).").format(
+						qty, row.part_name, actual_qty, uom
 					)
+				)
 
-			row.cost = flt(row.cost)
 			row.qty = qty
+			row.cost = flt(row.cost)
 			row.amount = round(row.qty * row.cost, 2)
 
 	def on_update(self):
