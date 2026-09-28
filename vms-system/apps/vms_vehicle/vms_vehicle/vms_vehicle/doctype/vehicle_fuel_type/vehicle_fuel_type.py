@@ -6,9 +6,9 @@ from frappe import _
 from frappe.model.document import Document
 
 
-class VehicleBrand(Document):
+class VehicleFuelType(Document):
     def validate(self):
-        if self.brand_name:
-            self.brand_name = self.brand_name.strip()
-        if not self.brand_name:
-            frappe.throw(_("Brand Name is required."))
+        if self.fuel_type:
+            self.fuel_type = self.fuel_type.strip()
+        if not self.fuel_type:
+            frappe.throw(_("Fuel Type is required."))

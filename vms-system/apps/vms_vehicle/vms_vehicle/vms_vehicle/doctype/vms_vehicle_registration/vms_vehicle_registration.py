@@ -19,14 +19,14 @@ class vmsvehicleregistration(Document):
 
         chassis_number: DF.Data | None
         engine_number: DF.Data | None
-        fuel_type: DF.Data | None
+        fuel_type: DF.Link | None
         notes: DF.Data | None
         owner_name: DF.Link | None
         owner_user: DF.Link | None
         registration_date: DF.Date | None
-        vehicle_brand: DF.Data | None
+        vehicle_brand: DF.Link | None
         vehicle_color: DF.Data | None
-        vehicle_model: DF.Data | None
+        vehicle_model: DF.Link | None
         vehicle_number: DF.Data | None
     # end: auto-generated types
 
@@ -37,9 +37,14 @@ class vmsvehicleregistration(Document):
             self.owner_name = user
 
     def validate(self):
+        # Support vehicle_fuel_type alias if set
+        if not self.fuel_type and getattr(self, "vehicle_fuel_type", None):
+            self.fuel_type = getattr(self, "vehicle_fuel_type")
+
         self.normalize_vehicle_number()
         self.validate_owner()
         self.validate_vehicle_number()
+        self.validate_brand_model_fuel()
 
     def _is_manager_or_staff(self, user: str) -> bool:
         if not user or user == "Guest":
@@ -91,5 +96,15 @@ class vmsvehicleregistration(Document):
                 _("A vehicle with registration number '{0}' already exists.").format(self.vehicle_number),
                 frappe.DuplicateEntryError,
             )
+
+    def validate_brand_model_fuel(self):
+        """
+        Validates the strict relationship between Brand, Model, and Fuel Type:
+        1. Brand must exist in vms brand (or Vehicle Brand fallback).
+        2. Model must exist in child table vms model for that Brand.
+        3. Fuel Type must be valid for the Model in vms model.
+        """
+        from vms_vehicle.api import validate_vehicle_relationships
+        validate_vehicle_relationships(self.vehicle_brand, self.vehicle_model, self.fuel_type)
 
     _DOCTYPE_NAME = DOCTYPE_NAME

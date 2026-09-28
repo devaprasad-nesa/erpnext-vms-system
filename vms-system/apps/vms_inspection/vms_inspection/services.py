@@ -295,8 +295,24 @@ def list_inspections(page=None) -> list[dict]:
     if user == "Guest":
         return []
 
-    filters = {}
     roles = {r.strip().lower() for r in frappe.get_roles(user)}
+    is_staff = bool(
+        user == "Administrator"
+        or roles.intersection({
+            "system manager",
+            "administrator",
+            "vms manager",
+            "vms technician",
+            "vms mechanic",
+            "technician",
+            "vms accountant",
+        })
+    )
+
+    if not is_staff:
+        return list_customer_vehicle_inspections(page=page)
+
+    filters = {}
     if "vms technician" in roles and "vms manager" not in roles and "system manager" not in roles and "administrator" != user.lower():
         filters["technician"] = user
 
@@ -354,7 +370,7 @@ def get_inspection(name: str):
     doc = frappe.get_doc(INSPECTION_DOCTYPE, name)
 
     roles = {r.strip().lower() for r in frappe.get_roles(user)}
-    is_staff = bool("administrator" == user.lower() or roles.intersection({"system manager", "vms manager", "vms technician", "vms mechanic", "vms accountant"}))
+    is_staff = bool("administrator" == user.lower() or roles.intersection({"system manager", "vms manager", "vms technician", "vms mechanic", "vms accountant", "technician"}))
 
     if is_staff:
         return doc
@@ -370,6 +386,16 @@ def get_inspection(name: str):
         ["owner_name", "owner_user"],
         as_dict=True,
     )
+    if not vehicle_owner and doc.vehicle_number:
+        alt_name = frappe.db.get_value(
+            VEHICLE_DOCTYPE,
+            {"vehicle_number": str(doc.vehicle_number).strip().upper()},
+            ["owner_name", "owner_user"],
+            as_dict=True,
+        )
+        if alt_name:
+            vehicle_owner = alt_name
+
     if vehicle_owner and (vehicle_owner.get("owner_name") in allowed_identities or vehicle_owner.get("owner_user") in allowed_identities):
         return doc
 
@@ -520,16 +546,56 @@ def list_customer_vehicle_inspections(vehicle_name: str | None = None, page=None
     if not user or user == "Guest":
         frappe.throw(_("Please log in."), frappe.PermissionError)
 
-    filters = {}
-    if vehicle_name:
-        resolved = resolve_vehicle_record(vehicle_name)
-        filters["vehicle_number"] = resolved["name"]
+    roles = {r.strip().lower() for r in frappe.get_roles(user)}
+    is_staff = bool(
+        user == "Administrator"
+        or roles.intersection({
+            "system manager",
+            "administrator",
+            "vms manager",
+            "vms technician",
+            "vms mechanic",
+            "technician",
+            "vms accountant",
+        })
+    )
 
-    # frappe.get_list automatically applies our vehicle_inspection_query permission condition
+    filters = {}
+    or_filters = None
+
+    if not is_staff:
+        identities = _get_user_identities(user)
+        # Find all vehicles belonging to this customer
+        owned_vehicle_names = frappe.get_all(
+            VEHICLE_DOCTYPE,
+            or_filters=[
+                {"owner_name": ["in", identities]},
+                {"owner_user": ["in", identities]},
+            ],
+            pluck="name",
+            limit_page_length=1000,
+        )
+
+        if vehicle_name:
+            resolved = resolve_vehicle_record(vehicle_name)
+            if resolved["name"] not in owned_vehicle_names:
+                frappe.throw(_("You can only view inspections for your own vehicles."), frappe.PermissionError)
+            filters["vehicle_number"] = resolved["name"]
+        else:
+            or_conditions = [{"customer_name": ["in", identities]}]
+            if owned_vehicle_names:
+                or_conditions.append({"vehicle_number": ["in", owned_vehicle_names]})
+            or_filters = or_conditions
+    else:
+        if vehicle_name:
+            resolved = resolve_vehicle_record(vehicle_name)
+            filters["vehicle_number"] = resolved["name"]
+
     return get_paginated_data(
         INSPECTION_DOCTYPE,
         page=page,
         filters=filters,
+        or_filters=or_filters,
         fields=[
             "name",
             "vehicle_number",

@@ -214,3 +214,136 @@ ALTER TABLE `tabvms accounts` ADD COLUMN `payment` tinyint(4) NOT NULL DEFAULT 0
 2026-09-28 10:39:50,052 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-28 10:51:29,607 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-28 10:55:06,172 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 11:16:43,456 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 12:05:19,432 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 12:15:17,383 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 14:01:56,780 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 14:03:32,301 WARNING database DDL Query made to DB:
+create table `tabvms brand` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-28 14:04:06,873 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms brand` ADD COLUMN `vehicle_brand` varchar(140)
+2026-09-28 14:04:40,200 WARNING database DDL Query made to DB:
+create table `tabvms model` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			parent varchar(140),
+parentfield varchar(140),
+parenttype varchar(140),
+index parent(parent))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-28 14:05:17,640 WARNING database DDL Query made to DB:
+alter table `tabvms model` add column if not exists parent varchar(140)
+2026-09-28 14:05:17,641 WARNING database DDL Query made to DB:
+alter table `tabvms model` add column if not exists parenttype varchar(140)
+2026-09-28 14:05:17,641 WARNING database DDL Query made to DB:
+alter table `tabvms model` add column if not exists parentfield varchar(140)
+2026-09-28 14:05:17,677 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms model` ADD COLUMN `model_name` varchar(140), ADD COLUMN `fuel_type` varchar(140)
+2026-09-28 14:06:05,228 WARNING database DDL Query made to DB:
+alter table `tabvms model` add column if not exists parent varchar(140)
+2026-09-28 14:06:05,228 WARNING database DDL Query made to DB:
+alter table `tabvms model` add column if not exists parenttype varchar(140)
+2026-09-28 14:06:05,228 WARNING database DDL Query made to DB:
+alter table `tabvms model` add column if not exists parentfield varchar(140)
+2026-09-28 14:46:52,920 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 15:04:03,724 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Brand` ADD COLUMN `enabled` tinyint(4) NOT NULL DEFAULT 1, ADD COLUMN `description` text
+2026-09-28 15:04:03,738 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Brand` ADD UNIQUE INDEX IF NOT EXISTS brand_name (`brand_name`)
+2026-09-28 15:04:03,839 WARNING database DDL Query made to DB:
+create table `tabVehicle Fuel Type` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`fuel_type` varchar(140) UNIQUE,
+`enabled` tinyint(4) NOT NULL DEFAULT 1,
+`description` text,
+`_user_tags` text,
+`_comments` text,
+`_assign` text,
+`_liked_by` text,
+index creation(creation))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-28 15:04:03,885 WARNING database DDL Query made to DB:
+create table `tabVehicle Model Fuel Type` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			`fuel_type` varchar(140),
+parent varchar(140),
+parentfield varchar(140),
+parenttype varchar(140),
+index parent(parent))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-28 15:04:03,950 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` ADD COLUMN `enabled` tinyint(4) NOT NULL DEFAULT 1
+2026-09-28 15:04:31,425 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Model`
+2026-09-28 15:04:31,438 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Brand`
+2026-09-28 15:04:31,447 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Fuel Type`
+2026-09-28 15:04:31,454 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Model Fuel Type`
+2026-09-28 15:04:31,933 WARNING database DDL Query made to DB:
+ALTER TABLE `tabVehicle Model` ADD UNIQUE INDEX IF NOT EXISTS model_name (`model_name`)
+2026-09-28 15:09:28,540 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Model`
+2026-09-28 15:09:28,548 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Brand`
+2026-09-28 15:09:28,557 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Fuel Type`
+2026-09-28 15:09:28,563 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Model Fuel Type`
+2026-09-28 15:12:16,390 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 15:23:01,099 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 15:23:54,005 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 15:37:39,073 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 15:41:57,029 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Model`
+2026-09-28 15:41:57,039 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Brand`
+2026-09-28 15:41:57,051 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Fuel Type`
+2026-09-28 15:41:57,059 WARNING database DDL Query made to DB:
+TRUNCATE `tabVehicle Model Fuel Type`
+2026-09-28 15:43:47,238 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 15:44:49,077 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'

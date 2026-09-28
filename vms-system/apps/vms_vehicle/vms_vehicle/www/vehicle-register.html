@@ -27,8 +27,7 @@ Register Vehicle | VMS Customer Portal
             <span class="vms-min-user-badge">
                 <span class="vms-min-user-icon">👤</span>
                 <span class="vms-min-user-label">Customer:</span>
-                <strong class="vms-min-user-name">{{ (customer_profile and customer_profile.customer_name) or
-                    customer_name or frappe.session.user }}</strong>
+                <strong class="vms-min-user-name">{{ (customer_profile and customer_profile.customer_name) or customer_name or frappe.session.user }}</strong>
             </span>
         </div>
 
@@ -42,8 +41,7 @@ Register Vehicle | VMS Customer Portal
 
         <!-- Right End: Logout Button -->
         <div class="vms-min-right">
-            <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()"
-                title="Logout">
+            <button type="button" id="customer-logout-btn" class="vms-min-logout-btn" onclick="logoutCustomer()" title="Logout">
                 <span>Logout</span>
                 <span class="vms-min-logout-icon">↪</span>
             </button>
@@ -96,9 +94,12 @@ Register Vehicle | VMS Customer Portal
                         <label for="vehicle-brand">
                             Vehicle Brand <span>*</span>
                         </label>
-
-                        <input id="vehicle-brand" class="form-control" name="vehicle_brand" type="text" required
-                            maxlength="100" placeholder="e.g. Maruti Suzuki">
+                        <select id="vehicle-brand" class="form-control" name="vehicle_brand" required>
+                            <option value="">Select Brand</option>
+                            {% for b in vehicle_brands or [] %}
+                            <option value="{{ b.brand_name or b.name }}">{{ b.brand_name or b.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
                     <!-- Model -->
@@ -106,9 +107,9 @@ Register Vehicle | VMS Customer Portal
                         <label for="vehicle-model">
                             Vehicle Model <span>*</span>
                         </label>
-
-                        <input id="vehicle-model" class="form-control" name="vehicle_model" type="text" required
-                            maxlength="100" placeholder="e.g. Swift">
+                        <select id="vehicle-model" class="form-control" name="vehicle_model" required disabled>
+                            <option value="">Select Brand First</option>
+                        </select>
                     </div>
 
                     <!-- Vehicle Type -->
@@ -131,11 +132,11 @@ Register Vehicle | VMS Customer Portal
                     <!-- Fuel Type -->
                     <div class="form-group">
                         <label for="fuel-type">
-                            Fuel Type <span>*</span>
+                            Vehicle Fuel Type <span>*</span>
                         </label>
-
-                        <input id="fuel-type" class="form-control" name="fuel_type" type="text" required
-                            maxlength="50" placeholder="e.g. Petrol">
+                        <select id="fuel-type" class="form-control" name="fuel_type" required disabled>
+                            <option value="">Select Model First</option>
+                        </select>
                     </div>
 
                     <!-- Manufacturing Year -->
@@ -204,28 +205,28 @@ Register Vehicle | VMS Customer Portal
 
 <script src="/assets/vms_user/js/vehicle-register.js"></script>
 <script>
-    function logoutCustomer() {
-        const btn = document.getElementById("customer-logout-btn") || document.getElementById("logout-btn");
-        if (btn) {
-            btn.disabled = true;
-            btn.innerHTML = `<span>Logging out...</span>`;
-        }
-        if (window.frappe?.call) {
-            frappe.call({
-                method: "logout",
-                callback: function () {
-                    window.location.href = "/login-page/vms-login";
-                },
-                error: function () {
-                    window.location.href = "/login-page/vms-login";
-                }
-            });
-        } else {
-            fetch("/api/method/logout", { method: "POST" }).finally(function () {
-                window.location.href = "/login-page/vms-login";
-            });
-        }
+function logoutCustomer() {
+    const btn = document.getElementById("customer-logout-btn") || document.getElementById("logout-btn");
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Logging out...</span>`;
     }
+    if (window.frappe?.call) {
+        frappe.call({
+            method: "logout",
+            callback: function () {
+                window.location.href = "/login";
+            },
+            error: function () {
+                window.location.href = "/login";
+            }
+        });
+    } else {
+        fetch("/api/method/logout", { method: "POST" }).finally(function () {
+            window.location.href = "/login";
+        });
+    }
+}
 </script>
 
 {% endblock %}

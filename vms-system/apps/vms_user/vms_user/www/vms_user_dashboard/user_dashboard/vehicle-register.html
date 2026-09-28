@@ -94,8 +94,12 @@ Register Vehicle | VMS Customer Portal
                         <label for="vehicle-brand">
                             Vehicle Brand <span>*</span>
                         </label>
-                        <input id="vehicle-brand" class="form-control" name="vehicle_brand" type="text" required
-                            maxlength="100" placeholder="e.g. Maruti Suzuki">
+                        <select id="vehicle-brand" class="form-control" name="vehicle_brand" required>
+                            <option value="">Select Brand</option>
+                            {% for b in vehicle_brands or [] %}
+                            <option value="{{ b.brand_name or b.name }}">{{ b.brand_name or b.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
                     <!-- Model -->
@@ -103,8 +107,9 @@ Register Vehicle | VMS Customer Portal
                         <label for="vehicle-model">
                             Vehicle Model <span>*</span>
                         </label>
-                        <input id="vehicle-model" class="form-control" name="vehicle_model" type="text" required
-                            maxlength="100" placeholder="e.g. Swift">
+                        <select id="vehicle-model" class="form-control" name="vehicle_model" required disabled>
+                            <option value="">Select Brand First</option>
+                        </select>
                     </div>
 
                     <!-- Vehicle Type -->
@@ -127,10 +132,11 @@ Register Vehicle | VMS Customer Portal
                     <!-- Fuel Type -->
                     <div class="form-group">
                         <label for="fuel-type">
-                            Fuel Type <span>*</span>
+                            Vehicle Fuel Type <span>*</span>
                         </label>
-                        <input id="fuel-type" class="form-control" name="fuel_type" type="text" required
-                            maxlength="50" placeholder="e.g. Petrol">
+                        <select id="fuel-type" class="form-control" name="fuel_type" required disabled>
+                            <option value="">Select Model First</option>
+                        </select>
                     </div>
 
                     <!-- Manufacturing Year -->

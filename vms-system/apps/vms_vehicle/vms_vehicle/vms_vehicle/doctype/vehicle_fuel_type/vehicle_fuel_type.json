@@ -1,34 +1,23 @@
 {
  "actions": [],
- "allow_bulk_edit": 1,
  "allow_rename": 1,
- "autoname": "field:model_name",
+ "autoname": "field:fuel_type",
  "creation": "2026-09-28 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "model_name",
-  "vehicle_brand",
+  "fuel_type",
   "enabled",
-  "section_break_fuels",
-  "fuel_types"
+  "description"
  ],
  "fields": [
   {
-   "fieldname": "model_name",
+   "fieldname": "fuel_type",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Model Name",
+   "label": "Fuel Type",
    "reqd": 1,
    "unique": 1
-  },
-  {
-   "fieldname": "vehicle_brand",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Vehicle Brand",
-   "options": "Vehicle Brand",
-   "reqd": 1
   },
   {
    "default": "1",
@@ -38,25 +27,18 @@
    "label": "Enabled"
   },
   {
-   "fieldname": "section_break_fuels",
-   "fieldtype": "Section Break",
-   "label": "Supported Fuel Types"
-  },
-  {
-   "fieldname": "fuel_types",
-   "fieldtype": "Table",
-   "label": "Supported Fuel Types",
-   "options": "Vehicle Model Fuel Type"
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "istable": 0,
  "links": [],
  "modified": "2026-09-28 15:00:00.000000",
  "modified_by": "Administrator",
  "module": "Vms Vehicle",
- "name": "Vehicle Model",
+ "name": "Vehicle Fuel Type",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
@@ -79,8 +61,8 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
- "sort_field": "model_name",
+ "sort_field": "fuel_type",
  "sort_order": "ASC",
  "states": [],
- "title_field": "model_name"
+ "title_field": "fuel_type"
 }
