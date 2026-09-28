@@ -137,7 +137,7 @@ def parse_inspection_spare_parts(raw_parts) -> list[dict]:
     """
     Parse and validate spare parts list for the child table `vms spare part`.
     Ensures:
-    - Parts reference existing master records in `vms spare parts`
+    - Parts reference existing ERPNext Item records
     - No duplicate rows in the inspection
     - Qty used > 0
     - Available stock limits enforced
@@ -168,7 +168,7 @@ def parse_inspection_spare_parts(raw_parts) -> list[dict]:
         elif not isinstance(item, dict):
             continue
 
-        part_input = (item.get("part_name") or item.get("name") or item.get("spare_part") or "").strip()
+        part_input = (item.get("item_code") or item.get("part_name") or item.get("name") or "").strip()
         if not part_input:
             continue
 
@@ -178,29 +178,36 @@ def parse_inspection_spare_parts(raw_parts) -> list[dict]:
             continue
         seen_parts.add(norm_name)
 
-        # Look up in master `vms spare parts` table
-        master = frappe.db.sql(
-            f"""
-            SELECT name, part_name, quantity, cost
-            FROM `tab{SPARE_PARTS_DOCTYPE}`
-            WHERE name = %s OR LOWER(part_name) = LOWER(%s)
-            LIMIT 1
-            """,
-            (part_input, part_input),
+        # Look up in ERPNext `Item` master
+        item_master = frappe.db.get_value(
+            "Item",
+            part_input,
+            ["name", "item_code", "item_name", "standard_rate", "valuation_rate", "disabled", "stock_uom"],
             as_dict=True
         )
+        if not item_master:
+            item_master = frappe.db.get_value(
+                "Item",
+                {"item_name": part_input},
+                ["name", "item_code", "item_name", "standard_rate", "valuation_rate", "disabled", "stock_uom"],
+                as_dict=True
+            )
 
+        item_code = part_input
         part_name = part_input
         cost = flt(item.get("cost") or 0)
-        available_stock_str = str(item.get("available_qty") or item.get("quantity") or "").strip()
+        available_stock_str = str(item.get("available_qty") or "").strip()
 
-        if master:
-            mp = master[0]
-            part_name = mp.part_name or mp.name
-            if not cost and flt(mp.cost):
-                cost = flt(mp.cost)
-            if not available_stock_str and mp.quantity:
-                available_stock_str = str(mp.quantity).strip()
+        if item_master:
+            item_code = item_master.name
+            part_name = item_master.item_name or item_master.name
+            if not cost:
+                cost = flt(item_master.standard_rate or item_master.valuation_rate or 0.0)
+
+            # Check stock in Bin
+            actual_qty = flt(frappe.db.get_value("Bin", {"item_code": item_code}, "sum(actual_qty)") or 0.0)
+            uom = item_master.stock_uom or "Nos"
+            available_stock_str = f"{actual_qty} {uom}"
 
         qty = flt(item.get("qty") or item.get("quantity") or 1)
         if qty <= 0:
@@ -217,7 +224,7 @@ def parse_inspection_spare_parts(raw_parts) -> list[dict]:
         if stock_num is not None and stock_num > 0 and qty > stock_num:
             frappe.throw(
                 _("Quantity used ({0}) for spare part '{1}' cannot exceed available stock ({2}).").format(
-                    qty, part_name, stock_num
+                    qty, part_name, available_stock_str
                 )
             )
 
@@ -225,11 +232,13 @@ def parse_inspection_spare_parts(raw_parts) -> list[dict]:
 
         parsed_rows.append({
             "doctype": CHILD_SPARE_PART_DOCTYPE,
+            "item_code": item_code,
             "part_name": part_name,
             "qty": qty,
             "cost": cost,
             "amount": amount,
             "available_qty": available_stock_str,
+            "warehouse": item.get("warehouse"),
         })
 
     return parsed_rows
@@ -454,14 +463,9 @@ def list_inspections(page=None) -> list[dict]:
 
 
 def list_spare_parts(page=None) -> list[dict]:
-    """Return all active master spare parts from vms spare parts."""
-    require_staff()
-    return get_paginated_data(
-        SPARE_PARTS_DOCTYPE,
-        page=page,
-        fields=["name", "part_name", "quantity", "cost", "owner", "creation", "modified"],
-        order_by="modified desc"
-    )
+    """Return active spare parts from ERPNext Item master."""
+    from vms_account.services.erpnext_item import get_spare_part_items
+    return get_spare_part_items(page=page)
 
 
 def list_vehicles() -> list[dict]:
@@ -766,4 +770,476 @@ def list_customer_vehicle_inspections(vehicle_name: str | None = None, page=None
             i["total_parts_cost"] = round(sum(flt(x["amount"]) for x in p_list), 2)
             i["spare_parts_summary"] = ", ".join(f"{x['part_name']} ({x['qty']})" for x in p_list) if p_list else "-"
 
-    return inspections
+    return inspectionsUpdate the VMS project to completely replace the custom VMS Accounts implementation with ERPNext's native Accounts, Stock, Selling, Buying, and User/Role management features. Do not create duplicate accounting, invoicing, stock, or payment DocTypes.
+
+OBJECTIVE
+Make ERPNext the single source of truth for:
+- Spare-parts inventory and stock levels
+- Item master and item groups
+- Warehouses
+- Stock receipts/issues/transfers
+- Supplier and customer data
+- Purchase transactions
+- Sales transactions
+- Quotations/orders where required
+- Sales Invoice and Purchase Invoice
+- Payment Entry and outstanding amounts
+- General Ledger and accounting entries
+- User, Role, Role Profile and permissions
+- Accountant operations
+
+VMS WORKFLOW
+1. ADMIN
+   - Creates/manages ERPNext Items for spare parts.
+   - Maintains Item Code, Item Name, Item Group, UOM, valuation/rate, warehouse and stock settings.
+   - Creates suppliers, customers, warehouses and required accounting masters.
+   - Manages VMS users and assigns ERPNext roles.
+
+2. CUSTOMER
+   - Registers/login through the existing VMS customer portal.
+   - Registers vehicles and creates service bookings.
+   - Customer/vehicle data must remain linked to ERPNext Customer/User records where applicable.
+
+3. TECHNICIAN
+   - Opens the VMS Vehicle Inspection.
+   - Selects required spare parts from the ERPNext Item master through the VMS Spare Part child table.
+   - Can select multiple spare parts and enter quantity used.
+   - Inspection stores Item Code, item name, quantity used, warehouse/source warehouse and service reference.
+   - Technician must NOT directly modify stock or accounting entries.
+
+4. MECHANIC
+   - Views assigned vehicle/service information and required spare parts.
+   - Updates service/mechanic status only according to existing permissions.
+   - Must not directly create accounting transactions.
+
+5. VMS ACCOUNTANT
+   - Do NOT use the old custom VMS Accounts DocTypes for accounting.
+   - Provide the accountant access to ERPNext Accounts and Stock functionality through roles/permissions.
+   - Accountant can view/manage relevant Customers, Suppliers, Items, Warehouses, Stock Entries, Purchase transactions, Sales Invoices, Purchase Invoices, Payment Entries, outstanding invoices and accounting reports.
+   - Accountant should be able to create the customer invoice for completed vehicle service using ERPNext Sales Invoice.
+   - Invoice must contain service charges and/or used spare-part Items with quantities and rates.
+   - Invoice submission must create the normal ERPNext accounting entries.
+   - Payment status must come from ERPNext Payment Entry/Sales Invoice status, not a custom VMS status.
+   - Stock consumption must be recorded through ERPNext Stock Entry/appropriate stock transaction and must reduce inventory correctly.
+   - Never directly update ERPNext stock balances or GL tables from custom Python code.
+
+6. SERVICE COMPLETION → BILLING → STOCK
+   Vehicle Service Booking
+       ↓
+   Vehicle Inspection
+       ↓
+   Technician selects ERPNext spare-part Items + quantity used
+       ↓
+   Inspection submitted/approved
+       ↓
+   VMS backend validates Item, warehouse and quantity
+       ↓
+   ERPNext Stock Entry / appropriate stock transaction records consumption
+       ↓
+   Service completion
+       ↓
+   Accountant reviews service + consumed Items
+       ↓Update the VMS project to completely replace the custom VMS Accounts implementation with ERPNext's native Accounts, Stock, Selling, Buying, and User/Role management features. Do not create duplicate accounting, invoicing, stock, or payment DocTypes.
+
+OBJECTIVE
+Make ERPNext the single source of truth for:
+- Spare-parts inventory and stock levels
+- Item master and item groups
+- Warehouses
+- Stock receipts/issues/transfers
+- Supplier and customer data
+- Purchase transactions
+- Sales transactions
+- Quotations/orders where required
+- Sales Invoice and Purchase Invoice
+- Payment Entry and outstanding amounts
+- General Ledger and accounting entries
+- User, Role, Role Profile and permissions
+- Accountant operations
+
+VMS WORKFLOW
+1. ADMIN
+   - Creates/manages ERPNext Items for spare parts.
+   - Maintains Item Code, Item Name, Item Group, UOM, valuation/rate, warehouse and stock settings.
+   - Creates suppliers, customers, warehouses and required accounting masters.
+   - Manages VMS users and assigns ERPNext roles.
+
+2. CUSTOMER
+   - Registers/login through the existing VMS customer portal.
+   - Registers vehicles and creates service bookings.
+   - Customer/vehicle data must remain linked to ERPNext Customer/User records where applicable.
+
+3. TECHNICIAN
+   - Opens the VMS Vehicle Inspection.
+   - Selects required spare parts from the ERPNext Item master through the VMS Spare Part child table.
+   - Can select multiple spare parts and enter quantity used.
+   - Inspection stores Item Code, item name, quantity used, warehouse/source warehouse and service reference.
+   - Technician must NOT directly modify stock or accounting entries.
+
+4. MECHANIC
+   - Views assigned vehicle/service information and required spare parts.
+   - Updates service/mechanic status only according to existing permissions.
+   - Must not directly create accounting transactions.
+
+5. VMS ACCOUNTANT
+   - Do NOT use the old custom VMS Accounts DocTypes for accounting.
+   - Provide the accountant access to ERPNext Accounts and Stock functionality through roles/permissions.
+   - Accountant can view/manage relevant Customers, Suppliers, Items, Warehouses, Stock Entries, Purchase transactions, Sales Invoices, Purchase Invoices, Payment Entries, outstanding invoices and accounting reports.
+   - Accountant should be able to create the customer invoice for completed vehicle service using ERPNext Sales Invoice.
+   - Invoice must contain service charges and/or used spare-part Items with quantities and rates.
+   - Invoice submission must create the normal ERPNext accounting entries.
+   - Payment status must come from ERPNext Payment Entry/Sales Invoice status, not a custom VMS status.
+   - Stock consumption must be recorded through ERPNext Stock Entry/appropriate stock transaction and must reduce inventory correctly.
+   - Never directly update ERPNext stock balances or GL tables from custom Python code.
+
+6. SERVICE COMPLETION → BILLING → STOCK
+   Vehicle Service Booking
+       ↓
+   Vehicle Inspection
+       ↓
+   Technician selects ERPNext spare-part Items + quantity used
+       ↓
+   Inspection submitted/approved
+       ↓
+   VMS backend validates Item, warehouse and quantity
+       ↓
+   ERPNext Stock Entry / appropriate stock transaction records consumption
+       ↓
+   Service completion
+       ↓
+   Accountant reviews service + consumed Items
+       ↓
+   ERPNext Sales Invoice created
+       ↓
+   Customer receives invoice
+       ↓
+   Payment Entry records payment
+       ↓
+   ERPNext updates invoice/payment/outstanding/accounting reports
+
+DATA OWNERSHIP
+- User/Role: ERPNext User and Role
+- Customer: ERPNext Customer
+- Supplier: ERPNext Supplier
+- Spare Part: ERPNext Item
+- Stock: ERPNext Stock Ledger/Stock Entry
+- Warehouse: ERPNext Warehouse
+- Invoice: ERPNext Sales Invoice/Purchase Invoice
+- Payment: ERPNext Payment Entry
+- Accounting: ERPNext Accounts/GL
+- Vehicle: existing VMS VehicleRegistration
+- Service Booking: existing VMS Service Booking
+- Inspection: existing VMS Vehicle Inspection
+- Used Spare Parts: existing VMS Spare Part child table linked to ERPNext Item
+
+VMS_ACCOUNT REFACTOR
+Keep vms_account only as an integration/API layer. Remove/disable custom accounting logic, custom invoice calculations, custom stock tables and duplicate payment/accounting DocTypes.
+
+Create:
+vms_account/
+└── vms_account/
+    ├── api.py
+    ├── services/
+    │   ├── __init__.py
+    │   ├── erpnext_accounts.py
+    │   ├── erpnext_stock.py
+    │   ├── erpnext_sales.py
+    │   ├── erpnext_purchase.py
+    │   ├── erpnext_customer.py
+    │   ├── erpnext_item.py
+    │   ├── erpnext_payment.py
+    │   └── erpnext_permissions.py
+    └── utils/
+        ├── __init__.py
+        └── validators.py
+
+Implement services using Frappe/ERPNext APIs and ORM. Do not duplicate ERPNext business logic.
+
+vms_account/api.py
+Expose only required @frappe.whitelist() APIs, including APIs for:
+- get accountant dashboard data
+- get spare-part Items
+- get Item stock/availability
+- get warehouses
+- get customers
+- get suppliers
+- get service billing data
+- get consumed spare parts for a service
+- create/submit stock consumption transaction
+- create Sales Invoice
+- get Sales Invoice
+- get invoice list/status
+- create Payment Entry where appropriate
+- get customer outstanding
+- get purchase/billing information
+- get relevant ERPNext accounting/stock reports
+Apply strict role validation. Accountant APIs must not allow unauthorized customers, technicians or mechanics to create accounting/stock transactions.
+
+VMS_USER AUTOMATION
+Create:
+vms_user/vms_user/services/
+├── __init__.py
+├── erpnext_user_setup.py
+└── seed_vms_erpnext_data.py
+
+Create a Python automation script that initializes required ERPNext master data and permissions using Frappe ORM/API:
+- Required VMS roles
+- VMS Accountant role/role profile
+- VMS Customer role
+- VMS Technician role
+- VMS Mechanic role
+- Required Item Groups
+- Spare-part Items from existing VMS spare-part data
+- Required Warehouse(s)
+- Required Customer records from existing VMS customer data
+- Required Supplier records if available
+- Required Company/account defaults
+- Required user-role assignments
+- Required permission setup
+
+The automation must be idempotent: running it multiple times must not create duplicates. Check existing records before insert.
+
+For existing VMS spare-part records, migrate/map:
+VMS Spare Part
+    → ERPNext Item
+and preserve the ERPNext Item Code in the VMS child table.
+
+For existing VMS customer records:
+VMS CustomerRegistration/User
+    → ERPNext Customer/User
+while preserving the relationship required by the existing VMS portal.
+
+Do not store ERPNext passwords in source code. Use Frappe's user APIs/password mechanisms.
+
+FRONTEND/API
+Update existing accountant dashboard/frontend to consume only the new vms_account APIs.
+Remove calls to old custom VMS Accounts DocTypes.
+Display:
+- stock/spare-part availability
+- service jobs awaiting billing
+- consumed spare parts
+- customer details
+- invoice status
+- paid/unpaid/outstanding amount
+- purchase information
+- relevant ERPNext accounting information
+
+SPARE-PART SELECTION
+The VMS Spare Part child table must use a Link field to ERPNext Item.
+The technician can add multiple rows and set quantity used.
+Validate:
+- Item exists and is enabled
+- quantity > 0
+- warehouse exists
+- sufficient stock where required
+- technician cannot manipulate price/accounting fields
+- duplicate Item rows are either merged or explicitly handled according to the existing VMS requirement.
+
+SECURITY
+Use Frappe role permissions and server-side authorization.
+Never trust frontend role checks.
+Never allow client-side code to directly create GL entries or modify stock ledger records.
+All stock/accounting mutations must go through ERPNext transactional APIs/DocTypes.
+Use frappe.db.exists(), frappe.get_doc(), insert(), save(), submit(), and ERPNext-supported APIs where appropriate.
+Use transactions and validation/error handling.
+Log integration failures without exposing sensitive information.
+
+MIGRATION/CLEANUP
+Before removing old VMS Accounts functionality:
+- identify all custom VMS Accounts DocTypes
+- identify all API endpoints
+- identify all frontend references
+- identify all database fields linked to old accounting DocTypes
+- map each one to the appropriate ERPNext DocType/API
+- migrate required historical data where possible
+- update all links/references
+- remove obsolete custom accounting code only after references are migrated
+- do not delete ERPNext standard DocTypes or override core ERPNext accounting logic.
+
+HOOKS/DEPENDENCIES
+Verify hooks.py, DocType permissions, role permissions, fixtures and app dependencies.
+Ensure vms_account correctly depends on ERPNext.
+Ensure all APIs work on the target ERPNext/Frappe version used by the project.
+
+DELIVERABLES
+1. Refactored vms_account/services/
+2. Updated vms_account/api.py
+3. vms_user/services/erpnext_user_setup.py
+4. vms_user/services/seed_vms_erpnext_data.py
+5. Updated VMS Spare Part child table integration
+6. Updated accountant dashboard/frontend API calls
+7. Required DocType/field/permission changes
+8. Migration script for existing VMS customer/spare-part data
+9. Required hooks/fixtures changes
+10. Remove obsolete custom accounting implementation
+11. Provide exact bench commands to migrate, install/update fixtures, run the seed/migration scripts and test the complete workflow.
+
+After implementation, verify this complete path:
+Customer → Vehicle → Service Booking → Technician Inspection → Multiple ERPNext Spare Parts + Qty Used → Stock Consumption → Service Completion → Accountant → ERPNext Sales Invoice → Payment Entry → Updated Stock/Accounting/Outstanding status.
+   ERPNext Sales Invoice created
+       ↓
+   Customer receives invoice
+       ↓
+   Payment Entry records payment
+       ↓
+   ERPNext updates invoice/payment/outstanding/accounting reports
+
+DATA OWNERSHIP
+- User/Role: ERPNext User and Role
+- Customer: ERPNext Customer
+- Supplier: ERPNext Supplier
+- Spare Part: ERPNext Item
+- Stock: ERPNext Stock Ledger/Stock Entry
+- Warehouse: ERPNext Warehouse
+- Invoice: ERPNext Sales Invoice/Purchase Invoice
+- Payment: ERPNext Payment Entry
+- Accounting: ERPNext Accounts/GL
+- Vehicle: existing VMS VehicleRegistration
+- Service Booking: existing VMS Service Booking
+- Inspection: existing VMS Vehicle Inspection
+- Used Spare Parts: existing VMS Spare Part child table linked to ERPNext Item
+
+VMS_ACCOUNT REFACTOR
+Keep vms_account only as an integration/API layer. Remove/disable custom accounting logic, custom invoice calculations, custom stock tables and duplicate payment/accounting DocTypes.
+
+Create:
+vms_account/
+└── vms_account/
+    ├── api.py
+    ├── services/
+    │   ├── __init__.py
+    │   ├── erpnext_accounts.py
+    │   ├── erpnext_stock.py
+    │   ├── erpnext_sales.py
+    │   ├── erpnext_purchase.py
+    │   ├── erpnext_customer.py
+    │   ├── erpnext_item.py
+    │   ├── erpnext_payment.py
+    │   └── erpnext_permissions.py
+    └── utils/
+        ├── __init__.py
+        └── validators.py
+
+Implement services using Frappe/ERPNext APIs and ORM. Do not duplicate ERPNext business logic.
+
+vms_account/api.py
+Expose only required @frappe.whitelist() APIs, including APIs for:
+- get accountant dashboard data
+- get spare-part Items
+- get Item stock/availability
+- get warehouses
+- get customers
+- get suppliers
+- get service billing data
+- get consumed spare parts for a service
+- create/submit stock consumption transaction
+- create Sales Invoice
+- get Sales Invoice
+- get invoice list/status
+- create Payment Entry where appropriate
+- get customer outstanding
+- get purchase/billing information
+- get relevant ERPNext accounting/stock reports
+Apply strict role validation. Accountant APIs must not allow unauthorized customers, technicians or mechanics to create accounting/stock transactions.
+
+VMS_USER AUTOMATION
+Create:
+vms_user/vms_user/services/
+├── __init__.py
+├── erpnext_user_setup.py
+└── seed_vms_erpnext_data.py
+
+Create a Python automation script that initializes required ERPNext master data and permissions using Frappe ORM/API:
+- Required VMS roles
+- VMS Accountant role/role profile
+- VMS Customer role
+- VMS Technician role
+- VMS Mechanic role
+- Required Item Groups
+- Spare-part Items from existing VMS spare-part data
+- Required Warehouse(s)
+- Required Customer records from existing VMS customer data
+- Required Supplier records if available
+- Required Company/account defaults
+- Required user-role assignments
+- Required permission setup
+
+The automation must be idempotent: running it multiple times must not create duplicates. Check existing records before insert.
+
+For existing VMS spare-part records, migrate/map:
+VMS Spare Part
+    → ERPNext Item
+and preserve the ERPNext Item Code in the VMS child table.
+
+For existing VMS customer records:
+VMS CustomerRegistration/User
+    → ERPNext Customer/User
+while preserving the relationship required by the existing VMS portal.
+
+Do not store ERPNext passwords in source code. Use Frappe's user APIs/password mechanisms.
+
+FRONTEND/API
+Update existing accountant dashboard/frontend to consume only the new vms_account APIs.
+Remove calls to old custom VMS Accounts DocTypes.
+Display:
+- stock/spare-part availability
+- service jobs awaiting billing
+- consumed spare parts
+- customer details
+- invoice status
+- paid/unpaid/outstanding amount
+- purchase information
+- relevant ERPNext accounting information
+
+SPARE-PART SELECTION
+The VMS Spare Part child table must use a Link field to ERPNext Item.
+The technician can add multiple rows and set quantity used.
+Validate:
+- Item exists and is enabled
+- quantity > 0
+- warehouse exists
+- sufficient stock where required
+- technician cannot manipulate price/accounting fields
+- duplicate Item rows are either merged or explicitly handled according to the existing VMS requirement.
+
+SECURITY
+Use Frappe role permissions and server-side authorization.
+Never trust frontend role checks.
+Never allow client-side code to directly create GL entries or modify stock ledger records.
+All stock/accounting mutations must go through ERPNext transactional APIs/DocTypes.
+Use frappe.db.exists(), frappe.get_doc(), insert(), save(), submit(), and ERPNext-supported APIs where appropriate.
+Use transactions and validation/error handling.
+Log integration failures without exposing sensitive information.
+
+MIGRATION/CLEANUP
+Before removing old VMS Accounts functionality:
+- identify all custom VMS Accounts DocTypes
+- identify all API endpoints
+- identify all frontend references
+- identify all database fields linked to old accounting DocTypes
+- map each one to the appropriate ERPNext DocType/API
+- migrate required historical data where possible
+- update all links/references
+- remove obsolete custom accounting code only after references are migrated
+- do not delete ERPNext standard DocTypes or override core ERPNext accounting logic.
+
+HOOKS/DEPENDENCIES
+Verify hooks.py, DocType permissions, role permissions, fixtures and app dependencies.
+Ensure vms_account correctly depends on ERPNext.
+Ensure all APIs work on the target ERPNext/Frappe version used by the project.
+
+DELIVERABLES
+1. Refactored vms_account/services/
+2. Updated vms_account/api.py
+3. vms_user/services/erpnext_user_setup.py
+4. vms_user/services/seed_vms_erpnext_data.py
+5. Updated VMS Spare Part child table integration
+6. Updated accountant dashboard/frontend API calls
+7. Required DocType/field/permission changes
+8. Migration script for existing VMS customer/spare-part data
+9. Required hooks/fixtures changes
+10. Remove obsolete custom accounting implementation
+11. Provide exact bench commands to migrate, install/update fixtures, run the seed/migration scripts and test the complete workflow.
+
+After implementation, verify this complete path:
+Customer → Vehicle → Service Booking → Technician Inspection → Multiple ERPNext Spare Parts + Qty Used → Stock Consumption → Service Completion → Accountant → ERPNext Sales Invoice → Payment Entry → Updated Stock/Accounting/Outstanding status.

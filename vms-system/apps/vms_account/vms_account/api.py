@@ -1,565 +1,233 @@
-
-# vms_account/vms_account/api.py
+# =========================================================
+# FILE: vms_account/api.py
+# PURPOSE: Whitelisted ERPNext integration APIs for VMS accounting,
+#          inventory consumption, billing, invoices, and payments.
+# =========================================================
 
 import frappe
 from frappe import _
-from frappe.utils import today, flt
-from vms_user.pagination import apply_pagination, get_paginated_data
-
-
-ACCOUNTANT_ROLE = "vms accountant"
-MANAGER_ROLE = "vms manager"
-CUSTOMER_ROLE = "vms customer"
-TECHNICIAN_ROLE = "vms technician"
-
-INSPECTION_DOCTYPE = "vms vehicle inspection"
-SPARE_PARTS_DOCTYPE = "vms spare parts"
-VEHICLE_DOCTYPE = "vms vehicle registration"
-ACCOUNT_DOCTYPE = "vms accounts"
-
-# "inspected" is the Check field on vms vehicle inspection that the technician
-# sets when an inspection is complete and ready for invoicing.
-INSPECTION_RELEASE_FIELD = "inspected"
-
-
-def require_role(*roles):
-    user = getattr(frappe.session, "user", None) or "Guest"
-    if user == "Administrator":
-        return
-    user_roles = frappe.get_roles()
-    if "System Manager" in user_roles:
-        return
-
-    if not any(role in user_roles for role in roles):
-        frappe.throw(
-            _("You do not have permission to perform this action."),
-            frappe.PermissionError,
-        )
-
-
-def check_release_field():
-    meta = frappe.get_meta(INSPECTION_DOCTYPE)
-
-    if not meta.has_field(INSPECTION_RELEASE_FIELD):
-        frappe.throw(
-            _(
-                "Inspection release field is not configured. "
-                "Update INSPECTION_RELEASE_FIELD in api.py."
-            )
-        )
-
-
-def get_released_inspections(page=None):
-    check_release_field()
-
-    filters = {
-        INSPECTION_RELEASE_FIELD: 1,
-    }
-
-    inspections = get_paginated_data(
-        INSPECTION_DOCTYPE,
-        page=page,
-        filters=filters,
-        fields=[
-            "name",
-            "vehicle_number",
-            "customer_name",
-            "spare_parts",
-            "spare_part_quantity",
-            "labour_hour",
-        ],
-        order_by="modified desc"
-    )
-
-    return inspections
-
-
-def get_spare_part_info(part_name):
-    if not part_name:
-        return None
-
-    return frappe.db.get_value(
-        SPARE_PARTS_DOCTYPE,
-        part_name,
-        [
-            "name",
-            "cost",
-            "quantity",
-        ],
-        as_dict=True,
-    )
+from vms_account import services
+from vms_account.utils.validators import parse_json
 
 
 @frappe.whitelist()
 def get_dashboard_data(
     inspection_page: int | str | None = None,
     invoice_page: int | str | None = None,
+    item_page: int | str | None = None,
     page: int | str | None = None,
 ) -> dict:
-    require_role(ACCOUNTANT_ROLE, MANAGER_ROLE, TECHNICIAN_ROLE)
-
+    """Return dashboard metrics, billing data, invoices, and spare part items."""
     if inspection_page is None:
         inspection_page = frappe.form_dict.get("inspection_page") or page or 1
     if invoice_page is None:
         invoice_page = frappe.form_dict.get("invoice_page") or page or 1
+    if item_page is None:
+        item_page = frappe.form_dict.get("item_page") or page or 1
 
-    inspections = get_released_inspections(page=inspection_page)
-
-    inspection_rows = []
-
-    for inspection in inspections:
-        part = get_spare_part_info(
-            inspection.get("spare_parts")
-        )
-
-        inspection_rows.append({
-            "name": inspection.name,
-            "vehicle_number": inspection.vehicle_number,
-            "customer_name": inspection.customer_name,
-            "spare_parts": inspection.spare_parts,
-            "spare_part_quantity": (
-                inspection.spare_part_quantity
-            ),
-            "labour_hour": inspection.labour_hour,
-            "part_cost": (
-                flt(part.cost) if part else 0
-            ),
-        })
-
-    invoices = get_paginated_data(
-        ACCOUNT_DOCTYPE,
-        page=invoice_page,
-        fields=[
-            "name",
-            "customer_name",
-            "vehicle_number",
-            "invoice_date",
-            "total_bill",
-            "audited",
-            "payment",
-        ],
-        order_by="modified desc"
+    return services.get_accountant_dashboard_data(
+        inspection_page=inspection_page,
+        invoice_page=invoice_page,
+        item_page=item_page,
     )
-
-    vehicles_raw = frappe.get_all(
-        VEHICLE_DOCTYPE,
-        fields=["name", "vehicle_number", "owner_name", "vehicle_brand"],
-        order_by="creation desc",
-        limit_page_length=500
-    )
-    vehicles = [dict(v) for v in vehicles_raw]
-
-    bookings_raw = frappe.get_all(
-        "vms vehicle service registration",
-        fields=["name", "customer_name", "vehicle", "service_date", "booking_status", "service_slot", "owner"],
-        order_by="creation desc",
-        limit_page_length=500
-    )
-    service_bookings = []
-    for b in bookings_raw:
-        service_bookings.append({
-            "name": b.name,
-            "customer_name": b.customer_name,
-            "vehicle_number": b.vehicle,
-            "booking_date": b.service_date,
-            "service_slot": b.service_slot,
-            "booking_status": b.booking_status,
-            "owner": b.owner,
-        })
-
-    slots_raw = frappe.get_all(
-        "vms service slot",
-        fields=["name", "start_time", "end_time", "weekday_capacity", "saturday_capacity"],
-        order_by="creation desc",
-        limit_page_length=500
-    )
-    service_slots = []
-    for s in slots_raw:
-        service_slots.append({
-            "name": s.name,
-            "start_time": s.start_time,
-            "end_time": s.end_time,
-            "weekday_limit": s.weekday_capacity,
-            "saturday_limit": s.saturday_capacity,
-        })
-
-    pagination_data = getattr(frappe.local, "response", {}).get("pagination", {})
-    return {
-        "inspections": inspection_rows,
-        "invoices": invoices,
-        "vehicles": vehicles,
-        "service_bookings": service_bookings,
-        "service_slots": service_slots,
-        "pagination": {
-            INSPECTION_DOCTYPE: pagination_data.get(INSPECTION_DOCTYPE, {}),
-            ACCOUNT_DOCTYPE: pagination_data.get(ACCOUNT_DOCTYPE, {}),
-        }
-    }
 
 
 @frappe.whitelist()
-def get_invoice_form_data() -> dict:
-    require_role(ACCOUNTANT_ROLE, MANAGER_ROLE)
+def get_spare_part_items(page: int | str | None = None, search: str | None = None) -> list:
+    """Get active ERPNext Items for spare parts."""
+    return services.get_spare_part_items(page=page, search=search)
 
-    inspections = get_released_inspections()
 
-    customers = get_paginated_data(
-        "User",
-        filters={"enabled": 1},
-        fields=["name", "full_name"]
+@frappe.whitelist()
+def get_item_stock_availability(item_code: str, warehouse: str | None = None) -> dict:
+    """Get stock availability for an Item in a warehouse or total."""
+    return services.get_item_stock_availability(item_code=item_code, warehouse=warehouse)
+
+
+@frappe.whitelist()
+def get_warehouses() -> list:
+    """Get list of active non-group Warehouses."""
+    return services.get_warehouses()
+
+
+@frappe.whitelist()
+def get_customers(page: int | str | None = None, search: str | None = None) -> list:
+    """Get list of ERPNext Customers."""
+    return services.get_customers(page=page, search=search)
+
+
+@frappe.whitelist()
+def get_suppliers(page: int | str | None = None, search: str | None = None) -> list:
+    """Get list of ERPNext Suppliers."""
+    return services.get_suppliers(page=page, search=search)
+
+
+@frappe.whitelist()
+def get_service_billing_data(page: int | str | None = None) -> list:
+    """Get completed vehicle service inspections awaiting billing."""
+    return services.get_service_billing_data(page=page)
+
+
+@frappe.whitelist()
+def get_consumed_spare_parts(inspection_name: str) -> list:
+    """Get consumed spare part items for an inspection."""
+    return services.get_consumed_spare_parts(inspection_name=inspection_name)
+
+
+@frappe.whitelist()
+def create_stock_consumption_entry(data: dict | str = None, inspection_name: str | None = None, warehouse: str | None = None) -> dict:
+    """Create and submit an ERPNext Stock Entry (Material Issue) for consumed spare parts."""
+    if data:
+        p = parse_json(data)
+        inspection_name = p.get("inspection_name") or inspection_name
+        warehouse = p.get("warehouse") or warehouse
+
+    inspection_name = inspection_name or frappe.form_dict.get("inspection_name")
+    return services.create_stock_consumption_entry(inspection_name=inspection_name, warehouse=warehouse)
+
+
+@frappe.whitelist()
+def create_sales_invoice(data: dict | str = None, inspection_name: str | None = None, posting_date: str | None = None, due_date: str | None = None, submit: bool | str = False) -> dict:
+    """Create an ERPNext Sales Invoice for a completed vehicle service inspection."""
+    if data:
+        p = parse_json(data)
+        inspection_name = p.get("inspection_name") or inspection_name
+        posting_date = p.get("posting_date") or posting_date
+        due_date = p.get("due_date") or due_date
+        submit = p.get("submit") if "submit" in p else submit
+
+    inspection_name = inspection_name or frappe.form_dict.get("inspection_name")
+    sub = True if str(submit).lower() in ["true", "1"] else False
+    return services.create_sales_invoice(
+        inspection_name=inspection_name,
+        posting_date=posting_date,
+        due_date=due_date,
+        submit=sub
     )
 
-    return {
-        "inspections": inspections,
-        "customers": customers,
-    }
 
+@frappe.whitelist()
+def get_sales_invoice(name: str | None = None) -> dict:
+    """Get ERPNext Sales Invoice document details."""
+    name = name or frappe.form_dict.get("name")
+    return services.get_sales_invoice(name=name)
+
+
+@frappe.whitelist()
+def get_invoice_list(page: int | str | None = None, status: str | None = None, customer: str | None = None) -> list:
+    """Get paginated list of ERPNext Sales Invoice records."""
+    return services.get_invoice_list(page=page, status=status, customer=customer)
+
+
+@frappe.whitelist()
+def create_payment_entry(data: dict | str = None, sales_invoice: str | None = None, paid_amount: float | str | None = None, mode_of_payment: str | None = None) -> dict:
+    """Create and submit an ERPNext Payment Entry against a Sales Invoice."""
+    if data:
+        p = parse_json(data)
+        sales_invoice = p.get("sales_invoice") or sales_invoice
+        paid_amount = p.get("paid_amount") or paid_amount
+        mode_of_payment = p.get("mode_of_payment") or mode_of_payment
+
+    sales_invoice = sales_invoice or frappe.form_dict.get("sales_invoice")
+    amount = frappe.utils.flt(paid_amount or frappe.form_dict.get("paid_amount"))
+    mode = mode_of_payment or frappe.form_dict.get("mode_of_payment") or "Cash"
+
+    return services.create_payment_entry(
+        sales_invoice=sales_invoice,
+        paid_amount=amount,
+        mode_of_payment=mode
+    )
+
+
+@frappe.whitelist()
+def get_customer_outstanding(customer: str | None = None) -> dict:
+    """Get total outstanding balance for a customer."""
+    customer = customer or frappe.form_dict.get("customer")
+    return services.get_customer_outstanding(customer_name=customer)
+
+
+@frappe.whitelist()
+def get_purchase_billing_info(page: int | str | None = None) -> list:
+    """Get ERPNext Purchase Invoices."""
+    return services.get_purchase_billing_info(page=page)
+
+
+@frappe.whitelist()
+def get_accounting_reports() -> dict:
+    """Get ERPNext General Ledger & AR reports."""
+    return services.get_accounting_reports()
+
+
+# =========================================================
+# LEGACY & FRONTEND ALIAS ENDPOINTS
+# =========================================================
 
 @frappe.whitelist()
 def create_invoice(
-    customer_name: str,
-    vehicle_inspection: str,
+    customer_name: str | None = None,
+    vehicle_inspection: str | None = None,
+    inspection_name: str | None = None,
     invoice_date: str | None = None,
-    total_bill: float | int | str | None = None,
+    total_bill: float | str | None = None,
+    **kwargs
 ) -> dict:
-    require_role(ACCOUNTANT_ROLE, MANAGER_ROLE)
-
-    if not customer_name or not vehicle_inspection:
-        frappe.throw(
-            _("Customer and inspection are required.")
-        )
-
-    check_release_field()
-
-    inspection = frappe.db.get_value(
-        INSPECTION_DOCTYPE,
-        vehicle_inspection,
-        [
-            "vehicle_number",
-            "customer_name",
-        ],
-        as_dict=True,
+    """Legacy alias: Create an ERPNext Sales Invoice for a vehicle inspection."""
+    insp = vehicle_inspection or inspection_name or frappe.form_dict.get("vehicle_inspection") or frappe.form_dict.get("inspection_name")
+    if not insp:
+        frappe.throw(_("Vehicle Inspection is required to create invoice."))
+    return create_sales_invoice(
+        inspection_name=insp,
+        posting_date=invoice_date or frappe.form_dict.get("invoice_date"),
+        submit=True
     )
-
-    if not inspection:
-        frappe.throw(_("Inspection does not exist."))
-
-    released = frappe.db.get_value(
-        INSPECTION_DOCTYPE,
-        vehicle_inspection,
-        INSPECTION_RELEASE_FIELD,
-    )
-
-    if not released:
-        frappe.throw(
-            _("This inspection has not been released to accounts.")
-        )
-
-    if inspection.customer_name != customer_name:
-        frappe.throw(
-            _("The selected customer does not own this inspection.")
-        )
-
-    doc = frappe.new_doc(ACCOUNT_DOCTYPE)
-
-    doc.customer_name = customer_name
-    doc.vehicle_number = inspection.vehicle_number
-    doc.vehicle_inspection = vehicle_inspection
-    doc.invoice_date = invoice_date or today()
-    if total_bill is not None and str(total_bill).strip():
-        doc.total_bill = flt(total_bill)
-
-    doc.insert()
-
-    return {
-        "success": True,
-        "name": doc.name,
-        "customer_name": doc.customer_name,
-        "vehicle_number": doc.vehicle_number,
-        "invoice_date": str(doc.invoice_date),
-        "spare_parts_amount": flt(doc.spare_parts_amount),
-        "total_bill": flt(doc.total_bill),
-    }
 
 
 @frappe.whitelist()
-def update_invoice(
-    invoice_name: str,
-    total_bill: float | int | str | None = None,
-    invoice_date: str | None = None,
-) -> dict:
-    require_role(ACCOUNTANT_ROLE, MANAGER_ROLE)
-
-    if not invoice_name:
-        frappe.throw(_("Invoice name is required."))
-
-    doc = frappe.get_doc(ACCOUNT_DOCTYPE, invoice_name)
-    if doc.audited:
-        frappe.throw(_("Audited invoices cannot be edited."))
-
-    if total_bill is not None and str(total_bill).strip():
-        doc.total_bill = flt(total_bill)
-
-    if invoice_date:
-        doc.invoice_date = invoice_date
-
-    doc.save()
-
-    return {
-        "success": True,
-        "name": doc.name,
-        "customer_name": doc.customer_name,
-        "vehicle_number": doc.vehicle_number,
-        "invoice_date": str(doc.invoice_date),
-        "spare_parts_amount": flt(doc.spare_parts_amount),
-        "total_bill": flt(doc.total_bill),
-        "message": _("Invoice updated successfully."),
-    }
+def get_customer_invoice_details(invoice_name: str | None = None, name: str | None = None) -> dict:
+    """Legacy alias: Get ERPNext Sales Invoice details."""
+    inv_name = invoice_name or name or frappe.form_dict.get("invoice_name") or frappe.form_dict.get("name")
+    return get_sales_invoice(name=inv_name)
 
 
 @frappe.whitelist()
-def share_invoice(invoice_name: str) -> dict:
-    require_role(ACCOUNTANT_ROLE, MANAGER_ROLE)
-
-    doc = frappe.get_doc(
-        ACCOUNT_DOCTYPE,
-        invoice_name
-    )
-
-    if doc.audited:
-        frappe.throw(
-            _("This invoice is already audited.")
-        )
-
-    customer = doc.customer_name
-
-    manager_users = frappe.get_all(
-        "Has Role",
-        filters={"role": MANAGER_ROLE},
-        fields=["parent"],
-        limit_page_length=500,
-    )
-
-    manager_emails = []
-
-    for row in manager_users:
-        email = frappe.db.get_value(
-            "User",
-            row.parent,
-            "email",
-        )
-
-        if email:
-            manager_emails.append(email)
-
-    customer_email = frappe.db.get_value(
-        "User",
-        customer,
-        "email",
-    )
-
-    if not customer_email:
-        frappe.throw(
-            _("Customer does not have an email address.")
-        )
-
-    # Give the customer read-only access to this invoice.
-    frappe.share.add(
-        ACCOUNT_DOCTYPE,
-        invoice_name,
-        customer,
-        read=1,
-        write=0,
-        share=0,
-        notify=0,
-    )
-
-    # Give each manager read-only access.
-    for manager in manager_users:
-        frappe.share.add(
-            ACCOUNT_DOCTYPE,
-            invoice_name,
-            manager.parent,
-            read=1,
-            write=0,
-            share=0,
-            notify=0,
-        )
-
-    recipients = list(set(
-        [customer_email] + manager_emails
-    ))
-
-    frappe.sendmail(
-        recipients=recipients,
-        subject=f"VMS Invoice {invoice_name}",
-        message=f"""
-            <p>Dear recipient,</p>
-
-            <p>A vehicle service invoice is ready for review.</p>
-
-            <p><b>Invoice:</b> {invoice_name}</p>
-            <p><b>Vehicle:</b> {doc.vehicle_number}</p>
-            <p><b>Total:</b> {doc.total_bill}</p>
-
-            <p>Please log in to the VMS portal to view the invoice.</p>
-        """,
-        reference_doctype=ACCOUNT_DOCTYPE,
-        reference_name=invoice_name,
-    )
-
-    return {
-        "message": _("Invoice shared successfully."),
-        "invoice": invoice_name,
-    }
+def update_invoice(invoice_name: str | None = None, name: str | None = None, **kwargs) -> dict:
+    """Legacy alias: Return Sales Invoice details or update if draft."""
+    inv_name = invoice_name or name or frappe.form_dict.get("invoice_name") or frappe.form_dict.get("name")
+    return get_sales_invoice(name=inv_name)
 
 
 @frappe.whitelist()
-def audit_invoice(invoice_name: str) -> dict:
-    require_role(ACCOUNTANT_ROLE, MANAGER_ROLE, "System Manager")
-
-    doc = frappe.get_doc(
-        ACCOUNT_DOCTYPE,
-        invoice_name
-    )
-
-    if doc.audited:
-        return {
-            "message": _("Invoice is already audited.")
-        }
-        
-    if not doc.payment:
-        frappe.throw(_("Payment must be confirmed by the customer before auditing."))
-
-    doc.audited = 1
-    doc.save()
-
-    return {
-        "message": _("Invoice audited successfully."),
-        "invoice": doc.name,
-        "audited": doc.audited,
-    }
+def audit_invoice(invoice_name: str | None = None, name: str | None = None) -> dict:
+    """Legacy alias: Process payment audit by creating ERPNext Payment Entry."""
+    inv_name = invoice_name or name or frappe.form_dict.get("invoice_name") or frappe.form_dict.get("name")
+    if not inv_name:
+        frappe.throw(_("Invoice Name is required"))
+    inv = frappe.get_doc("Sales Invoice", inv_name)
+    if inv.outstanding_amount > 0:
+        return create_payment_entry(sales_invoice=inv_name, paid_amount=inv.outstanding_amount)
+    return {"success": True, "message": _("Invoice is already fully paid.")}
 
 
 @frappe.whitelist()
-def toggle_payment(invoice_name: str, payment: int) -> dict:
-    require_role(CUSTOMER_ROLE, "System Manager", "Administrator")
+def toggle_payment(invoice_name: str | None = None, payment: int | str | bool = 1) -> dict:
+    """Customer or accountant toggling payment creates an ERPNext Payment Entry."""
+    inv_name = invoice_name or frappe.form_dict.get("invoice_name")
+    if not inv_name:
+        frappe.throw(_("Invoice Name is required"))
+    inv = frappe.get_doc("Sales Invoice", inv_name)
+    if inv.outstanding_amount > 0:
+        res = create_payment_entry(sales_invoice=inv_name, paid_amount=inv.outstanding_amount)
+        return {"success": True, "message": _("Payment Entry created successfully."), "doc": res}
+    return {"success": True, "message": _("Invoice is already paid.")}
 
-    doc = frappe.get_doc(ACCOUNT_DOCTYPE, invoice_name)
+
+@frappe.whitelist()
+def get_my_invoices(only_audited: int | str | None = 0) -> list:
+    """Get Sales Invoices for logged in customer."""
     user = frappe.session.user
-    user_roles = frappe.get_roles(user)
-    is_admin = user == "Administrator" or "System Manager" in user_roles
-    
-    if not is_admin and doc.customer_name != user:
-        frappe.throw(_("You can only access your own invoice."), frappe.PermissionError)
-
-    doc.payment = 1 if payment else 0
-    doc.save()
-
-    return {
-        "message": _("Payment updated successfully."),
-        "success": True,
-        "invoice": doc.name,
-        "payment": doc.payment,
-    }
-
-
-@frappe.whitelist()
-def get_my_invoices(only_audited: int | str | None = None, page: int | str | None = None) -> list:
-    require_role(CUSTOMER_ROLE, "System Manager", "Administrator")
-
-    user = frappe.session.user
-    if not user or user == "Guest":
+    customer = frappe.db.get_value("Customer", {"custom_vms_user": user}, "name")
+    if not customer:
+        customer = frappe.db.get_value("Customer", {"customer_name": user}, "name")
+    if not customer:
         return []
-
-    filters = {
-        "customer_name": user,
-    }
-    if only_audited and str(only_audited) in ("1", "true", "True"):
-        filters["audited"] = 1
-
-    invoices = get_paginated_data(
-        ACCOUNT_DOCTYPE,
-        page=page,
-        filters=filters,
-        fields=[
-            "name",
-            "vehicle_number",
-            "vehicle_inspection",
-            "invoice_date",
-            "vehicle_spare_parts",
-            "spare_parts_amount",
-            "total_bill",
-            "audited",
-            "payment",
-        ],
-        order_by="invoice_date desc, creation desc"
-    )
-
-    return invoices
-
-
-@frappe.whitelist()
-def get_customer_invoice_details(invoice_name: str) -> dict:
-    require_role(CUSTOMER_ROLE, ACCOUNTANT_ROLE, MANAGER_ROLE, "System Manager", "Administrator")
-
-    if not invoice_name:
-        frappe.throw(_("Invoice name is required."))
-
-    doc = frappe.get_doc(ACCOUNT_DOCTYPE, invoice_name)
-
-    user = frappe.session.user
-    user_roles = frappe.get_roles(user)
-    is_admin = user == "Administrator" or "System Manager" in user_roles or "vms accountant" in user_roles or "vms manager" in user_roles
-
-    if not is_admin and doc.customer_name != user:
-        frappe.throw(_("You can only access your own invoice."), frappe.PermissionError)
-
-    spare_part_label = doc.vehicle_spare_parts
-    if doc.vehicle_spare_parts:
-        part_name = frappe.db.get_value("vms spare parts", doc.vehicle_spare_parts, "part_name")
-        if part_name:
-            spare_part_label = f"{part_name} ({doc.vehicle_spare_parts})"
-
-    inspection_issue = None
-    if doc.vehicle_inspection:
-        inspection_issue = frappe.db.get_value("vms vehicle inspection", doc.vehicle_inspection, "issue")
-
-    return {
-        "name": doc.name,
-        "customer_name": doc.customer_name,
-        "vehicle_number": doc.vehicle_number,
-        "vehicle_inspection": doc.vehicle_inspection,
-        "inspection_issue": inspection_issue,
-        "vehicle_spare_parts": spare_part_label,
-        "spare_parts_amount": flt(doc.spare_parts_amount),
-        "invoice_date": str(doc.invoice_date or ""),
-        "total_bill": flt(doc.total_bill),
-        "audited": int(doc.audited or 0),
-        "payment": int(doc.payment or 0),
-    }
-
-
-def sync_account_webpages():
-    try:
-        wp_invoice = frappe.get_doc("Web Page", "account-invoice")
-        with open("/home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/account-invoice.js", "r") as f:
-            wp_invoice.javascript = f.read()
-        with open("/home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/account-invoice.html", "r") as f:
-            wp_invoice.main_section_html = f.read()
-        wp_invoice.save(ignore_permissions=True)
-    except Exception as e:
-        print("sync account-invoice error:", e)
-
-    try:
-        wp_dash = frappe.get_doc("Web Page", "account-dashboard")
-        with open("/home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/account-dashboard.js", "r") as f:
-            wp_dash.javascript = f.read()
-        with open("/home/admin/Documents/nesa_projects/erpnext-vms-system/vms-system/account-dashboard.html", "r") as f:
-            wp_dash.main_section_html = f.read()
-        wp_dash.save(ignore_permissions=True)
-    except Exception as e:
-        print("sync account-dashboard error:", e)
-
-    frappe.db.commit()
-    return "synced"
+    return get_invoice_list(customer=customer)
