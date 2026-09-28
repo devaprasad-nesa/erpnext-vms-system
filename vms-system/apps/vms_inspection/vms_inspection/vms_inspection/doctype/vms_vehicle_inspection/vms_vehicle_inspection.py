@@ -15,6 +15,7 @@ class vmsvehicleinspection(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+		from vms_inspection.vms_inspection.doctype.vms_spare_part.vms_spare_part import vmssparepart
 
 		customer_name: DF.Data | None
 		inspected: DF.Check
@@ -23,7 +24,7 @@ class vmsvehicleinspection(Document):
 		labour_hour: DF.Float
 		mechanic: DF.Data | None
 		spare_part_quantity: DF.Data | None
-		spare_parts: DF.Link | None
+		spare_parts: DF.Table[vmssparepart]
 		technician: DF.Link | None
 		vehicle_number: DF.Link | None
 	# end: auto-generated types
@@ -33,6 +34,7 @@ class vmsvehicleinspection(Document):
 		self.populate_customer()
 		self.assign_default_technician()
 		self.validate_values()
+		self.validate_spare_parts()
 
 	def resolve_vehicle_link(self):
 		if not self.vehicle_number:
@@ -69,6 +71,64 @@ class vmsvehicleinspection(Document):
 	def validate_values(self):
 		if flt(self.labour_hour) < 0:
 			frappe.throw(_("Labour hours cannot be negative."))
+
+	def validate_spare_parts(self):
+		"""
+		Validate child spare_parts table:
+		- Prevent duplicate spare parts
+		- Ensure Qty Used > 0
+		- Validate against available stock where applicable
+		- Compute row amount (Qty * Cost)
+		"""
+		seen_parts = set()
+		for row in self.get("spare_parts") or []:
+			part_name = (row.part_name or "").strip()
+			if not part_name:
+				frappe.throw(_("Spare part name is required."))
+
+			norm_part = part_name.lower()
+			if norm_part in seen_parts:
+				frappe.throw(_("Duplicate spare part '{0}' in inspection.").format(part_name))
+			seen_parts.add(norm_part)
+
+			qty = flt(row.qty)
+			if qty <= 0:
+				frappe.throw(_("Quantity used for spare part '{0}' must be greater than 0.").format(part_name))
+
+			# Fetch master details to check stock and cost
+			master_part = frappe.db.sql(
+				"""
+				SELECT name, part_name, quantity, cost
+				FROM `tabvms spare parts`
+				WHERE name = %s OR LOWER(part_name) = LOWER(%s)
+				LIMIT 1
+				""",
+				(part_name, part_name),
+				as_dict=True
+			)
+			if master_part:
+				mp = master_part[0]
+				if not flt(row.cost) and flt(mp.cost):
+					row.cost = flt(mp.cost)
+
+				raw_stock = str(mp.quantity or "").strip()
+				row.available_qty = raw_stock
+				stock_num = None
+				try:
+					stock_num = flt(raw_stock.split()[0]) if raw_stock else None
+				except Exception:
+					stock_num = None
+
+				if stock_num is not None and stock_num > 0 and qty > stock_num:
+					frappe.throw(
+						_("Quantity used ({0}) for spare part '{1}' cannot exceed available stock ({2}).").format(
+							qty, part_name, stock_num
+						)
+					)
+
+			row.cost = flt(row.cost)
+			row.qty = qty
+			row.amount = round(row.qty * row.cost, 2)
 
 	def on_update(self):
 		if self.inspected and self.vehicle_number:

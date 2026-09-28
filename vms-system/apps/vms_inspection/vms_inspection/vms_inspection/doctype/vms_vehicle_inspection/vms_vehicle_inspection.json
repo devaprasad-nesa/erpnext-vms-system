@@ -3,7 +3,7 @@
  "allow_bulk_edit": 1,
  "allow_rename": 1,
  "autoname": "vehicle_number.-inspection_date",
- "creation": "2026-09-22 14:16:04.901522",
+ "creation": "2026-09-22 17:55:23.498461",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -45,9 +45,9 @@
   },
   {
    "fieldname": "spare_parts",
-   "fieldtype": "Link",
+   "fieldtype": "Table",
    "label": "Spare Parts",
-   "options": "vms spare parts"
+   "options": "vms spare part"
   },
   {
    "fieldname": "mechanic",
@@ -88,7 +88,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-09-22 17:10:25.442674",
+ "modified": "2026-09-28 16:40:30.751722",
  "modified_by": "Administrator",
  "module": "Vms Inspection",
  "name": "vms vehicle inspection",
@@ -115,21 +115,9 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "VMS Technician",
+   "role": "vms technician",
    "share": 1,
    "write": 1
-  },
-  {
-   "create": 0,
-   "delete": 0,
-   "email": 0,
-   "export": 1,
-   "print": 0,
-   "read": 1,
-   "report": 1,
-   "role": "vms mechanic",
-   "share": 0,
-   "write": 0
   }
  ],
  "row_format": "Dynamic",

@@ -347,3 +347,48 @@ TRUNCATE `tabVehicle Fuel Type`
 TRUNCATE `tabVehicle Model Fuel Type`
 2026-09-28 15:43:47,238 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
 2026-09-28 15:44:49,077 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 15:56:41,882 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
+2026-09-28 16:28:34,621 WARNING database DDL Query made to DB:
+create table `tabvms spare part` (
+			name varchar(140) primary key,
+			creation datetime(6),
+			modified datetime(6),
+			modified_by varchar(140),
+			owner varchar(140),
+			docstatus tinyint not null default '0',
+			idx int not null default '0',
+			parent varchar(140),
+parentfield varchar(140),
+parenttype varchar(140),
+index parent(parent))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC
+			CHARACTER SET=utf8mb4
+			COLLATE=utf8mb4_unicode_ci
+2026-09-28 16:29:41,755 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parent varchar(140)
+2026-09-28 16:29:41,756 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parenttype varchar(140)
+2026-09-28 16:29:41,757 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parentfield varchar(140)
+2026-09-28 16:29:41,838 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms spare part` ADD COLUMN `part_name` varchar(140), ADD COLUMN `cost` varchar(140)
+2026-09-28 16:32:14,573 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parent varchar(140)
+2026-09-28 16:32:14,574 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parenttype varchar(140)
+2026-09-28 16:32:14,574 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parentfield varchar(140)
+2026-09-28 16:32:14,626 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms spare part` ADD COLUMN `qty` varchar(140)
+2026-09-28 16:38:00,350 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parent varchar(140)
+2026-09-28 16:38:00,351 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parenttype varchar(140)
+2026-09-28 16:38:00,352 WARNING database DDL Query made to DB:
+alter table `tabvms spare part` add column if not exists parentfield varchar(140)
+2026-09-28 17:07:35,746 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms spare part` ADD COLUMN `amount` decimal(21,9) NOT NULL DEFAULT 0.0, ADD COLUMN `available_qty` varchar(140)
+2026-09-28 17:07:35,774 WARNING database DDL Query made to DB:
+ALTER TABLE `tabvms spare part` MODIFY `cost` decimal(21,9) NOT NULL DEFAULT 0.0, MODIFY `qty` decimal(21,9) NOT NULL DEFAULT 0.0
+2026-09-28 17:11:30,709 WARNING database Couldn't set session time zone 'NoneType' object has no attribute 'get'
